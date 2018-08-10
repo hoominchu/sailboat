@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <title>Sail Boat</title>
+    <script src="../lib/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/custom.css">
+    <link rel="stylesheet" href="browserAction.css">
+</head>
+<body>
+<div class="container" style="min-width: 400px">
+    <!--<h3 style="padding: 15px; border-bottom: groove; border-width: 1px; border-color: #3bceff">-->
+    <!--<small class="text-muted">Sailboat</small>-->
+    <!--</h3>-->
+    <!--<p class="text-muted" id="loginstatus"></p>-->
+
+    <span style="text-align: center"><img src="../images/logo_white_sails_no_text.png"
+                                          style="width: 4em; margin-left: 40%; margin-right: auto;"></span>
+    <hr>
+    <ul class="nav nav-pills">
+        <!--<li class="nav-item" id="index">-->
+            <!--<a class="nav-link" href="#">Tasks</a>-->
+        <!--</li>-->
+        <li class="nav-item" id="search_archive">
+            <a class="nav-link" href="#">Search</a>
+        </li>
+        <li class="nav-item" id="history">
+            <a class="nav-link" href="#">History</a>
+        </li>
+
+        <!--<li class="nav-item" id="login">-->
+        <!--<a class="nav-link" href="#">Login</a>-->
+        <!--</li>-->
+        <!--<li class="nav-item" id="logout">-->
+        <!--<a class="nav-link" href="#">Logout</a>-->
+        <!--</li>-->
+        <!--<li class="nav-item" id="createFolder">-->
+        <!--<a class="nav-link" href="#">Create Folder</a>-->
+        <!--</li>-->
+        <!--<li class="nav-item" id="contacts">-->
+        <!--<a class="nav-link" href="#">Get contacts</a>-->
+        <!--</li>-->
+        <!--<li class="nav-item" id="checkIfFolderExists">-->
+        <!--<a class="nav-link" href="#">Check</a>-->
+        <!--</li>-->
+
+        <li class="nav-item" id="settings">
+            <a class="nav-link" href="#">Settings</a>
+        </li>
+        <li class="nav-item" id="pauseTasks">
+            <a class="nav-link" href="#">Pause</a>
+        </li>
+    </ul>
+    <hr>
+
+    <h4>Tasks</h4>
+    <ol id="tasks" style="list-style-type: none; padding: 0; margin: 0">
+    </ol>
+    <hr>
+    <h4>Create Task</h4>
+    <p>
+        <small>Select multiple tabs using ctrl/command. Select a range of tabs by using shift.</small>
+    </p>
+    <div class="form-group round-corner">
+        <label for="taskName">Task Name:</label>
+        <input type="text" class="form-control round-corner" id="taskName">
+        <label for="closeCurrent">Switch to new Task</label>
+        <input type="checkbox" id="closeCurrent">
+    </div>
+    <button id="createTask" type="submit" class="btn btn-primary round-corner">Create Task</button>
+    <hr>
+</div>
+<script src="view.js"></script>
+<script src="controller.js"></script>
+<!--<script src="../background.js"></script>-->
+<!--<script src="upload.js"></script>-->
+<!--<script src="../author.js"></script>-->
+<!--<script src="../domain.js"></script>-->
+</body>
+</html>

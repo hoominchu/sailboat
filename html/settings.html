@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <script src="../lib/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/custom.css">
+    <link rel="stylesheet" href="../css/history.css">
+    <link rel="stylesheet" href="../css/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#" style="padding-left: 1.5em"><img src="../images/logo_white_sails_no_text.png"
+                                                                      width="40em"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="history.html">History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="searchArchive.html">Search</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="settings.html">Settings</a>
+            </li>
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link" id="downloadTasks">Download Tasks</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link" href="stats.html">Statistics</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link active" href="profile.html">Profile</a>-->
+            <!--</li>-->
+            <li class="nav-item">
+                <a class="nav-link" href="debug.html">Debug</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="help.html">Help</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row" style="height: 1em;"></div>
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <h1 class="col-lg-10">Settings</h1>
+        <hr>
+        <div class="col-lg-1"></div>
+
+    </div>
+    <div class="row" style="height: 1em;"></div>
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-3" id="notification_settings">
+            <h4>Notifications</h4>
+            <p><small>These are task suggestion notifications.</small></p>
+            <div id="notification_options" class="btn-group" role="group"></div>
+        </div>
+        <div class="col-lg-4" id="suggestion_settings">
+            <h4>Suggestions based on</h4>
+            <p>
+                <small>You should have at least 3-4 open tabs/liked pages in every task for the suggestions to work
+                    well.
+                </small>
+            </p>
+            <div id="suggestion_options" class="btn-group" role="group"></div>
+        </div>
+        <div class="col-lg-3">
+            <h4>Suggestions threshold</h4>
+            <p>
+                <small>You can experiment with threshold.</small>
+            </p>
+            <div id="suggestion_threshold" class="btn-group" role="group"></div>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+    <div class="row" style="height: 3em;"></div>
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-7">
+            <h4>Block notifications on</h4>
+            <p>
+                <small>Add or remove domains where you would like to disable notifications.</small>
+            </p>
+            <div id="block_notifications_domains"></div>
+            <div class="row" style="height: 1em;"></div>
+            <div class="form-group input-group">
+                <input type="text" autofocus="autofocus" autocomplete="on" class="form-control round-corner-left"
+                       style="" id="block_notifications_on_domains_input"
+                       placeholder="Enter domain name or URL">
+                <div class="input-group-append">
+                    <button id="submit_block_notifications_on" type="submit" class="btn btn-primary round-corner-right">
+                        Add
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <button type="button" id="reset_index" style="margin-left: 3.5em" class="btn btn-secondary round-corner">Reset index</button>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+
+</div>
+
+<script src="settings.js"></script>
+
+</body>
+</html>

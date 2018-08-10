@@ -1,0 +1,138 @@
+.btn-sailboat {
+    display: inline-block !important;
+    font-weight: 300 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+    background-color: white;
+    color:black;
+    box-shadow: 4px 4px 15px 0.5px black;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 0.5px solid black !important;
+    border-radius:100%;
+    padding: 2px 1px !important;
+    font-size: 18px !important;
+    width: 80px !important;
+    font-family:"Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+    min-height:35px !important;
+    height:35px !important;
+    /*font-size: 0.9375rem;*/
+    line-height: 1.5 !important;
+    /*min-height:20px;*/
+    -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.btn-sailboat-primary {
+    color: #fff !important;
+    font-size: 20px;
+    background-color: #03a87c !important;
+    border-color: #03a87c !important;
+    font-family:"Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+}
+
+.btn-sailboat-primary:hover {
+    color: #fff !important;
+    background-color: #03a87c !important;
+    border-color: #03a87c !important;
+}
+
+.btn-sailboat-primary:focus, .btn-primary.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 140, 186, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(0, 140, 186, 0.5);
+}
+
+
+.btn-sailboat:focus, .btn-sailboat:hover {
+    text-decoration: none;
+}
+
+.btn-sailboat:focus, .btn-sailboat.focus {
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 140, 186, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 140, 186, 0.25);
+}
+
+.btn-secondary-sailboat {
+    color: #111 !important;
+    background-color: #eee !important;
+    border-color: #eee !important;
+}
+
+.btn-secondary-sailboat:hover {
+    color: #111;
+    background-color: #dbdbdb;
+    border-color: #d5d4d4;
+}
+
+.btn-secondary-sailboat:focus, .btn-secondary-sailboat.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(238, 238, 238, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(238, 238, 238, 0.5);
+}
+
+
+.round-corner {
+    border-radius: 0.6em !important;
+}
+
+.round-corner-left {
+    border-bottom-left-radius: 0.6em ;
+    border-top-left-radius: 0.6em;
+}
+
+.round-corner-right {
+    border-bottom-right-radius: 0.6em;
+    border-top-right-radius: 0.6em;
+}
+
+.round-corner-top {
+    border-top-right-radius: 0.6em;
+    border-top-left-radius: 0.6em;
+}
+
+.round-corner-bottom {
+    border-bottom-right-radius: 0.6em;
+    border-bottom-left-radius: 0.6em;
+}
+
+.outline {
+    border: 1px solid darkgray;
+    margin: 0.8em;
+}
+
+.margin {
+    margin: 1.5em;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+
+.search-result-title {
+    font-size: 15pt;
+}
+
+.search-result-link {
+    font-size: 8pt;
+}
+
+.search-result-snippet {
+    font-size: 10pt;
+}
+
+.search-source-engine {
+    font-size: 5pt;
+}
+
+.search-result-weight {
+    font-size: 5pt;
+}
+
+.search-result-card {
+    padding: 2em;
+}

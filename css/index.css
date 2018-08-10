@@ -1,0 +1,11 @@
+.content{
+  margin-top:2em;
+}
+
+.open-task{
+  background-color:#008cba;
+}
+
+.active-task{
+  background-color: #43ac6a;
+}

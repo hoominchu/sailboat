@@ -1,0 +1,11 @@
+html{
+    height:1024px;
+}
+
+body{
+    height:1024px;
+}
+
+.openTask{
+  color: green;
+}

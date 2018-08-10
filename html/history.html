@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+    <title>Sail Boat</title>
+    <script src="../lib/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/custom.css">
+    <link rel="stylesheet" href="../css/history.css">
+    <link rel="stylesheet" href="../css/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#" style="padding-left: 1.5em"><img src="../images/logo_white_sails_no_text.png" width="40em"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+                <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="history.html">History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="searchArchive.html">Search</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="settings.html">Settings</a>
+            </li>
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link" id="downloadTasks">Download Tasks</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link" href="stats.html">Statistics</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link active" href="profile.html">Profile</a>-->
+            <!--</li>-->
+            <li class="nav-item">
+                <a class="nav-link" href="debug.html">Debug</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="help.html">Help</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+
+    <div class="row" style="padding-top: 1em">
+        <div class="col-lg-2">
+            <div class="btn-group-vertical" style="width: 100%; padding-bottom: 2em" data-toggle="buttons">
+                <button type="button" class="btn btn-secondary round-corner" id="openLikedPages">Open Liked Pages
+                </button>
+            </div>
+            <button type="button" style="width: 100%" class="btn btn-secondary disabled round-corner-top">Your Tasks
+            </button>
+            <div class="btn-group-vertical" style="width: 100%" id="tasks-list" data-toggle="buttons">
+            </div>
+        </div>
+
+        <div class="col-lg-10">
+            <div class="form-group">
+                <input type="search" class="form-control round-corner" id="searchHistoryTable" placeholder="Search table by page title">
+            </div>
+            <table class="table table-hover history-table" id="table" style="overflow:hidden;">
+                <thead style="text-align: center">
+                <tr>
+                    <th scope="col" style="width:1px;"><input type="checkbox" id="selectAll"></th>
+                    <th scope="col" id="title" style="width: 64%">Title</th>
+                    <th scope="col" id="liked" style="width: 6%">Liked</th>
+                    <!--<th scope="col" id="time" style="width: 10%">Time Spent</th>-->
+                    <th scope="col" id="lastVisit" style="width: 20%">Last Visited</th>
+                </tr>
+                </thead>
+                <tbody id="historyTable">
+                </tbody>
+            </table>
+            <script>
+                var tf = new TableFilter(document.querySelector('#table'), {
+                    base_path: '../js/tablefilter'
+                });
+                tf.init();
+            </script>
+            <div id="task-urls" style="overflow:scroll; height:600px;">
+                <ol id="urls-list">
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class='custom-menu'>
+    <li data-action="likePages">Like</li>
+    <li data-action="deletePages">Delete from history</li>
+</ul>
+
+<script src="sortElements.js"></script>
+<script src="history.js"></script>
+<!--<script src="indexController.js"></script>-->
+<script src="../js/list.min.js"></script>
+<script src="../js/tablefilter/tablefilter.js"></script>
+</body>
+</html>
