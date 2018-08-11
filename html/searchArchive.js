@@ -2,43 +2,41 @@ $(document).ready(function () {
 
     // chrome.storage.local.get("Advanced Search Settings", function (advancedSearchSettings) {
     //     advancedSearchSettings = advancedSearchSettings["Advanced Search Settings"];
-        chrome.storage.local.get("TASKS", function (tasks) {
-            tasks = tasks["TASKS"];
-            chrome.storage.local.get("CTASKID", function (ctaskid) {
-                ctaskid = ctaskid["CTASKID"];
-                chrome.storage.local.get("Page Content", function (pageContent) {
-                    pageContent = pageContent["Page Content"];
+    chrome.storage.local.get("TASKS", function (tasks) {
+        tasks = tasks["TASKS"];
+        chrome.storage.local.get("CTASKID", function (ctaskid) {
+            ctaskid = ctaskid["CTASKID"];
+            chrome.storage.local.get("Page Content", function (pageContent) {
+                pageContent = pageContent["Page Content"];
 
-                    // showSearchInOptions(advancedSearchSettings);
+                // showSearchInOptions(advancedSearchSettings);
 
-                    let currentTask = tasks[ctaskid];
+                // document.getElementById("currentTaskMessage").innerText = "You are searching through the archived pages of task : " + currentTask["name"];
 
-                    document.getElementById("currentTaskMessage").innerText = "You are searching through the archived pages of task : " + currentTask["name"];
+                // Check if URL has 'q' parameter and search directly if present.
+                const query = getUrlParameter("q");
+                if (query != null || query.length > 0) {
+                    document.getElementById("searchArchiveInput").value = query;
+                    const results = searchArchivedPages(query, tasks, pageContent);
+                    showResults(results);
+                }
 
-                    // Check if URL has 'q' parameter and search directly if present.
-                    const query = getUrlParameter("q");
-                    if (query != null || query.length > 0) {
-                        document.getElementById("searchArchiveInput").value = query;
-                        const results = searchArchivedPages(query, currentTask, pageContent);
-                        showResults(results);
+                document.getElementById("submitSearchArchiveQuery").onclick = function (ev) {
+                    let query = document.getElementById("searchArchiveInput").value;
+                    let results = searchArchivedPages(query, tasks, pageContent);
+                    showResults(results);
+                };
+
+                document.getElementById("searchArchiveInput").addEventListener("keyup", function (event) {
+                    event.preventDefault();
+                    if (event.keyCode === 13) {
+                        document.getElementById("submitSearchArchiveQuery").click();
                     }
-
-                    document.getElementById("submitSearchArchiveQuery").onclick = function (ev) {
-                        let query = document.getElementById("searchArchiveInput").value;
-                        let results = searchArchivedPages(query, currentTask, pageContent);
-                        showResults(results);
-                    };
-
-                    document.getElementById("searchArchiveInput").addEventListener("keyup", function (event) {
-                        event.preventDefault();
-                        if (event.keyCode === 13) {
-                            document.getElementById("submitSearchArchiveQuery").click();
-                        }
-                    });
-
                 });
+
             });
         });
+    });
     // });
 });
 
@@ -49,7 +47,7 @@ function showResults(results) {
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
             let resultElement = document.createElement("p");
-            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a></p>";
+            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : "+results[i]["task"]+"</p>";
             let matchedTermsString = "<p><small>Matched terms : ";
             let contextStrings = "<p><small>";
             let matchedTerms = results[i]["matched terms"];
@@ -152,7 +150,7 @@ function updateStorage(key, obj) {
     chrome.storage.local.set(tempObj);
 }
 
-function searchArchivedPages(query, task, pageContent) {
+function searchArchivedPages(query, tasks, pageContent) {
     let searchIn = "Archived pages"; //searchSettings["search in"];
     let results = [];
 
@@ -166,52 +164,59 @@ function searchArchivedPages(query, task, pageContent) {
     } else {
         queryTerms = query.split(" ");
     }
+    for (let taskid in tasks) {
+        if (taskid != "lastAssignedId") {
+            const task = tasks[taskid];
+            let searchThroughPages = task["likedPages"];
 
-    let searchThroughPages = [];
-
-    if (searchIn === "Open tabs") {
-        let taskPages = task["tabs"];
-        for (let key in taskPages) {
-            if (taskPages[key]["url"].indexOf("chrome-extension://") < 0 && taskPages[key]["url"].indexOf("chrome://") < 0) {
-                searchThroughPages.push(taskPages[key]["url"]);
+            // if (searchIn === "Open tabs") {
+            //     let taskPages = task["tabs"];
+            //     for (let key in taskPages) {
+            //         if (taskPages[key]["url"].indexOf("chrome-extension://") < 0 && taskPages[key]["url"].indexOf("chrome://") < 0) {
+            //             searchThroughPages.push(taskPages[key]["url"]);
+            //         }
+            //     }
+            // }
+            // if (searchIn === "Archived pages") {
+            //     searchThroughPages = task["likedPages"];
+            // }
+            if (searchThroughPages.length === 0) {
+                return [];
             }
-        }
-    }
-    if (searchIn === "Archived pages") {
-        searchThroughPages = task["likedPages"];
-    }
-    if (searchThroughPages.length == 0) {
-        return [];
-    }
-    else {
-        for (let i = 0; i < searchThroughPages.length; i++) {
+            else {
+                for (let i = 0; i < searchThroughPages.length; i++) {
 
-            if (searchThroughPages[i] != null) {
-                let url = searchThroughPages[i];
-                let content = pageContent[url];
-
-                try {
-                    var wordsArray = content.toLowerCase().split(/[.\-_\s,()@!&*+{}:;"'\\?]/);
-                } catch (e) {
-                    alert("Please try reloading tab : " + url + ".");
-                }
+                    if (searchThroughPages[i] != null) {
+                        let url = searchThroughPages[i];
+                        if (pageContent.hasOwnProperty(url)) {
+                            let content = pageContent[url];
+                            let wordsArray;
+                            try {
+                                wordsArray = content.toLowerCase().split(/[.\-_\s,()@!&*+{}:;"'\\?]/);
+                            } catch (e) {
+                                // alert("Please try reloading tab : " + url + ".");
+                            }
 
 
-                let result = {
-                    "url": url,
-                    "matched terms": [],
-                    "context": []
-                };
+                            let result = {
+                                "url": url,
+                                "task": task["name"],
+                                "matched terms": [],
+                                "context": []
+                            };
 
-                for (let j = 0; j < queryTerms.length; j++) {
-                    if (wordsArray.indexOf(queryTerms[j].toLowerCase()) > -1) {
-                        result["matched terms"].push(queryTerms[j]);
-                        let contextString = getContextString(queryTerms[j], content, 30);
-                        result["context"].push(contextString);
+                            for (let j = 0; j < queryTerms.length; j++) {
+                                if (wordsArray.indexOf(queryTerms[j].toLowerCase()) > -1) {
+                                    result["matched terms"].push(queryTerms[j]);
+                                    let contextString = getContextString(queryTerms[j], content, 30);
+                                    result["context"].push(contextString);
+                                }
+                            }
+                            if (result["matched terms"].length > 0) {
+                                results.push(result);
+                            }
+                        }
                     }
-                }
-                if (result["matched terms"].length > 0) {
-                    results.push(result);
                 }
             }
         }
