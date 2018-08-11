@@ -46,7 +46,7 @@
     "images/archive-search.svg",
     "images/plus.svg"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe eval' object-src 'self'",
+  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe eval' object-src",
   "permissions": [
     "downloads",
     "tabs",
@@ -63,20 +63,6 @@
     "newtab": "html/index.html"
   },
   "commands": {
-    "like-page": {
-      "suggested-key": {
-        "default": "Ctrl+L",
-        "mac": "Command+L"
-      },
-      "description": "Like page"
-    },
-    "navigate-open-tasks": {
-      "suggested-key": {
-        "default": "Alt+Q",
-        "mac": "Option+Q"
-      },
-      "description":"Navigate between open tasks"
-    },
     "pause-tasks": {
       "suggested-key": {
         "default": "Alt+P",

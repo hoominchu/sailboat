@@ -9,7 +9,7 @@ $(document).ready(function () {
                         var CTASKID = cTaskIdObject["CTASKID"];
                         loadDock(settings);
                         loadTaskNames(TASKS, CTASKID);
-                        // loadArchiveButton();
+                        loadArchiveButton();
                         markLikedStatus(window.location.href, TASKS, CTASKID);
                     }
                 });
@@ -17,7 +17,6 @@ $(document).ready(function () {
         });
     });
 });
-
 
 function loadDock(settings) {
     var dock = $('<div class="float dock" id="sailboat-dock"></div>');
@@ -33,15 +32,15 @@ function loadDock(settings) {
     collapseButton.click(function () {
         $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
         $('#collapse-img').transition({rotate: '+=180'}, 'slow');
-        chrome.storage.local.get("Settings", function (settings) {
-            settings = settings["Settings"];
-            if (JSON.parse(settings["isDockCollapsed"])) {
-                settings["isDockCollapsed"] = "false";
-            } else {
-                settings["isDockCollapsed"] = "true";
-            }
-            chrome.storage.local.set({"Settings": settings});
-        })
+        // chrome.storage.local.get("Settings", function (settings) {
+        //     settings = settings["Settings"];
+        //     if (JSON.parse(settings["isDockCollapsed"])) {
+        //         settings["isDockCollapsed"] = "false";
+        //     } else {
+        //         settings["isDockCollapsed"] = "true";
+        //     }
+        //     chrome.storage.local.set({"Settings": settings});
+        // });
     });
 }
 
@@ -58,8 +57,33 @@ function loadArchiveButton() {
             "type": "like-page",
             "url": window.location.href
         });
+
+        if ($(this).hasClass("sailboat-like-btn-liked")) {
+            //Store page content only after a page is liked.
+            storePageContent(window.location.href, document.documentElement.innerHTML);
+        } else {
+            deletePageContent(window.location.href, document.documentElement.innerHTML);
+        }
     });
     document.getElementById("sailboat-dock").appendChild(likeButton);
+}
+
+function deletePageContent(url, content) {
+    chrome.storage.local.get("Page Content", function (pageContentObj) {
+        pageContentObj = pageContentObj["Page Content"];
+        delete pageContentObj[url];
+        chrome.storage.local.set({"Page Content": pageContentObj});
+        console.log("Content deleted");
+    });
+}
+
+function storePageContent(url, content) {
+    chrome.storage.local.get("Page Content", function (pageContentObj) {
+        pageContentObj = pageContentObj["Page Content"];
+        pageContentObj[url] = content;
+        chrome.storage.local.set({"Page Content": pageContentObj});
+        console.log("Content stored");
+    });
 }
 
 function markLikedStatus(url, TASKS, ctaskid) {
