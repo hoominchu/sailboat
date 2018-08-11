@@ -11,12 +11,40 @@ $(document).ready(function () {
                         loadTaskNames(TASKS, CTASKID);
                         loadArchiveButton();
                         markLikedStatus(window.location.href, TASKS, CTASKID);
+                        loadArchiveSearchBar();
                     }
                 });
             }
         });
     });
 });
+
+function loadArchiveSearchBar() {
+    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float search-archive-input form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
+    archiveSearchBar.hide();
+    $('body').append(archiveSearchBar);
+    archiveSearchBar.draggable();
+    // Keypress shortcut
+    $(document).keyup(function (keyEvent) {
+        if (keyEvent.keyCode === 83 && keyEvent.altKey == true) {
+            $('#searchArchiveInput').siblings().css({"filter": "grayscale(100%) brightness(30%)"});
+            $('#searchArchiveInput').show();
+            $('#searchArchiveInput').focus();
+        } else if (keyEvent.keyCode === 27) {
+            $('#searchArchiveInput').siblings().css({"filter": ""});
+            $('#searchArchiveInput').hide();
+        }
+    });
+
+    $("#searchArchiveInput").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $('#searchArchiveInput').siblings().css({"filter": ""});
+            $('#searchArchiveInput').hide();
+            const query = $("#searchArchiveInput").val();
+            chrome.runtime.sendMessage({"type": "search-archive", "query": query});
+        }
+    });
+}
 
 function loadDock(settings) {
     var dock = $('<div class="float dock" id="sailboat-dock"></div>');
@@ -60,15 +88,15 @@ function loadArchiveButton() {
 
         if ($(this).hasClass("sailboat-like-btn-liked")) {
             //Store page content only after a page is liked.
-            storePageContent(window.location.href, document.documentElement.innerHTML);
+            storePageContent(window.location.href, document.documentElement.innerText);
         } else {
-            deletePageContent(window.location.href, document.documentElement.innerHTML);
+            deletePageContent(window.location.href);
         }
     });
     document.getElementById("sailboat-dock").appendChild(likeButton);
 }
 
-function deletePageContent(url, content) {
+function deletePageContent(url) {
     chrome.storage.local.get("Page Content", function (pageContentObj) {
         pageContentObj = pageContentObj["Page Content"];
         delete pageContentObj[url];

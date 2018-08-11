@@ -1,24 +1,24 @@
 "use strict";
 
-chrome.commands.onCommand.addListener(function(command){
-  if(command == "like-page"){
-    chrome.tabs.get(activeTabId, function(tab){
-      likePage(tab.url ,"shortcut");
-    })
-  } else if (command == "navigate-open-tasks") {
-      console.log("hoorraahh");
-  } else if (command == "pause-tasks") {
-      saveTaskInWindow(CTASKID);
-      deactivateTaskInWindow(CTASKID);
-      activateTaskInWindow("0");
-  }
+chrome.commands.onCommand.addListener(function (command) {
+    if (command === "like-page") {
+        chrome.tabs.get(activeTabId, function (tab) {
+            likePage(tab.url, "shortcut");
+        })
+    } else if (command === "navigate-open-tasks") {
+        console.log("hoorraahh");
+    } else if (command === "pause-tasks") {
+        saveTaskInWindow(CTASKID);
+        deactivateTaskInWindow(CTASKID);
+        activateTaskInWindow("0");
+    }
 });
 
 // chrome.downloads.download({"url": "https://ia802508.us.archive.org/5/items/testmp3testfile/mpthreetest.mp3", "filename":"testing/test.mp3"})
 
-chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
-  var currentTaskName = TASKS[CTASKID].name;
-suggest({filename: currentTaskName + "/"+ item.filename});
+chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
+    var currentTaskName = TASKS[CTASKID].name;
+    suggest({filename: currentTaskName + "/" + item.filename});
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
@@ -52,8 +52,8 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
     }
 
-    if(request.type == "add-to-task"){
-      addTabsToTask(request.taskId, request.tabs);
+    if (request.type == "add-to-task") {
+        addTabsToTask(request.taskId, request.tabs);
     }
 
     if (request.type == "switch-task" && request.nextTaskId != "") {
@@ -63,7 +63,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         activateTaskInWindow(request.nextTaskId);
     }
 
-    if(request.type == "close-task"){
+    if (request.type == "close-task") {
         closeTask(request.taskId);
     }
 
@@ -79,7 +79,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         downloadTasks();
     }
 
-    if(request.type == "like-page"){
+    if (request.type == "like-page") {
         likePage(request.url, CTASKID);
     }
 
@@ -87,59 +87,46 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     //   addIdleTime(request.url, request["idle-time"]);
     // }
 
-    if(request.type =="archive-task"){
+    if (request.type == "archive-task") {
         archiveTask(request.taskId);
     }
 
-    if(request.type =="pause-tasks"){
+    if (request.type == "pause-tasks") {
         CTASKID = 0;
         updateStorage("CTASKID", 0);
     }
 
-    if(request.type == "open-liked-pages"){
-      openLikedPages(request.taskId);
+    if (request.type == "open-liked-pages") {
+        openLikedPages(request.taskId);
     }
 
-    if(request.type == "search"){
-      returnResults(request.query, engines, function () {
-          chrome.storage.local.get(preferredDomainsFieldName, function (preferredDomainsObject) {
-              chrome.storage.local.get(preferredAuthorsFieldName, function (preferredAuthorsObject) {
-                  getSailboatResults(scrapedResultsList, preferredDomainsObject[preferredDomainsFieldName], preferredAuthorsObject[preferredAuthorsFieldName], function(){
-                    chrome.runtime.sendMessage({
-                      "type": "search-reply",
-                      "finalResults": finalResults
-                    });
-                  });
-                });
-          });
-      });
-    }
-
-    if(request.type == "cluster"){
-        clusterTabs();
+    if (request.type === "search-archive") {
+        if (request.query != null) {
+            chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
+        }
     }
 });
 //if someone asks for open tasks give it to them
 chrome.runtime.onMessage.addListener(function (request, sender) {
-    if(request.type == "give me open tasks"){
+    if (request.type == "give me open tasks") {
         chrome.runtime.sendMessage({
-          "type": "array of open tasks",
-          "openTasks": Object.keys(taskToWindow)
+            "type": "array of open tasks",
+            "openTasks": Object.keys(taskToWindow)
         });
     }
-  });
+});
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
-    if(request.type == "likePages"){
+    if (request.type == "likePages") {
         likePages(request.urls, request.taskId);
     }
-    if(request.type == "deletePages"){
+    if (request.type == "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
     }
 });
 
-chrome.windows.onRemoved.addListener(function(windowId){
-    if(windowId != backgroundPageId){
+chrome.windows.onRemoved.addListener(function (windowId) {
+    if (windowId != backgroundPageId) {
         // deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
         //console.log("Window Removed" + TASKS);
         //console.log(TASKS);
@@ -150,11 +137,11 @@ chrome.windows.onRemoved.addListener(function(windowId){
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
-    if (changeInfo.status== "complete") {
-      if(tabIdToURL!= {}){
-        var date = new Date();
-        updateExitTime(tabIdToURL[tabId], date.toString())
-      }
+    if (changeInfo.status == "complete") {
+        if (tabIdToURL != {}) {
+            var date = new Date();
+            updateExitTime(tabIdToURL[tabId], date.toString())
+        }
         tabIdToURL[tabId] = tab.url;
         saveTaskInWindow(CTASKID);
         // console.log(tab);
@@ -163,7 +150,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         // });
         addToHistory(tab.url, tab.title, CTASKID);
     }
-    chrome.tabs.sendMessage(tabId, {"type": "reload-like-button", data:tab})
+    chrome.tabs.sendMessage(tabId, {"type": "reload-like-button", data: tab})
 
 });
 
@@ -187,68 +174,68 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 //   // })
 // });
 
-chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-  if(removeInfo.isWindowClosing){
-    console.log("window closing");
-    deactivateTaskInWindow(CTASKID)
-    CTASKID = 0;
-    // chrome.windows.getCurrent(function(window){
-    //   if(getKeyByValue(taskToWindow, window.id)){
-    //     activateTaskInWindow(getKeyByValue(taskToWindow, window.id));
-    //   }
-    //   else{
-    //     CTASKID = 0;
-    //   }
-    // });
-  }
-  else {
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+    if (removeInfo.isWindowClosing) {
+        console.log("window closing");
+        deactivateTaskInWindow(CTASKID)
+        CTASKID = 0;
+        // chrome.windows.getCurrent(function(window){
+        //   if(getKeyByValue(taskToWindow, window.id)){
+        //     activateTaskInWindow(getKeyByValue(taskToWindow, window.id));
+        //   }
+        //   else{
+        //     CTASKID = 0;
+        //   }
+        // });
+    }
+    else {
         saveTaskInWindow(CTASKID);
     }
 });
 
-chrome.windows.onFocusChanged.addListener(function (newWindowId){
-  if(newWindowId != chrome.windows.WINDOW_ID_NONE){
-    chrome.windows.get(newWindowId, function(window){
-        if(window.type == "normal"){
-            if(getKeyByValue(taskToWindow, newWindowId)){
-                //saveTaskInWindow(CTASKID);
-                console.log("focus changed and window not default");
-                deactivateTaskInWindow(CTASKID);
-                activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
+chrome.windows.onFocusChanged.addListener(function (newWindowId) {
+    if (newWindowId != chrome.windows.WINDOW_ID_NONE) {
+        chrome.windows.get(newWindowId, function (window) {
+            if (window.type == "normal") {
+                if (getKeyByValue(taskToWindow, newWindowId)) {
+                    //saveTaskInWindow(CTASKID);
+                    console.log("focus changed and window not default");
+                    deactivateTaskInWindow(CTASKID);
+                    activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
+                }
+                else {
+                    chrome.browserAction.setBadgeText({"text": ""});
+                }
             }
-            else{
-              chrome.browserAction.setBadgeText({"text": ""});
-            }
+        });
+    }
+    else {
+        if (getKeyByValue(taskToWindow, newWindowId)) {
+            console.log("focus changed and window default");
+            deactivateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
+            CTASKID = 0;
+            chrome.storage.local.set({"CTASKID": 0});
         }
-    });
-  }
-  else{
-      if(getKeyByValue(taskToWindow, newWindowId)){
-          console.log("focus changed and window default");
-          deactivateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
-          CTASKID = 0;
-          chrome.storage.local.set({"CTASKID": 0});
-      }
-      else{
-        chrome.browserAction.setBadgeText({"text": ""});
-      }
-  }
+        else {
+            chrome.browserAction.setBadgeText({"text": ""});
+        }
+    }
 
-  // chrome.storage.local.get("Text Log", function(textLog){
-  //   if(textLog["Text Log"]){
-  //     for(var url in textLog["Text Log"]){
-  //       // removeFromPageContentAndTextLog(url);
-  //     }
-  //   }
-  // })
+    // chrome.storage.local.get("Text Log", function(textLog){
+    //   if(textLog["Text Log"]){
+    //     for(var url in textLog["Text Log"]){
+    //       // removeFromPageContentAndTextLog(url);
+    //     }
+    //   }
+    // })
 
 });
 
 //If a window is created outside Task context then remove task Badge
-chrome.windows.onCreated.addListener(function(window){
-  if(!getKeyByValue(taskToWindow, window.id)){
-    chrome.browserAction.setBadgeText({"text": ""});
-  }
+chrome.windows.onCreated.addListener(function (window) {
+    if (!getKeyByValue(taskToWindow, window.id)) {
+        chrome.browserAction.setBadgeText({"text": ""});
+    }
 });
 
 
@@ -260,22 +247,24 @@ chrome.runtime.onMessage.addListener(function (response, sender) {
         var matchedTags = response["matched tags"];
         var matchedTagsString = "";
         for (var i = 0; i < matchedTags.length; i++) {
-            matchedTagsString = matchedTagsString + matchedTags[i][0]+", ";
+            matchedTagsString = matchedTagsString + matchedTags[i][0] + ", ";
         }
         var fromPageURL = response["page url"];
         var fromPageTitle = response["page title"];
         var probableTask = response["probable task"];
 
-        chrome.notifications.create({"type" : "basic",
-            "iconUrl" : "images/logo_white_sails_no_text.png",
-            "title" : "Task Suggestion : " + probableTask,
-            "message" : matchedTagsString,
-            "buttons" : [{"title":"See all matched tags"}, {"title":"Add to task " + probableTask}],
+        chrome.notifications.create({
+            "type": "basic",
+            "iconUrl": "images/logo_white_sails_no_text.png",
+            "title": "Task Suggestion : " + probableTask,
+            "message": matchedTagsString,
+            "buttons": [{"title": "See all matched tags"}, {"title": "Add to task " + probableTask}],
             // "items":[{"title":"sdfs","message":"sdfawefar"},{"title":"erwq","message":"qweqwer"},{"title":"zxz","message":"vbcxvbx"}],
-            "isClickable" : true,
-            "requireInteraction" : false}, function (notificationID) {
+            "isClickable": true,
+            "requireInteraction": false
+        }, function (notificationID) {
             // Respond to the user's clicking one of the buttons
-            chrome.notifications.onButtonClicked.addListener(function(notifId, btnIdx) {
+            chrome.notifications.onButtonClicked.addListener(function (notifId, btnIdx) {
                 if (notifId === notificationID) {
 
                     // This button adds the current webpage to the suggested task and takes the user to the suggested task.
@@ -302,14 +291,14 @@ chrome.runtime.onMessage.addListener(function (response, sender) {
                         });
                     }
                     // // This button adds the current webpage to the suggested task and stays in the current task.
-                    else if (btnIdx === 1){
-                    //     // Logging that the suggestion is correct.
-                    //     chrome.storage.local.get("Suggestions Log", function (resp) {
-                    //         resp["Suggestions Log"]["Correct suggestions"]++;
-                    //         updateStorage("Suggestions Log", resp);
-                    //     });
-                    //
-                    //     // Call function to add to task but not move to task.
+                    else if (btnIdx === 1) {
+                        //     // Logging that the suggestion is correct.
+                        //     chrome.storage.local.get("Suggestions Log", function (resp) {
+                        //         resp["Suggestions Log"]["Correct suggestions"]++;
+                        //         updateStorage("Suggestions Log", resp);
+                        //     });
+                        //
+                        //     // Call function to add to task but not move to task.
 
                         chrome.storage.local.get("Text Log", function (textLog) {
                             textLog = textLog["Text Log"];
@@ -329,7 +318,7 @@ chrome.runtime.onMessage.addListener(function (response, sender) {
             });
 
             // When the user clicks on close the current page is added to the current task.
-            chrome.notifications.onClosed.addListener(function() {
+            chrome.notifications.onClosed.addListener(function () {
                 // Logging that the suggestion is incorrect.
                 // chrome.storage.local.get("Suggestions Log", function (resp) {
                 //     resp["Suggestions Log"]["Incorrect suggestions"]++;
