@@ -152,10 +152,10 @@ textarea:focus, input:focus{
     overflow: hidden;
     border-radius: 100px;
     vertical-align: middle;
-    height: 20px;
+    height: 50%;
     display: inline-block;
     text-align: center;
-    line-height: 18px;
+    line-height: 1.4em;
 }
 
 .dock:hover .task-btn:hover {

@@ -12,12 +12,23 @@ $(document).ready(function () {
                         loadArchiveButton();
                         markLikedStatus(window.location.href, TASKS, CTASKID);
                         loadArchiveSearchBar();
+                        loadHoverBooster();
                     }
                 });
             }
         });
     });
 });
+
+function loadHoverBooster() {
+    $('a').mouseover(function () {
+        const targetURL = this.href;
+        chrome.runtime.sendMessage({"type":"onmouseover","target-url":targetURL});
+    });
+    $('a').mouseout(function () {
+        chrome.runtime.sendMessage({"type":"onmouseout"});
+    })
+}
 
 function loadArchiveSearchBar() {
     const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float search-archive-input form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
@@ -27,7 +38,7 @@ function loadArchiveSearchBar() {
     // Keypress shortcut
     $(document).keyup(function (keyEvent) {
         if (keyEvent.keyCode === 83 && keyEvent.altKey == true) {
-            $('#searchArchiveInput').siblings().css({"filter": "grayscale(100%) brightness(30%)"});
+            $('#searchArchiveInput').siblings().css({"filter": "blur(100px) grayscale(100%) brightness(30%)"});
             $('#searchArchiveInput').show();
             $('#searchArchiveInput').focus();
         } else if (keyEvent.keyCode === 27) {

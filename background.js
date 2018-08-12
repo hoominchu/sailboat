@@ -21,6 +21,8 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     suggest({filename: currentTaskName + "/" + item.filename});
 });
 
+
+//todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
 
     refreshContextMenu();
@@ -105,7 +107,24 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
         }
     }
+
+    if (request.type === "onmouseover") {
+        const fromWindowID = sender.tab.windowId;
+        const targetURL = request["target-url"];
+        chrome.windows.get(fromWindowID, {"populate": true}, function (window) {
+            window.tabs.forEach(function (tab) {
+                if (targetURL === tab.url) {
+                    chrome.tabs.highlight({"windowId": fromWindowID, "tabs": [sender.tab.index, tab.index]});
+                }
+            });
+        });
+    }
+
+    if (request.type === "onmouseout") {
+        chrome.tabs.highlight({"windowId": sender.tab.windowId, "tabs": sender.tab.index});
+    }
 });
+
 //if someone asks for open tasks give it to them
 chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type == "give me open tasks") {
