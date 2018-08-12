@@ -27,13 +27,13 @@
     width: 3%;
     height: 30px;
     background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 3px 3px 3px #999;
+    box-shadow: none;
     border-radius: 100px;
     display: inline-block;
     left: 5px; !important;
     vertical-align: center;
     text-align: center;
-    border: 0.5px solid #6a6a6a;
+    border: none;
     line-height: 15px;
     bottom: 5px !important;
 }
@@ -54,10 +54,10 @@
     width: 96%;
     height: 30px;
     background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 3px 3px 3px #999;
+    box-shadow: none;
     border-radius: 10px;
     display: inline-block;
-    border: 0.5px solid #6a6a6a;
+    border: none;
     left: 45px;
     bottom: 5px !important;
 }
@@ -167,13 +167,13 @@ textarea:focus, input:focus{
 .task-btn {
     font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     color: #202020;
-    border: 0.5px solid #6a6a6a;
+    border: none;
     font-size: 8pt;
     min-width: 80px;
     margin-left: 10px;
     margin-top: 4px;
     padding: 2px 5px;
-    background-color: rgba(240, 240, 240, 0.16);
+    background-color: rgba(237, 237, 237, 0.42);
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -203,12 +203,12 @@ textarea:focus, input:focus{
 
 .current-task {
     color: white;
-    background-color: #07b94f;
+    background-color: rgba(7, 185, 79, 0.37);
 }
 
 .dock:hover .current-task {
     color: white;
-    background-color: #07b94f;
+    background-color: rgba(7, 185, 79, 0.74);
 }
 
 .dock:hover .current-task:hover {
