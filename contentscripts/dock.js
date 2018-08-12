@@ -28,13 +28,34 @@ $(document).ready(function () {
 
 function loadClickLogger() {
     $(document).on('click', function (ce) {
-        if (ce.target.innerText && ce.target.innerText.length > 0 && ce.target.innerText.length < 25){
+        if (isValidTag(ce.target.innerText)) {
             const text = ce["target"].innerText;
             if (stopwords.indexOf(text) < 0) {
                 chrome.runtime.sendMessage({"type": "clicklog", "text": text});
             }
         }
     });
+}
+
+// Checks if a tag should be indexed. Add more conditions here if required.
+function isValidTag(tag) {
+    if (tag == null) {
+        return false;
+    }
+
+    if (stopwords.indexOf(tag.toLowerCase()) > -1) {
+        return false;
+    }
+
+    // if (TAGS_TO_BE_IGNORED.indexOf(tag.toLowerCase()) > -1) {
+    //     return false;
+    // }
+
+    if (!(tag.match(/^[A-Za-z\s]+$/gim))) {
+        return false;
+    }
+
+    return tag.length > 3 && tag.length < 50 && /.*[a-zA-Z].*/g.test(tag) && /^([^0-9]*)$/g.test(tag);
 }
 
 function loadHoverBooster() {
