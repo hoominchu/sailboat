@@ -28,7 +28,7 @@ $(document).ready(function () {
 
 function loadClickLogger() {
     $(document).on('click', function (ce) {
-        if (ce.target.innerText && ce.target.innerText.length > 0){
+        if (ce.target.innerText && ce.target.innerText.length > 0 && ce.target.innerText.length < 25){
             const text = ce["target"].innerText;
             if (stopwords.indexOf(text) < 0) {
                 chrome.runtime.sendMessage({"type": "clicklog", "text": text});
