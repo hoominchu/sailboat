@@ -125,6 +125,18 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "onmouseout") {
         chrome.tabs.highlight({"windowId": sender.tab.windowId, "tabs": sender.tab.index});
     }
+
+    if (request.type === "clicklog") {
+        chrome.storage.local.get("Click Log", function (clickLog) {
+            clickLog = clickLog["Click Log"];
+            if (clickLog.hasOwnProperty(request.text)) {
+                clickLog[request.text]++;
+            } else {
+                clickLog[request.text] = 1;
+            }
+            chrome.storage.local.set({"Click Log": clickLog});
+        });
+    }
 });
 
 //if someone asks for open tasks give it to them
@@ -210,6 +222,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
         // });
     }
     else {
+
         saveTaskInWindow(CTASKID);
     }
 });

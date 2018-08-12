@@ -62,6 +62,12 @@ chrome.storage.local.get("Tags", function (e) {
     }
 });
 
+chrome.storage.local.get("Click Log", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Click Log": {}});
+    }
+});
+
 chrome.storage.local.get("Settings", function (e) {
     if (isEmpty(e)) {
         var DEFAULT_SETTINGS = {
