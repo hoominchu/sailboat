@@ -1,14 +1,17 @@
+let TASKS = {};
+let CTASKID = 0;
+
 $(document).ready(function () {
     chrome.storage.local.get("Settings", function (settings) {
         settings = settings["Settings"];
         chrome.storage.local.get("TASKS", function (taskObject) {
             if (taskObject["TASKS"]) {
-                var TASKS = taskObject["TASKS"];//On retreiving TASKS from chrome storage, one gets an object {TASKS: balhah}, to retreive the actual array call taskObject["TASKS"]
+                TASKS = taskObject["TASKS"];//On retreiving TASKS from chrome storage, one gets an object {TASKS: balhah}, to retreive the actual array call taskObject["TASKS"]
                 chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
                     if (cTaskIdObject["CTASKID"] > -1) {
-                        var CTASKID = cTaskIdObject["CTASKID"];
+                        CTASKID = cTaskIdObject["CTASKID"];
                         loadDock(settings);
-                        loadTaskNames(TASKS, CTASKID);
+                        loadTaskNames(CTASKID);
                         loadArchiveButton();
                         markLikedStatus(window.location.href, TASKS, CTASKID);
                         loadArchiveSearchBar();
@@ -21,13 +24,44 @@ $(document).ready(function () {
 });
 
 function loadHoverBooster() {
-    $('a').mouseover(function () {
-        const targetURL = this.href;
-        chrome.runtime.sendMessage({"type":"onmouseover","target-url":targetURL});
+    $('a').on({
+        mouseenter: function () {
+            const targetURL = this.href;
+            chrome.runtime.sendMessage({"type": "onmouseover", "target-url": targetURL});
+            const tasksWithURL = getTasksWithURL(targetURL);
+            if (tasksWithURL.length > 0) {
+                let tooltipData = '';
+                for (let i = 0; i < tasksWithURL.length; i++) {
+                    tooltipData += tasksWithURL[i];
+                    if (i !== tasksWithURL.length - 1) {
+                        tooltipData += ', ';
+                    }
+                }
+                $(this).attr('data-toggle', 'tooltip');
+                $(this).attr('data-placement', 'top');
+                $(this).attr('title', tooltipData);
+            }
+        },
+        mouseleave: function () {
+            chrome.runtime.sendMessage({"type": "onmouseout"});
+        }
     });
-    $('a').mouseout(function () {
-        chrome.runtime.sendMessage({"type":"onmouseout"});
-    })
+}
+
+function getTasksWithURL(targetURL) {
+    const tasksWithURL = [];
+    for (let taskid in TASKS) {
+        if (taskid !== "lastAssignedId" && taskid !== CTASKID) {
+            const task = TASKS[taskid];
+            for (const tabIndex in task.tabs) {
+                const tab = task.tabs[tabIndex];
+                if (tab.url === targetURL) {
+                    tasksWithURL.push(task.name);
+                }
+            }
+        }
+    }
+    return tasksWithURL;
 }
 
 function loadArchiveSearchBar() {
@@ -138,7 +172,7 @@ function markLikedStatus(url, TASKS, ctaskid) {
     }
 }
 
-function loadTaskNames(TASKS, ctaskid) {
+function loadTaskNames(ctaskid) {
 
     for (let taskid in TASKS) {
         if (TASKS[taskid].archived === false) {
