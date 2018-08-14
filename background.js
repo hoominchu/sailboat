@@ -27,7 +27,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
 //     if (!changeInfo['removed']) {
 //         const cookie = changeInfo['cookie'];
 //         const cause = changeInfo['cause'];
-//         const url = 'https://' + cookie['domain'] + cookie['path'];
+//         const url = extrapolateUrlFromCookie(cookie);
 //         delete cookie['hostOnly'];
 //         delete cookie['session'];
 //         chrome.storage.local.get("CTASKID", function (ctaskid) {
@@ -48,7 +48,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
 //     if (changeInfo['removed']) {
 //         const cookie = changeInfo['cookie'];
 //         const cause = changeInfo['cause'];
-//         const url = 'https://' + cookie['domain'] + cookie['path'];
+//         const url = extrapolateUrlFromCookie(cookie);
 //         let newCookie = {};
 //         newCookie['url'] = url;
 //         newCookie['name'] = cookie['name'];
@@ -59,6 +59,16 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
 //         })
 //     }
 // });
+
+
+function extrapolateUrlFromCookie(cookie) {
+    var prefix = cookie.secure ? "https://" : "http://";
+    if (cookie.domain.charAt(0) == ".")
+        prefix += "www";
+
+    return prefix + cookie.domain + cookie.path;
+}
+
 
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {

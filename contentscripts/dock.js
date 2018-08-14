@@ -214,7 +214,7 @@ function loadTaskNames(ctaskid) {
     for (let taskid in TASKS) {
         if (TASKS[taskid].archived === false) {
             let taskBtn = $('<div class="task-btn" id="' + taskid + '"></div>');
-            let openTaskBtn = $('<div class="open-task-btn">' + TASKS[taskid].name + '</div>');
+            let openTaskBtn = $('<div class="open-task-btn" data-toggle="tooltip">' + TASKS[taskid].name + '</div>');
 
             if (taskid === ctaskid) {
                 openTaskBtn.removeClass("open-task-btn");
@@ -229,6 +229,19 @@ function loadTaskNames(ctaskid) {
                         }
                     );
                 }(task);
+            });
+
+            openTaskBtn.hover(function (e) {
+                const hoveredTaskId = e.target.parentElement.id;
+                let pageTitlesInTask = '';
+                chrome.storage.local.get("TASKS", function (tasks) {
+                    tasks = tasks["TASKS"];
+                    const hoveredTask = tasks[hoveredTaskId];
+                    for (let tabId in hoveredTask.tabs) {
+                        pageTitlesInTask += hoveredTask.tabs[tabId].title + '\n';
+                    }
+                    e.target.title = pageTitlesInTask;
+                })
             });
 
             taskBtn.append(openTaskBtn);
