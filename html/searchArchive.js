@@ -15,10 +15,12 @@ $(document).ready(function () {
 
                 // Check if URL has 'q' parameter and search directly if present.
                 const query = getUrlParameter("q");
-                if (query != null || query.length > 0) {
-                    document.getElementById("searchArchiveInput").value = query;
-                    const results = searchArchivedPages(query, tasks, pageContent);
-                    showResults(results);
+                if (query !== undefined) {
+                    if (query.length > 0) {
+                        document.getElementById("searchArchiveInput").value = query;
+                        const results = searchArchivedPages(query, tasks, pageContent);
+                        showResults(results);
+                    }
                 }
 
                 document.getElementById("submitSearchArchiveQuery").onclick = function (ev) {

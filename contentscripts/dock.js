@@ -106,12 +106,12 @@ function loadArchiveSearchBar() {
     archiveSearchBar.draggable();
     // Keypress shortcut
     $(document).keyup(function (keyEvent) {
-        if (keyEvent.keyCode === 83 && keyEvent.altKey == true) {
-            $('#searchArchiveInput').siblings().animate({"filter": "blur(100px)"});
+        if (keyEvent.keyCode === 83 && keyEvent.ctrlKey === true && keyEvent.shiftKey === true) {
+            $('#searchArchiveInput').siblings().css({"filter": "blur(100px)"});
             $('#searchArchiveInput').show();
             $('#searchArchiveInput').focus();
         } else if (keyEvent.keyCode === 27) {
-            $('#searchArchiveInput').siblings().animate({"filter": ""});
+            $('#searchArchiveInput').siblings().css({"filter": ""});
             $('#searchArchiveInput').hide();
         }
     });
