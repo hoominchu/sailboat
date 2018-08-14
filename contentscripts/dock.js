@@ -262,7 +262,6 @@ function loadTaskNames(ctaskid) {
             }
 
 
-
             $("#sailboat-dock").append(taskBtn);
         }
     }
