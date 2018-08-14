@@ -44,7 +44,8 @@
   "web_accessible_resources": [
     "images/left-arrow.svg",
     "images/archive-search.svg",
-    "images/plus.svg"
+    "images/plus.svg",
+    "images/close.svg"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe eval' object-src",
   "permissions": [

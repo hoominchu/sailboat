@@ -77,7 +77,7 @@ window.onload = function () {
             }
         });
 
-}
+};
 
 function addToTaskMessage(taskId){
   chrome.windows.getCurrent({"populate": true}, function (window) {

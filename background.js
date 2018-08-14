@@ -55,7 +55,28 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 
     if (request.type === "add-to-task") {
-        addTabsToTask(request.taskId, request.tabs);
+        // console.log(window.tabs);
+        const senderTab = sender.tab;
+        const senderWindowId = senderTab.windowId;
+        chrome.windows.get(senderWindowId, {populate: true}, function (window) {
+            const tabs = [];
+            for (let i = 0; i < window.tabs.length; i++) {
+                if (window.tabs[i].highlighted) {
+                    tabs.push(window.tabs[i]);
+                }
+            }
+
+            //tabs array is now ready to use
+
+            //remove tabs that were highlighted
+            const tabIdsToClose = [];
+            for (let j = 0; j < tabs.length; j++) {
+                tabIdsToClose.push(tabs[j].id)
+            }
+            chrome.tabs.remove(tabIdsToClose);
+
+            addTabsToTask(request.taskId, tabs);
+        });
     }
 
     if (request.type === "switch-task" && request.nextTaskId !== "") {

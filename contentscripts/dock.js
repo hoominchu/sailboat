@@ -13,8 +13,8 @@ $(document).ready(function () {
                     if (cTaskIdObject["CTASKID"] > -1) {
                         CTASKID = cTaskIdObject["CTASKID"];
                         loadDock(settings);
-                        loadTaskNames(CTASKID);
                         loadArchiveButton();
+                        loadTaskNames(CTASKID);
                         markLikedStatus(window.location.href, TASKS, CTASKID);
                         loadArchiveSearchBar();
                         loadHoverBooster();
@@ -63,19 +63,19 @@ function loadHoverBooster() {
         mouseenter: function () {
             const targetURL = this.href;
             chrome.runtime.sendMessage({"type": "onmouseover", "target-url": targetURL});
-            const tasksWithURL = getTasksWithURL(targetURL);
-            if (tasksWithURL.length > 0) {
-                let tooltipData = '';
-                for (let i = 0; i < tasksWithURL.length; i++) {
-                    tooltipData += tasksWithURL[i];
-                    if (i !== tasksWithURL.length - 1) {
-                        tooltipData += ', ';
-                    }
-                }
-                $(this).attr('data-toggle', 'tooltip');
-                $(this).attr('data-placement', 'top');
-                $(this).attr('title', tooltipData);
-            }
+            // const tasksWithURL = getTasksWithURL(targetURL);
+            // if (tasksWithURL.length > 0) {
+            //     let tooltipData = '';
+            //     for (let i = 0; i < tasksWithURL.length; i++) {
+            //         tooltipData += tasksWithURL[i];
+            //         if (i !== tasksWithURL.length - 1) {
+            //             tooltipData += ', ';
+            //         }
+            //     }
+            //     $(this).attr('data-toggle', 'tooltip');
+            //     $(this).attr('data-placement', 'top');
+            //     $(this).attr('title', tooltipData);
+            // }
         },
         mouseleave: function () {
             chrome.runtime.sendMessage({"type": "onmouseout"});
@@ -107,11 +107,11 @@ function loadArchiveSearchBar() {
     // Keypress shortcut
     $(document).keyup(function (keyEvent) {
         if (keyEvent.keyCode === 83 && keyEvent.altKey == true) {
-            $('#searchArchiveInput').siblings().css({"filter": "blur(100px) grayscale(100%) brightness(30%)"});
+            $('#searchArchiveInput').siblings().animate({"filter": "blur(100px)"});
             $('#searchArchiveInput').show();
             $('#searchArchiveInput').focus();
         } else if (keyEvent.keyCode === 27) {
-            $('#searchArchiveInput').siblings().css({"filter": ""});
+            $('#searchArchiveInput').siblings().animate({"filter": ""});
             $('#searchArchiveInput').hide();
         }
     });
@@ -127,16 +127,13 @@ function loadArchiveSearchBar() {
 }
 
 function loadDock(settings) {
-    var dock = $('<div class="float dock" id="sailboat-dock"></div>');
-    $('body').append(dock);
-    dock.draggable();
+    const dock = $('<div class="float dock" id="sailboat-dock"></div>');
 
     // Appending collapse button
     let collapseButton = $('<div id="collapse-dock-btn" class="float round-corner collapse-btn"><img id="collapse-img"></div>');
     $('body').append(collapseButton);
     $('#collapse-dock-btn').draggable();
-    let collapseImgURL = chrome.runtime.getURL("images/left-arrow.svg");
-    document.getElementById("collapse-img").src = collapseImgURL;
+    document.getElementById("collapse-img").src = chrome.runtime.getURL("images/left-arrow.svg");
     collapseButton.click(function () {
         $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
         $('#collapse-img').transition({rotate: '+=180'}, 'slow');
@@ -150,6 +147,8 @@ function loadDock(settings) {
         //     chrome.storage.local.set({"Settings": settings});
         // });
     });
+    $('body').append(dock);
+    dock.draggable();
 }
 
 function loadArchiveButton() {
@@ -209,24 +208,71 @@ function markLikedStatus(url, TASKS, ctaskid) {
 
 function loadTaskNames(ctaskid) {
 
+    let plusIconPath = chrome.runtime.getURL("images/plus.svg");
+    let closeIconPath = chrome.runtime.getURL("images/close.svg");
+
     for (let taskid in TASKS) {
         if (TASKS[taskid].archived === false) {
-            let task_button = $('<div class="task-btn" id="' + taskid + '">' + TASKS[taskid].name + '</div>');
+            let taskBtn = $('<div class="task-btn" id="' + taskid + '"></div>');
+            let openTaskBtn = $('<div class="open-task-btn">' + TASKS[taskid].name + '</div>');
+
             if (taskid === ctaskid) {
-                task_button.addClass("current-task");
+                openTaskBtn.removeClass("open-task-btn");
+                openTaskBtn.addClass("current-task");
             }
-            task_button.click(function (task) {
+            openTaskBtn.click(function (task) {
                 return function (task) {
                     chrome.runtime.sendMessage(
                         {
                             "type": "switch-task",
-                            "nextTaskId": task.currentTarget.id
+                            "nextTaskId": task.target.parentElement.id
                         }
                     );
                 }(task);
             });
 
-            $("#sailboat-dock").append(task_button);
+            taskBtn.append(openTaskBtn);
+
+            if (taskid !== ctaskid) {
+                let addToTaskBtn = $('<div class="add-to-task-btn"></div>');
+                addToTaskBtn.css('background-image', 'url(' + plusIconPath + ')');
+                addToTaskBtn.click(function (task) {
+                    return function (task) {
+                        addToTaskMessage(task.target.parentElement.id);
+                    }(task);
+                });
+
+                let closeTaskBtn = $('<div class="close-task-btn"></div>');
+                closeTaskBtn.css('background-image', 'url(' + closeIconPath + ')');
+                closeTaskBtn.click(function (closeButton) {
+                    return function (closeButton) {
+                        // document.getElementById(deleteButton.srcElement.parentElement.id).style.display = "None";
+                        chrome.runtime.sendMessage(
+                            {
+                                "type": "close-task",
+                                "taskId": closeButton.target.parentElement.id
+                            }
+                        );
+                        // location.reload();
+                    }(closeButton);
+                });
+
+                taskBtn.append(addToTaskBtn);
+                taskBtn.append(closeTaskBtn);
+            }
+
+
+
+            $("#sailboat-dock").append(taskBtn);
         }
     }
+}
+
+function addToTaskMessage(taskId) {
+    chrome.runtime.sendMessage(
+        {
+            "type": "add-to-task",
+            "taskId": taskId
+        });
+    // location.reload();
 }

@@ -15,86 +15,91 @@
 
 .clicked {
     color: #3c9a5f !important;
-    text-shadow: 0px 0px 0px #000 !important;
+    text-shadow: 0 0 0 #000 !important;
 }
 
 .likeButton {
-    text-shadow: 0px 0px 3px #353535 !important;
+    text-shadow: 0 0 3px #353535 !important;
     vertical-align: middle !important;
 }
 
 .collapse-btn {
-    width: 3%;
-    height: 30px;
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: none;
-    border-radius: 100px;
-    display: inline-block;
+    width: 3%; !important;
+    height: 30px; !important;
+    background-color: rgba(255, 255, 255, 0.2); !important;
+    box-shadow: none; !important;
+    border-radius: 100px; !important;
+    display: inline-block; !important;
     left: 5px; !important;
-    vertical-align: center;
-    text-align: center;
-    border: none;
-    line-height: 15px;
+    vertical-align: center; !important;
+    text-align: center; !important;
+    border: none; !important;
+    line-height: 15px; !important;
     bottom: 5px !important;
 }
 
 #collapse-img {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top:18%;
-    height: 50%;
+    margin-left: auto; !important;
+    margin-right: auto; !important;
+    margin-top:18%; !important;
+    height: 50%; !important;
 }
 
 .collapse-btn:hover {
-    background-color: rgba(255, 255, 255, 1);
-    border: 1px solid #1271EC;
+    background-color: rgba(255, 255, 255, 1); !important;
+    border: 1px solid #1271EC; !important;
 }
 
 .dock {
-    width: 96%;
-    height: 30px;
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: none;
-    border-radius: 10px;
-    display: inline-block;
-    border: none;
-    left: 45px;
+    width: 96%; !important;
+    height: 30px; !important;
+    background-color: rgba(255, 255, 255, 0.2); !important;
+    box-shadow: none; !important;
+    border-radius: 10px; !important;
+    display: inline-block; !important;
+    border: none; !important;
+    left: 45px; !important;
     bottom: 5px !important;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
 }
 
 .dock:hover {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 1); !important;
 }
 
 .dock:hover .sailboat-like-btn{
-    background-color: rgba(169, 169, 169, 1);
+    background-color: rgba(169, 169, 169, 1); !important;
 }
 
 .dock:hover .task-btn {
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; !important;
 }
 
 .sailboat-like-btn {
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: #202020;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
+    color: #202020; !important;
     /*border: 0.5px solid #6a6a6a;*/
-    font-size: 8pt;
-    min-width: 50px;
+    font-size: 8pt; !important;
     /*width: 50px;*/
-    margin-left: 5px;
-    margin-right: 2px;
-    margin-top: 2px;
-    padding: 2px 5px;
-    background-color: rgba(240, 240, 240, 0.16);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    border-radius: 10px;
-    vertical-align: middle;
-    height: 24px;
-    float: right;
-    display: inline-block;
-    line-height: 15px;
+    margin-left: 5px; !important;
+    margin-right: 2px; !important;
+    margin-top: 2px; !important;
+    padding: 2px 2px; !important;
+    background-color: rgba(240, 240, 240, 0.16); !important;
+    text-overflow: ellipsis; !important;
+    white-space: nowrap; !important;
+    overflow: hidden; !important;
+    border-radius: 100px; !important;
+    vertical-align: middle; !important;
+    height: 21px; !important;
+    width: 21px; !important;
+    float: right; !important;
+    display: inline-block; !important;
+    line-height: 15px; !important;
+    position: fixed;
+    right: 1vw;
 }
 
 .open-task {
@@ -107,87 +112,146 @@
 }
 
 textarea:focus, input:focus{
-    outline: none;
-}
-
-.add-to-task-btn {
-    width: 10px;
-    height: 10px;
-    background-color: inherit;
-    margin-left: 6px;
-    display: inline-block;
-}
-
-.add-to-task-btn:hover {
-    background-color: #07b94f; !important;;
+    outline: none; !important;
 }
 
 .search-archive-input {
-    line-height: 20pt;
-    padding: 20pt;
-    width: 50%;
-    height: 50px;
-    background-color: #ffffff;
-    box-shadow: 3px 3px 3px rgba(67, 67, 67, 1);
-    font-size: 12pt;
-    display: inline-block;
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    border: none;
+    line-height: 20pt; !important;
+    padding: 20pt; !important;
+    width: 50%; !important;
+    height: 50px; !important;
+    background-color: #ffffff; !important;
+    box-shadow: 3px 3px 3px rgba(67, 67, 67, 1); !important;
+    font-size: 12pt; !important;
+    display: inline-block; !important;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
+    border: none; !important;
     bottom: 50%; !important;
     left: 25%; !important;
 }
 
 .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
+    position: relative; !important;
+    display: inline-block; !important;
+    border-bottom: 1px dotted black; !important;
 }
 
 .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
+    visibility: hidden; !important;
+    width: 120px; !important;
+    background-color: black; !important;
+    color: #fff; !important;
+    text-align: center; !important;
+    border-radius: 6px; !important;
+    padding: 5px 0; !important;
 
     /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -60px;
+    position: absolute; !important;
+    z-index: 1000; !important;
+    bottom: 100%; !important;
+    left: 50%; !important;
+    margin-left: -60px; !important;
 }
 
 .tooltip:hover .tooltiptext {
-    visibility: visible;
+    visibility: visible; !important;
 }
 
 .task-btn {
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: #202020;
-    border: none;
-    font-size: 8pt;
-    min-width: 80px;
-    margin-left: 10px;
-    margin-top: 4px;
-    padding: 2px 5px;
-    background-color: rgba(237, 237, 237, 0.42);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    border-radius: 100px;
-    vertical-align: middle;
-    height: 50%;
-    display: inline-block;
-    text-align: center;
-    line-height: 1.4em;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
+    color: rgba(32, 32, 32, 0.79); !important;
+    border: none; !important;
+    font-size: 8pt; !important;
+    min-width: 120px; !important;
+    margin-left: 10px; !important;
+    margin-top: 4px; !important;
+    background-color: rgba(237, 237, 237, 0.42); !important;
+    text-overflow: ellipsis; !important;
+    white-space: nowrap; !important;
+    overflow: hidden; !important;
+    border-radius: 100px; !important;
+    vertical-align: middle; !important;
+    height: 20px; !important;
+    display: inline-block; !important;
+    line-height: 1.4em; !important;
 }
 
-.dock:hover .task-btn:hover {
-    color: white;
-    background-color: #158ae2;
+.open-task-btn {
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
+    color: rgba(32, 32, 32, 0.79); !important;
+    border: none; !important;
+    font-size: 8pt; !important;
+    width: 70%;
+    background-color: rgba(237, 237, 237, 0.42); !important;
+    text-overflow: ellipsis; !important;
+    white-space: nowrap; !important;
+    overflow: hidden; !important;
+    border-top-left-radius: 100px; !important;
+    border-bottom-left-radius: 100px; !important;
+    vertical-align: middle; !important;
+    height: 100%; !important;
+    display: inline-block; !important;
+    text-align: center; !important;
+    line-height: 1.4em; !important;
+    margin: 0; !important;
+    padding: 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.add-to-task-btn {
+    width: 15%; !important;
+    display: inline-block; !important;
+    height: 100%;
+    vertical-align: middle;
+    text-align: center;
+    background: no-repeat center;
+    background-size: 8px 8px;
+    margin: 0; !important;
+    cursor: pointer;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.close-task-btn {
+    display: inline-block; !important;
+    margin: 0; !important;
+    height: 100%;
+    width: 15%;
+    text-align: center;
+    background-color: inherit;
+    vertical-align: middle;
+    background: no-repeat center;
+    background-size: 8px 8px;
+    border-bottom-right-radius: 100px;
+    border-top-right-radius: 100px;
+    cursor: pointer;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.close-task-btn:hover {
+    border: 1px solid rgba(255, 51, 49, 0.7); !important;
+    color: rgba(255, 51, 49, 0.7);
+}
+
+.add-to-task-btn:hover {
+    border: 1px solid rgba(7, 185, 79, 0.7); !important;
+    color: rgba(7, 185, 79, 0.7); !important;
+}
+
+
+.dock:hover .open-task-btn:hover {
+    color: white; !important;
+    background-color: #158ae2; !important;
+}
+
+.dock:hover .open-task-btn {
+    color: #343434; !important;
 }
 
 .dock:hover .sailboat-like-btn-liked{
@@ -202,16 +266,33 @@ textarea:focus, input:focus{
 }
 
 .current-task {
-    color: white;
-    background-color: rgba(7, 185, 79, 0.37);
+    color: white; !important;
+    background-color: rgba(7, 185, 79, 0.37); !important;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
+    color: rgba(32, 32, 32, 0.79); !important;
+    border: none; !important;
+    font-size: 8pt; !important;
+    width: 100%;
+    text-overflow: ellipsis; !important;
+    white-space: nowrap; !important;
+    overflow: hidden; !important;
+    border-top-left-radius: 100px; !important;
+    border-bottom-left-radius: 100px; !important;
+    vertical-align: middle; !important;
+    height: 100%; !important;
+    display: inline-block; !important;
+    text-align: center; !important;
+    line-height: 1.4em; !important;
+    margin: 0; !important;
+    padding: 2px;
 }
 
 .dock:hover .current-task {
-    color: white;
-    background-color: rgba(7, 185, 79, 0.74);
+    color: white; !important;
+    background-color: rgba(7, 185, 79, 0.74); !important;
 }
 
 .dock:hover .current-task:hover {
-    color: white;
-    background-color: #07b94f;
+    color: white; !important;
+    background-color: #07b94f; !important;
 }

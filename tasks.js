@@ -25,12 +25,12 @@ createDefaultTask();
 function addToHistory(url, title, task_id){
   if(url!= "chrome://newtab/" && url!="about:blank" && url){
     if(TASKS[task_id].history.find((page) => page.url === url)) {
-      var date = new Date();
+      const date = new Date();
       TASKS[task_id].history.find((page) => page.url === url).timeVisited.push(date.toString());
     }
     else{
-      var newPage = new Page(url, title)
-      var date = new Date;
+      var newPage = new Page(url, title);
+      const date = new Date;
       newPage.timeVisited.push(date.toString());
       TASKS[task_id].history.push(newPage);
     }
