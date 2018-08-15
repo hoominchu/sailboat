@@ -2,6 +2,7 @@
 
 createDefaultTask();
 
+//Add keyboard shortcuts here.
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "like-page") {
         chrome.tabs.get(activeTabId, function (tab) {
@@ -16,8 +17,8 @@ chrome.commands.onCommand.addListener(function (command) {
     }
 });
 
-// chrome.downloads.download({"url": "https://ia802508.us.archive.org/5/items/testmp3testfile/mpthreetest.mp3", "filename":"testing/test.mp3"})
 
+//Save downloads to appropriate task folder
 chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     var currentTaskName = TASKS[CTASKID].name;
     suggest({filename: currentTaskName + "/" + item.filename});
@@ -208,26 +209,29 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             chrome.storage.local.set({"Click Log": clickLog});
         });
     }
-});
 
-//if someone asks for open tasks give it to them
-chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "give me open tasks") {
         chrome.runtime.sendMessage({
             "type": "array of open tasks",
             "openTasks": Object.keys(taskToWindow)
         });
     }
-});
 
-chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "likePages") {
         likePages(request.urls, request.taskId);
     }
     if (request.type === "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
     }
+
+    if(request.type === "restore-tasks"){
+      TASKS = request.taskObject;
+      updateStorage("TASKS", TASKS);
+    }
 });
+
+
+
 
 chrome.windows.onRemoved.addListener(function (windowId) {
     if (windowId !== backgroundPageId) {
