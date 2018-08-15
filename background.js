@@ -1,5 +1,7 @@
 "use strict";
 
+createDefaultTask();
+
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "like-page") {
         chrome.tabs.get(activeTabId, function (tab) {
@@ -25,7 +27,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
 
-    refreshContextMenu();
+    // refreshContextMenu();
 
     if (request.type === "create-task") {
 

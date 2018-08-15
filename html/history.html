@@ -58,7 +58,7 @@
     <div class="row" style="padding-top: 1em">
         <div class="col-lg-2">
             <div class="btn-group-vertical" style="width: 100%; padding-bottom: 2em" data-toggle="buttons">
-                <button type="button" class="btn btn-secondary round-corner" id="openLikedPages">Open Liked Pages
+                <button type="button" class="btn btn-secondary round-corner" id="openLikedPages">Open Archived Pages
                 </button>
             </div>
             <button type="button" style="width: 100%" class="btn btn-secondary disabled round-corner-top">Your Tasks
@@ -68,15 +68,12 @@
         </div>
 
         <div class="col-lg-10">
-            <div class="form-group">
-                <input type="search" class="form-control round-corner" id="searchHistoryTable" placeholder="Search table by page title">
-            </div>
             <table class="table table-hover history-table" id="table" style="overflow:hidden;">
                 <thead style="text-align: center">
                 <tr>
                     <th scope="col" style="width:1px;"><input type="checkbox" id="selectAll"></th>
                     <th scope="col" id="title" style="width: 64%">Title</th>
-                    <th scope="col" id="liked" style="width: 6%">Liked</th>
+                    <th scope="col" id="liked" style="width: 6%">Archived</th>
                     <!--<th scope="col" id="time" style="width: 10%">Time Spent</th>-->
                     <th scope="col" id="lastVisit" style="width: 20%">Last Visited</th>
                 </tr>
@@ -84,12 +81,6 @@
                 <tbody id="historyTable">
                 </tbody>
             </table>
-            <script>
-                var tf = new TableFilter(document.querySelector('#table'), {
-                    base_path: '../js/tablefilter'
-                });
-                tf.init();
-            </script>
             <div id="task-urls" style="overflow:scroll; height:600px;">
                 <ol id="urls-list">
                 </ol>
@@ -102,11 +93,8 @@
     <li data-action="likePages">Like</li>
     <li data-action="deletePages">Delete from history</li>
 </ul>
-
+<script src="../utils/web-util.js"></script>
 <script src="sortElements.js"></script>
 <script src="history.js"></script>
-<!--<script src="indexController.js"></script>-->
-<script src="../js/list.min.js"></script>
-<script src="../js/tablefilter/tablefilter.js"></script>
 </body>
 </html>

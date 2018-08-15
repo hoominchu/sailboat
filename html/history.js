@@ -1,5 +1,8 @@
 var idOfSelectedTask = 0;
 
+var domainsToExclude = ["mail.google.com", "chrome:", "chrome-extension:"]
+
+
 chrome.storage.local.get("TASKS", function (taskObject) {
     if (taskObject["TASKS"]) {
         var Tasks = taskObject["TASKS"];
@@ -22,18 +25,25 @@ chrome.storage.local.get("TASKS", function (taskObject) {
 
 function createRow(page) {
 
+  if(domainsToExclude.indexOf(getDomainFromURL(page.url))<0){ //Show only if domain is not in domainsToExclude
     var tableRow = $('<tr class="historyRow"></tr>');
 
     tableRow.append('<td><input type="checkbox" class="selectBox" value="'+page.url+'"></td>');
-
     tableRow.append('<td><a href="' + page.url + '">' + page.title + '</a></td>');
 
+    //Check if page is archived
     if (page.isLiked) {
         tableRow.append('<td>Yes</td>');
     }
     else {
         tableRow.append('<td></td>')
     }
+
+    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>')
+    $("#historyTable").append(tableRow)
+  }
+
+
 
     // var td = $('<td></td>');
 
@@ -50,9 +60,7 @@ function createRow(page) {
         // td.text(Math.floor(page.totalTimeSpent / 60000) + " minutes")
 
     // tableRow.append(td)
-    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>')
 
-    $("#historyTable").append(tableRow)
 }
 
 
@@ -170,4 +178,3 @@ $(".custom-menu li").click(function(){
 
     location.reload();
 });
-
