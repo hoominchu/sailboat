@@ -55,7 +55,11 @@
     "history",
     "bookmarks",
     "unlimitedStorage",
-    "contextMenus"
+    "contextMenus",
+    "cookies",
+    "https://*/*",
+    "http://*/*"
+
   ],
   "icons": {
     "16": "images/SailBoat.png"

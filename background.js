@@ -24,6 +24,54 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
 });
 
 
+// // When a cookie is being set
+// chrome.cookies.onChanged.addListener(function (changeInfo) {
+//     if (!changeInfo['removed']) {
+//         const cookie = changeInfo['cookie'];
+//         const cause = changeInfo['cause'];
+//         const url = extrapolateUrlFromCookie(cookie);
+//         delete cookie['hostOnly'];
+//         delete cookie['session'];
+//         chrome.storage.local.get("CTASKID", function (ctaskid) {
+//             ctaskid = ctaskid["CTASKID"];
+//             cookie['url'] = url;
+//             cookie['storeId'] = ctaskid;
+//             chrome.cookies.set(cookie, function (c) {
+//                 if (c['storeId'] !== '0') {
+//                     console.log(c);
+//                 }
+//             });
+//         })
+//     }
+// });
+//
+// // When a cookie is being removed
+// chrome.cookies.onChanged.addListener(function (changeInfo) {
+//     if (changeInfo['removed']) {
+//         const cookie = changeInfo['cookie'];
+//         const cause = changeInfo['cause'];
+//         const url = extrapolateUrlFromCookie(cookie);
+//         let newCookie = {};
+//         newCookie['url'] = url;
+//         newCookie['name'] = cookie['name'];
+//         chrome.storage.local.get("CTASKID", function (ctaskid) {
+//             ctaskid = ctaskid["CTASKID"];
+//             newCookie['storeId'] = ctaskid;
+//             chrome.cookies.remove(newCookie);
+//         })
+//     }
+// });
+
+
+function extrapolateUrlFromCookie(cookie) {
+    var prefix = cookie.secure ? "https://" : "http://";
+    if (cookie.domain.charAt(0) == ".")
+        prefix += "www";
+
+    return prefix + cookie.domain + cookie.path;
+}
+
+
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
 
