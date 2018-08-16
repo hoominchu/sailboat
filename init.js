@@ -19,6 +19,7 @@ var authorURL = "URL"; // Not being used yet
 
 // Getting current task id
 var TASKS = {lastAssignedId: 0};
+// var HISTORY = {};
 var CTASKID = 0;
 
 var taskToWindow = {};
@@ -43,6 +44,12 @@ chrome.storage.local.get("TASKS", function (taskObject) {
         TASKS = taskObject["TASKS"];//On retreiving TASKS from chrome storage, one gets an object {TASKS: balhah}, to retreive the actual array call taskObject["TASKS"]
     }
 });
+
+// chrome.storage.local.get(historyFieldName, function(historyObj){
+//   if(historyObj[historyFieldName]){
+//     HISTORY = historyObj[historyFieldName];
+//   }
+// });
 
 chrome.storage.local.get("Page Content", function (e) {
     if (isEmpty(e)) {

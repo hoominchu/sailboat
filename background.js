@@ -228,6 +228,14 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
       TASKS = request.taskObject;
       updateStorage("TASKS", TASKS);
     }
+
+    if(request.type === "give unarchived tasks dict"){
+      let tasksDict = filterTasks({"archived": false});
+      chrome.runtime.sendMessage({
+        "type": "unarchived tasks dict",
+        "tasksDict":tasksDict
+      });
+    }
 });
 
 

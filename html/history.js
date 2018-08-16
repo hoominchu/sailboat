@@ -19,7 +19,17 @@ chrome.storage.local.get("TASKS", function (taskObject) {
             for (var i = selectedTask.history.length - 1; i > -1; i--) {
                 createRow(selectedTask.history[i])
             }
+            $("#taskNameBanner").text("History for " + Tasks[$(this).attr('id')].name + " Task");
         });
+
+        //By Default show history of current task
+        chrome.storage.local.get("CTASKID", function(cTaskIdObject){
+          if(cTaskIdObject["CTASKID"]){
+            const ctaskid = cTaskIdObject["CTASKID"];
+            $("#"+ctaskid).click();
+          }
+        })
+
     }
 });
 
