@@ -20,7 +20,26 @@ function createDefaultTask(){
   });
 }
 
-createDefaultTask();
+//filterTasks takes a dictionary of type {"archived": false}, and returns dict of type {0: "Default", 1: "Shopping"} that fit the filters
+function filterTasks(filter){
+  let tasksDict = {};
+  for(taskId in TASKS){
+    if(taskId != "lastAssignedId"){
+      if(!isEmpty(filter)){
+        for(propName in filter){
+          if(TASKS[taskId][propName] == filter[propName]){
+            tasksDict[taskId] = TASKS[taskId].name;
+          }
+        }
+      }
+      else{
+        tasksDict[taskId] = TASKS[taskId].name;
+      }
+    }
+  }
+  return tasksDict;
+}
+
 
 function addToHistory(url, title, task_id){
   if(url!= "chrome://newtab/" && url!="about:blank" && url){
@@ -60,6 +79,68 @@ function deleteFromHistory(urls, task_id){
     }
     updateStorage("TASKS", TASKS);
 }
+
+
+// function addToHistory(url, title, task_id){
+//   if(url!= "chrome://newtab/" && url!="about:blank" && url){
+//     if(HISTORY[task_id].find((page) => page.url === url)) {
+//       const date = new Date();
+//       HISTORY[task_id].find((page) => page.url === url).timeVisited.push(date.toString());
+//     }
+//     else{
+//       var newPage = new Page(url, title);
+//       const date = new Date;
+//       newPage.timeVisited.push(date.toString());
+//       HISTORY[task_id].push(newPage);
+//     }
+//   }
+// }
+
+
+// function getLikedPages(task_id){
+//   var likedPages = [];
+//   for(var i = 0; i<HISTORY[task_id].length; i++){
+//     if(HISTORY[task_id][i].isLiked){
+//       likedPages.push(HISTORY[task_id][i]);
+//     }
+//   }
+//   return likedPages;
+// }
+
+
+// function likePages(urls, task_id){
+//     for(var i = 0; i<urls.length; i++){
+//         HISTORY[task_id][indexOfElementWithProperty(HISTORY[task_id], "url", urls[i])].isLiked = !HISTORY[task_id][indexOfElementWithProperty(HISTORY[task_id], "url", urls[i])].isLiked;
+//     }
+//     updateStorage("TASKS", TASKS);
+// }
+
+// function deleteFromHistory(urls, task_id){
+//     for(var i =0; i<urls.length; i++){
+//         HISTORY[task_id].splice(indexOfElementWithProperty(HISTORY[task_id], "url", urls[i]), 1);
+//     }
+//     updateStorage("TASKS", TASKS);
+// }
+
+
+// function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
+//     var newTaskId = TASKS["lastAssignedId"] + 1;
+//     if (createFromCurrentTabs) {
+//         var newTask = new Task(newTaskId, taskName, tabs, bookmarks);
+//     }
+//     else {
+//         var emptyArray = [];
+//         var newTask = new Task(newTaskId, taskName, emptyArray, bookmarks);
+//     }
+//     TASKS[newTaskId] = newTask;
+//     TASKS["lastAssignedId"] = newTaskId;
+//
+//     // HISTORY[newTaskId] = [];
+//
+//     updateStorage("TASKS",TASKS);
+//     // updateStorage("History", HISTORY);
+//
+// }
 
 function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
     if (createFromCurrentTabs) {
@@ -103,8 +184,6 @@ function addTabsToTask(taskId, tabs){
   }
 
 }
-
-
 
 function activateTaskInWindow(task_id){
     try {
