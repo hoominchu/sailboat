@@ -50,8 +50,40 @@
     border: 1px solid #1271EC; !important;
 }
 
+#new-task-popup {
+    width: 10vw;
+    height: 1vh;
+
+}
+
+#new-task-btn {
+    /*border: 0.5px solid #6a6a6a;*/
+    /*width: 50px;*/
+    margin-left: 5px; !important;
+    margin-right: 2px; !important;
+    margin-top: 2px; !important;
+    padding: 2px 2px; !important;
+    vertical-align: middle; !important;
+    height: 21px; !important;
+    width: 21px; !important;
+    float: right; !important;
+    display: inline-block; !important;
+    line-height: 15px; !important;
+    position: fixed;
+    right: 3.5vw;
+    background: no-repeat center;
+    background-size: 12px 12px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+#new-task-btn:hover {
+    border: 1px solid rgba(61, 160, 82, 0.87);
+}
+
 .dock {
-    width: 96%; !important;
+    width: 96vw; !important;
     height: 30px; !important;
     background-color: rgba(255, 255, 255, 0.2); !important;
     box-shadow: none; !important;
@@ -115,7 +147,7 @@ textarea:focus, input:focus{
     outline: none; !important;
 }
 
-.search-archive-input {
+.input-bar {
     line-height: 20pt; !important;
     padding: 20pt; !important;
     width: 50vw; !important;

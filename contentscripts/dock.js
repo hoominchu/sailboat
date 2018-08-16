@@ -17,6 +17,7 @@ $(document).ready(function () {
                         CTASKID = cTaskIdObject["CTASKID"];
                         loadDock(settings);
                         loadArchiveButton();
+                        loadNewTaskBtn();
                         loadTaskNames(CTASKID, TASKS);
                         markLikedStatus(window.location.href, TASKS, CTASKID);
                         loadArchiveSearchBar();
@@ -37,6 +38,58 @@ $(window).focus(function () {
         loadTaskNames(CTASKID, tasks);
     });
 });
+
+function showNewTaskPopup() {
+    const newTaskBar = $('#new-task-input');
+    newTaskBar.val("");
+    newTaskBar.attr("placeholder", "Enter task name");
+    newTaskBar.siblings().css({"filter": "blur(100px)"});
+    newTaskBar.show();
+    newTaskBar.focus();
+}
+
+function sendCreateTaskMsg(taskName) {
+    chrome.runtime.sendMessage(
+        {
+            "type": "create-task",
+            "taskName": taskName,
+            "activated": false
+        }, function () {
+            chrome.storage.local.get("TASKS", function (tasks) {
+                tasks = tasks["TASKS"];
+                $('.task-btn').remove();
+                loadTaskNames(CTASKID, tasks);
+            });
+        });
+}
+
+function loadNewTaskBtn() {
+    let newTaskIconPath = chrome.runtime.getURL("images/plus.svg");
+    const newTaskBtn = $('<div class="non-sortable" id="new-task-btn"></div>');
+    newTaskBtn.css('background-image', 'url(' + newTaskIconPath + ')');
+    $(document).on('click', "#new-task-btn", function () {
+        showNewTaskPopup();
+    });
+    $("#sailboat-dock").append(newTaskBtn);
+
+    const newTaskBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="new-task-input" placeholder="Enter task name">');
+    $('body').append(newTaskBar);
+    newTaskBar.draggable();
+    newTaskBar.hide();
+
+    newTaskBar.keyup(function (event) {
+        if (event.keyCode === 13) {
+            const taskName = newTaskBar.val();
+            if (taskName == null || taskName.length < 1) {
+                alert("Please enter the task name. Press ESC to go back to the page.")
+            } else {
+                newTaskBar.siblings().css({"filter": ""});
+                newTaskBar.hide();
+                sendCreateTaskMsg(taskName);
+            }
+        }
+    });
+}
 
 function loadClickLogger() {
     $(document).on('click', function (ce) {
@@ -115,16 +168,20 @@ function loadKeyPressHandler() {
             searchArchiveInput.siblings().css({"filter": "blur(100px)"});
             searchArchiveInput.show();
             searchArchiveInput.focus();
-        } else if (keyEvent.keyCode === 27) {
-            searchArchiveInput.siblings().css({"filter": ""});
-            searchArchiveInput.hide();
         } else if (keyEvent.ctrlKey && keyEvent.keyCode === 37 && keyEvent.shiftKey) {
             $('#collapse-dock-btn').click();
         }
+
+        if (keyEvent.keyCode === 27) {
+            $("input.input-bar").siblings().css({"filter": ""});
+            $("input.input-bar").hide();
+        }
+
         if (keyEvent.keyCode === 17) {
             highlightIdx = -1;
             $('div.task-btn').find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
             ctrlPressed = false;
+            $('div.dock').css('background-color', 'rgba(255, 255, 255, 0.2)');
         }
         if (keyEvent.keyCode === 16) {
             shiftPressed = false;
@@ -163,7 +220,7 @@ function loadKeyPressHandler() {
 }
 
 function loadArchiveSearchBar() {
-    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float search-archive-input form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
+    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
     archiveSearchBar.hide();
     $('body').append(archiveSearchBar);
     archiveSearchBar.draggable();
@@ -202,8 +259,10 @@ function loadDock(settings) {
         // });
     });
     body.append(dock);
+    dock.resizable();
     dock.sortable({axis: 'x', cancel: '.non-sortable'});
     dock.disableSelection();
+
 }
 
 function loadArchiveButton() {
@@ -212,7 +271,6 @@ function loadArchiveButton() {
     likeButton.className = 'sailboat-like-btn non-sortable';
     likeButton.id = 'sailboat-like-btn';
     likeButton.src = archiveIconPath;
-    $("#sailboat-like-btn").draggable();
     $(document).on('click', "#sailboat-like-btn", function () {
         $(this).toggleClass("sailboat-like-btn-liked");
         chrome.runtime.sendMessage({

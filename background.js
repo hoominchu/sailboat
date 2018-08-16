@@ -87,7 +87,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
                 if (request.activated) {
                     saveTaskInWindow(CTASKID);
                     console.log("task created");
-                    deactivateTaskInWindow(CTASKID)
+                    deactivateTaskInWindow(CTASKID);
                     activateTaskInWindow(TASKS["lastAssignedId"]);
                 }
             });
