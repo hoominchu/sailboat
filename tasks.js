@@ -20,6 +20,10 @@ function createDefaultTask(){
   });
 }
 
+function addTotalTimeToPageInTask(task_id, url, timeSpent){
+  TASKS[task_id].history.find((page) => page.url === url).timeSpent += timeSpent;
+}
+
 //filterTasks takes a dictionary of type {"archived": false}, and returns dict of type {0: "Default", 1: "Shopping"} that fit the filters
 function filterTasks(filter){
   let tasksDict = {};

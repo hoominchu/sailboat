@@ -36,7 +36,8 @@
         "lib/jquery.transit.min.js",
         "utils/util.js",
         "utils/web-util.js",
-        "contentscripts/dock.js"
+        "contentscripts/dock.js",
+        "contentscripts/timeSpent.js"
       ],
       "run_at": "document_end"
     }
