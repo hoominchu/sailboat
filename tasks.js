@@ -147,6 +147,9 @@ function deleteFromHistory(urls, task_id){
 // }
 
 function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
+    if (tabs === null) {
+        tabs = [];
+    }
     if (createFromCurrentTabs) {
         var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, bookmarks);
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
