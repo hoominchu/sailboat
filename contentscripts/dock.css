@@ -66,7 +66,7 @@
 }
 
 .dock:hover {
-    background-color: rgba(255, 255, 255, 1); !important;
+    /*background-color: rgba(255, 255, 255, 1); !important;*/
 }
 
 .dock:hover .sailboat-like-btn{
@@ -118,8 +118,8 @@ textarea:focus, input:focus{
 .search-archive-input {
     line-height: 20pt; !important;
     padding: 20pt; !important;
-    width: 50%; !important;
-    height: 50px; !important;
+    width: 50vw; !important;
+    height: 1vh; !important;
     background-color: #ffffff; !important;
     box-shadow: 3px 3px 3px rgba(67, 67, 67, 1); !important;
     font-size: 12pt; !important;
@@ -246,8 +246,8 @@ textarea:focus, input:focus{
 
 
 .dock:hover .open-task-btn:hover {
-    color: white; !important;
-    background-color: #158ae2; !important;
+    color: black; !important;
+    /*background-color: #158ae2; !important;*/
 }
 
 .dock:hover .open-task-btn {

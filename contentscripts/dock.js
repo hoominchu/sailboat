@@ -19,6 +19,7 @@ $(document).ready(function () {
                         loadArchiveSearchBar();
                         loadHoverBooster();
                         loadClickLogger();
+                        loadKeyPressHandler();
                     }
                 });
             }
@@ -99,11 +100,7 @@ function getTasksWithURL(targetURL) {
     return tasksWithURL;
 }
 
-function loadArchiveSearchBar() {
-    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float search-archive-input form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
-    archiveSearchBar.hide();
-    $('body').append(archiveSearchBar);
-    archiveSearchBar.draggable();
+function loadKeyPressHandler() {
     // Keypress shortcut
     $(document).keyup(function (keyEvent) {
         if (keyEvent.keyCode === 83 && keyEvent.ctrlKey === true && keyEvent.shiftKey === true) {
@@ -113,8 +110,17 @@ function loadArchiveSearchBar() {
         } else if (keyEvent.keyCode === 27) {
             $('#searchArchiveInput').siblings().css({"filter": ""});
             $('#searchArchiveInput').hide();
+        } else if (keyEvent.ctrlKey === true && keyEvent.keyCode === 37 && keyEvent.shiftKey === true) {
+            $('#collapse-dock-btn').click();
         }
     });
+}
+
+function loadArchiveSearchBar() {
+    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float search-archive-input form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
+    archiveSearchBar.hide();
+    $('body').append(archiveSearchBar);
+    archiveSearchBar.draggable();
 
     $("#searchArchiveInput").keyup(function (event) {
         if (event.keyCode === 13) {
@@ -148,13 +154,14 @@ function loadDock(settings) {
         // });
     });
     $('body').append(dock);
-    dock.draggable();
+    dock.sortable({axis:'x', cancel:'.non-sortable'});
+    dock.disableSelection();
 }
 
 function loadArchiveButton() {
     let likeButton = document.createElement('img');
     let archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
-    likeButton.className = 'sailboat-like-btn';
+    likeButton.className = 'sailboat-like-btn non-sortable';
     likeButton.id = 'sailboat-like-btn';
     likeButton.src = archiveIconPath;
     $("#sailboat-like-btn").draggable();
@@ -220,6 +227,11 @@ function loadTaskNames(ctaskid) {
                 openTaskBtn.removeClass("open-task-btn");
                 openTaskBtn.addClass("current-task");
             }
+
+            if (taskid === '0') {
+                openTaskBtn.addClass("non-sortable");
+            }
+
             openTaskBtn.click(function (task) {
                 return function (task) {
                     chrome.runtime.sendMessage(
@@ -233,7 +245,7 @@ function loadTaskNames(ctaskid) {
 
             openTaskBtn.hover(function (e) {
                 const hoveredTaskId = e.target.parentElement.id;
-                let pageTitlesInTask = '';
+                let pageTitlesInTask = 'Tabs open in this task are: \n\n';
                 chrome.storage.local.get("TASKS", function (tasks) {
                     tasks = tasks["TASKS"];
                     const hoveredTask = tasks[hoveredTaskId];
@@ -247,7 +259,7 @@ function loadTaskNames(ctaskid) {
             taskBtn.append(openTaskBtn);
 
             if (taskid !== ctaskid) {
-                let addToTaskBtn = $('<div class="add-to-task-btn"></div>');
+                let addToTaskBtn = $('<div class="add-to-task-btn" data-toggle="tooltip" title="Add selected tabs to this task"></div>');
                 addToTaskBtn.css('background-image', 'url(' + plusIconPath + ')');
                 addToTaskBtn.click(function (task) {
                     return function (task) {
@@ -255,7 +267,7 @@ function loadTaskNames(ctaskid) {
                     }(task);
                 });
 
-                let closeTaskBtn = $('<div class="close-task-btn"></div>');
+                let closeTaskBtn = $('<div class="close-task-btn" data-toggle="tooltip" title="Close this task"></div>');
                 closeTaskBtn.css('background-image', 'url(' + closeIconPath + ')');
                 closeTaskBtn.click(function (closeButton) {
                     return function (closeButton) {
