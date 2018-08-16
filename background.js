@@ -236,6 +236,11 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         "tasksDict":tasksDict
       });
     }
+
+    if(request.type === "time spent on page"){
+      addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
+      console.log("Time Spent on " + request.url + " is " + request.timeSpent/60000 + " minutes");
+    }
 });
 
 
@@ -256,7 +261,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (changeInfo.status === "complete") {
         if (tabIdToURL !== {}) {
             var date = new Date();
-            updateExitTime(tabIdToURL[tabId], date.toString())
+            // updateExitTime(tabIdToURL[tabId], date.toString())
         }
         tabIdToURL[tabId] = tab.url;
         saveTaskInWindow(CTASKID);
