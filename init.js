@@ -117,30 +117,30 @@ chrome.storage.local.get("Debug Stopwords", function (e) {
 //     }
 // });
 
-chrome.storage.local.get(preferredAuthorsFieldName, function (prefAuthObj) {
-    if (JSON.stringify(prefAuthObj) == "{}") {
-        // Adding to the local storage if the field doesn't exist already.
-        var o = {};
-        o[preferredAuthorsFieldName] = {};
-        o[preferredAuthorsFieldName]["metadata"] = {};
-        o[preferredAuthorsFieldName]["metadata"][totalFrequencyFieldName] = 0;
-        console.log(o);
-        chrome.storage.local.set(o, function () {
-            "init"
-        });
-    }
-});
+// chrome.storage.local.get(preferredAuthorsFieldName, function (prefAuthObj) {
+//     if (JSON.stringify(prefAuthObj) == "{}") {
+//         // Adding to the local storage if the field doesn't exist already.
+//         var o = {};
+//         o[preferredAuthorsFieldName] = {};
+//         o[preferredAuthorsFieldName]["metadata"] = {};
+//         o[preferredAuthorsFieldName]["metadata"][totalFrequencyFieldName] = 0;
+//         console.log(o);
+//         chrome.storage.local.set(o, function () {
+//             "init"
+//         });
+//     }
+// });
 
-chrome.storage.local.get(preferredDomainsFieldName, function (prefDomainsObj) {
-    if (JSON.stringify(prefDomainsObj) == "{}") {
-        // Adding to the local storage if the field doesn't exist already.
-        var o = {};
-        o[preferredDomainsFieldName] = {};
-        o[preferredDomainsFieldName]["metadata"] = {};
-        o[preferredDomainsFieldName]["metadata"][totalFrequencyFieldName] = 0;
-        console.log(o);
-        chrome.storage.local.set(o, function () {
-            "init"
-        });
-    }
-});
+// chrome.storage.local.get(preferredDomainsFieldName, function (prefDomainsObj) {
+//     if (JSON.stringify(prefDomainsObj) == "{}") {
+//         // Adding to the local storage if the field doesn't exist already.
+//         var o = {};
+//         o[preferredDomainsFieldName] = {};
+//         o[preferredDomainsFieldName]["metadata"] = {};
+//         o[preferredDomainsFieldName]["metadata"][totalFrequencyFieldName] = 0;
+//         console.log(o);
+//         chrome.storage.local.set(o, function () {
+//             "init"
+//         });
+//     }
+// });
