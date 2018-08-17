@@ -8,8 +8,6 @@ chrome.commands.onCommand.addListener(function (command) {
         chrome.tabs.get(activeTabId, function (tab) {
             likePage(tab.url, "shortcut");
         })
-    } else if (command === "navigate-open-tasks") {
-        console.log("hoorraahh");
     } else if (command === "pause-tasks") {
         saveTaskInWindow(CTASKID);
         deactivateTaskInWindow(CTASKID);
