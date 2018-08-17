@@ -64,7 +64,7 @@ function sendCreateTaskMsg(taskName) {
 }
 
 function loadNewTaskBtn() {
-    let newTaskIconPath = chrome.runtime.getURL("images/plus.svg");
+    let newTaskIconPath = chrome.runtime.getURL("images/plus-filled.svg");
     const newTaskBtn = $('<div class="non-sortable" id="new-task-btn"></div>');
     newTaskBtn.css('background-image', 'url(' + newTaskIconPath + ')');
     $(document).on('click', "#new-task-btn", function () {
@@ -266,12 +266,10 @@ function loadDock(settings) {
 }
 
 function loadArchiveButton() {
-    let likeButton = document.createElement('img');
-    let archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
-    likeButton.className = 'sailboat-like-btn non-sortable';
-    likeButton.id = 'sailboat-like-btn';
-    likeButton.src = archiveIconPath;
-    $(document).on('click', "#sailboat-like-btn", function () {
+    const archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
+    const likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
+    likeButton.css('background-image', 'url(' + archiveIconPath + ')');
+    $(document).on('click','#sailboat-like-btn', function () {
         $(this).toggleClass("sailboat-like-btn-liked");
         chrome.runtime.sendMessage({
             "type": "like-page",
@@ -285,7 +283,7 @@ function loadArchiveButton() {
             deletePageContent(window.location.href);
         }
     });
-    document.getElementById("sailboat-dock").appendChild(likeButton);
+    $("#sailboat-dock").append(likeButton);
 }
 
 function deletePageContent(url) {
