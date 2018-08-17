@@ -167,7 +167,7 @@ function searchArchivedPages(query, tasks, pageContent) {
         queryTerms = query.split(" ");
     }
     for (let taskid in tasks) {
-        if (taskid != "lastAssignedId") {
+        if (taskid !== "lastAssignedId") {
             const task = tasks[taskid];
             let searchThroughPages = task["likedPages"];
 

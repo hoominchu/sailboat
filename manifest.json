@@ -46,7 +46,8 @@
     "images/left-arrow.svg",
     "images/archive-search.svg",
     "images/plus.svg",
-    "images/close.svg"
+    "images/close.svg",
+    "images/plus-filled.svg"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe eval' object-src",
   "permissions": [
