@@ -53,7 +53,8 @@ function sendCreateTaskMsg(taskName) {
         {
             "type": "create-task",
             "taskName": taskName,
-            "activated": false
+            "activated": false,
+            "tabs" : []
         }, function () {
             chrome.storage.local.get("TASKS", function (tasks) {
                 tasks = tasks["TASKS"];
@@ -339,14 +340,12 @@ function loadTaskNames(ctaskid, TASKS) {
             }
 
             openTaskBtn.click(function (task) {
-                return function (task) {
                     chrome.runtime.sendMessage(
                         {
                             "type": "switch-task",
-                            "nextTaskId": task.target.parentElement.id
+                            "nextTaskId": task.target.parentElement.id,
                         }
                     );
-                }(task);
             });
 
             openTaskBtn.hover(function (e) {

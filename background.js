@@ -99,8 +99,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
                 activateTaskInWindow(TASKS["lastAssignedId"]);
             }
         }
-
-
     }
 
     if (request.type === "add-to-task") {
