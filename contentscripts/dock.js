@@ -54,7 +54,7 @@ function sendCreateTaskMsg(taskName) {
             "type": "create-task",
             "taskName": taskName,
             "activated": false,
-            "tabs" : []
+            "tabs": []
         }, function () {
             chrome.storage.local.get("TASKS", function (tasks) {
                 tasks = tasks["TASKS"];
@@ -270,7 +270,7 @@ function loadArchiveButton() {
     const archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
     const likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
     likeButton.css('background-image', 'url(' + archiveIconPath + ')');
-    $(document).on('click','#sailboat-like-btn', function () {
+    $(document).on('click', '#sailboat-like-btn', function () {
         $(this).toggleClass("sailboat-like-btn-liked");
         chrome.runtime.sendMessage({
             "type": "like-page",
@@ -340,24 +340,28 @@ function loadTaskNames(ctaskid, TASKS) {
             }
 
             openTaskBtn.click(function (task) {
-                    chrome.runtime.sendMessage(
-                        {
-                            "type": "switch-task",
-                            "nextTaskId": task.target.parentElement.id,
-                        }
-                    );
+                chrome.runtime.sendMessage(
+                    {
+                        "type": "switch-task",
+                        "nextTaskId": task.target.parentElement.id,
+                    }
+                );
             });
 
             openTaskBtn.hover(function (e) {
                 const hoveredTaskId = e.target.parentElement.id;
-                let pageTitlesInTask = 'Tabs open in this task are: \n\n';
+                let pagesInTask = 'Tabs open in this task are: \n\n';
                 chrome.storage.local.get("TASKS", function (tasks) {
                     tasks = tasks["TASKS"];
                     const hoveredTask = tasks[hoveredTaskId];
                     for (let tabId in hoveredTask.tabs) {
-                        pageTitlesInTask += hoveredTask.tabs[tabId].title + '\n';
+                        if (hoveredTask.tabs[tabId].title != null) {
+                            pagesInTask += hoveredTask.tabs[tabId].title + '\n';
+                        } else {
+                            pagesInTask += hoveredTask.tabs[tabId].url + '\n';
+                        }
                     }
-                    e.target.title = pageTitlesInTask;
+                    e.target.title = pagesInTask;
                 })
             });
 
@@ -368,7 +372,7 @@ function loadTaskNames(ctaskid, TASKS) {
                 addToTaskBtn.css('background-image', 'url(' + plusIconPath + ')');
                 addToTaskBtn.click(function (task) {
                     return function (task) {
-                        addToTaskMessage(task.target.parentElement.id);
+                        addSelectedTabsToTaskMessage(task.target.parentElement.id);
                     }(task);
                 });
 
@@ -376,26 +380,60 @@ function loadTaskNames(ctaskid, TASKS) {
                 closeTaskBtn.css('background-image', 'url(' + closeIconPath + ')');
                 closeTaskBtn.click(function (closeButton) {
                     return function (closeButton) {
-                        // document.getElementById(deleteButton.srcElement.parentElement.id).style.display = "None";
                         chrome.runtime.sendMessage(
                             {
                                 "type": "close-task",
                                 "taskId": closeButton.target.parentElement.id
                             }
                         );
-                        // location.reload();
                     }(closeButton);
                 });
 
                 taskBtn.append(addToTaskBtn);
                 taskBtn.append(closeTaskBtn);
             }
+
+            taskBtn.on('dragover', function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                $(this).css({"background-color": "#0087e2"});
+            });
+
+            taskBtn.on('dragenter', function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                $(this).css({"background-color": "#0087e2"});
+            });
+
+            taskBtn.on('dragleave', function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                $(this).css({"background-color": "rgba(237, 237, 237, 0.42)"});
+            });
+
+            taskBtn.on('drop', function (ev) {
+                const droppedHTML = ev.originalEvent.dataTransfer.getData("text/html");
+                const dropContext = $('<div>').append(droppedHTML);
+                const href = $(dropContext).find("a").attr('href');
+                const targetTaskID = ev.currentTarget.id;
+                addURLToTaskMessage(href, targetTaskID);
+            });
             dock.append(taskBtn);
         }
     }
 }
 
-function addToTaskMessage(taskId) {
+function addURLToTaskMessage(url, taskId) {
+    chrome.runtime.sendMessage(
+        {
+            "type": "add-url-to-task",
+            "taskId": taskId,
+            "url": url
+        });
+    // location.reload();
+}
+
+function addSelectedTabsToTaskMessage(taskId) {
     chrome.runtime.sendMessage(
         {
             "type": "add-to-task",

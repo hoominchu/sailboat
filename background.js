@@ -153,6 +153,10 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         likePage(request.url, CTASKID);
     }
 
+    if (request.type === "add-url-to-task") {
+        addURLToTask(request.url, request.taskId);
+    }
+
     // if(request.type == "idle-time"){
     //   addIdleTime(request.url, request["idle-time"]);
     // }
