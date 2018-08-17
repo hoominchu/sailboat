@@ -43,7 +43,7 @@ window.onload = function () {
         //
         //       document.getElementsByClassName("add")[i].addEventListener("click", function (task) {
         //         return function (task) {
-        //           addToTaskMessage(task.srcElement.id);
+        //           addSelectedTabsToTaskMessage(task.srcElement.id);
         //         }(task);
         //       });
         //

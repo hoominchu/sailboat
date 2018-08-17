@@ -310,8 +310,12 @@ function downloadTasks() {
     downloadAnchorNode.remove();
 }
 
-function addToTask(url, task_id) {
-    TASKS[task_id].tabs.push({"url": url});
+function addURLToTask(url, task_id) {
+    chrome.storage.local.get("TASKS", function (tasks) {
+        tasks = tasks["TASKS"];
+        tasks[task_id].tabs.push({"url": url});
+        updateStorage("TASKS",tasks);
+    });
 }
 
 function archiveTask(task_id){
