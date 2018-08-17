@@ -18,6 +18,9 @@ var navbar = $('<nav class="navbar navbar-expand-lg navbar-light bg-light">'+
 '                <a class="nav-link" href="searchArchive.html">Search</a>'+
 '            </li>'+
 '            <li class="nav-item">'+
+'                <a class="nav-link" href="dashboard.html">Task Dashboard</a>'+
+'            </li>'+
+'            <li class="nav-item">'+
 '                <a class="nav-link" href="settings.html">Settings</a>'+
 '            </li>'+
 '            <li class="nav-item">'+
