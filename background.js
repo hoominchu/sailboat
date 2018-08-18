@@ -99,9 +99,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
                 activateTaskInWindow(TASKS["lastAssignedId"]);
             }
         }
-    }
-
-    if (request.type === "add-to-task") {
+    } else if (request.type === "add-to-task") {
         // console.log(window.tabs);
         const senderTab = sender.tab;
         const senderWindowId = senderTab.windowId;
@@ -124,63 +122,35 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
             addTabsToTask(request.taskId, tabs);
         });
-    }
-
-    if (request.type === "switch-task" && request.nextTaskId !== "") {
+    } else if (request.type === "switch-task" && request.nextTaskId !== "") {
         saveTaskInWindow(CTASKID);
         console.log("switch");
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
-    }
-
-    if (request.type === "close-task") {
+    } else if (request.type === "close-task") {
         closeTask(request.taskId);
-    }
-
-    if (request.type === "rename-task") {
+    } else if (request.type === "rename-task") {
         renameTask(request.taskId, request.newTaskName);
-    }
-
-    if (request.type === "delete-task") {
+    } else if (request.type === "delete-task") {
         deleteTask(request.taskToRemove);
-    }
-
-    if (request.type === "download-tasks") {
+    } else if (request.type === "download-tasks") {
         downloadTasks();
-    }
-
-    if (request.type === "like-page") {
+    } else if (request.type === "like-page") {
         likePage(request.url, CTASKID);
-    }
-
-    if (request.type === "add-url-to-task") {
+    } else if (request.type === "add-url-to-task") {
         addURLToTask(request.url, request.taskId);
-    }
-
-    // if(request.type == "idle-time"){
-    //   addIdleTime(request.url, request["idle-time"]);
-    // }
-
-    if (request.type === "archive-task") {
+    } else if (request.type === "archive-task") {
         archiveTask(request.taskId);
-    }
-
-    if (request.type === "pause-tasks") {
+    } else if (request.type === "pause-tasks") {
         CTASKID = 0;
         updateStorage("CTASKID", 0);
-    }
-
-    if (request.type === "open-liked-pages") {
+    } else if (request.type === "open-liked-pages") {
         openLikedPages(request.taskId);
-    }
-
-    if (request.type === "search-archive") {
+    } else if (request.type === "search-archive") {
         if (request.query != null) {
             chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
         }
-    }
-
-    if (request.type === "onmouseover") {
+    } else if (request.type === "onmouseover") {
         const fromWindowID = sender.tab.windowId;
         const targetURL = request["target-url"];
         const highlightTabIndexes = [sender.tab.index];
@@ -192,13 +162,9 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             });
             chrome.tabs.highlight({"windowId": fromWindowID, "tabs": highlightTabIndexes});
         });
-    }
-
-    if (request.type === "onmouseout") {
+    } else if (request.type === "onmouseout") {
         chrome.tabs.highlight({"windowId": sender.tab.windowId, "tabs": sender.tab.index});
-    }
-
-    if (request.type === "clicklog") {
+    } else if (request.type === "clicklog") {
         chrome.storage.local.get("Click Log", function (clickLog) {
             clickLog = clickLog["Click Log"];
             if (clickLog.hasOwnProperty(request.text)) {
@@ -208,36 +174,25 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             }
             chrome.storage.local.set({"Click Log": clickLog});
         });
-    }
-
-    if (request.type === "give me open tasks") {
+    } else if (request.type === "give me open tasks") {
         chrome.runtime.sendMessage({
             "type": "array of open tasks",
             "openTasks": Object.keys(taskToWindow)
         });
-    }
-
-    if (request.type === "likePages") {
+    } else if (request.type === "likePages") {
         likePages(request.urls, request.taskId);
-    }
-    if (request.type === "deletePages") {
+    } else if (request.type === "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
-    }
-
-    if(request.type === "restore-tasks"){
+    } else if(request.type === "restore-tasks"){
       TASKS = request.taskObject;
       updateStorage("TASKS", TASKS);
-    }
-
-    if(request.type === "give unarchived tasks dict"){
+    } else if(request.type === "give unarchived tasks dict"){
       let tasksDict = filterTasks({"archived": false});
       chrome.runtime.sendMessage({
         "type": "unarchived tasks dict",
         "tasksDict":tasksDict
       });
-    }
-
-    if(request.type === "time spent on page"){
+    } else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
       console.log("Time Spent on " + request.url + " is " + request.timeSpent/60000 + " minutes");
     }

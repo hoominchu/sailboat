@@ -417,6 +417,7 @@ function loadTaskNames(ctaskid, TASKS) {
                 const href = $(dropContext).find("a").attr('href');
                 const targetTaskID = ev.currentTarget.id;
                 addURLToTaskMessage(href, targetTaskID);
+                $(this).css({"background-color": "rgba(237, 237, 237, 0.42)"});
             });
             dock.append(taskBtn);
         }
