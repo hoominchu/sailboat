@@ -311,11 +311,11 @@ function downloadTasks() {
 }
 
 function addURLToTask(url, task_id) {
-    chrome.storage.local.get("TASKS", function (tasks) {
-        tasks = tasks["TASKS"];
-        tasks[task_id].tabs.push({"url": url});
-        updateStorage("TASKS", tasks);
-    });
+    TASKS[task_id].tabs.push({"url":url});
+    if(taskToWindow[task_id]){
+        chrome.tabs.create({"windowId": taskToWindow[task_id], "url": url, "selected": false});
+    }
+    updateStorage("TASKS", TASKS);
 }
 
 function archiveTask(task_id) {
