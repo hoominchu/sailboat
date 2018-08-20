@@ -13,15 +13,55 @@
     z-index: 10000 !important;
 }
 
-.clicked {
-    color: #3c9a5f !important;
-    text-shadow: 0 0 0 #000 !important;
+.dock {
+    width: 96vw; !important;
+    height: 30px; !important;
+    background-color: rgba(50, 50, 50, 0.2); !important;
+    box-shadow: none; !important;
+    border-radius: 10px; !important;
+    display: inline-block; !important;
+    border: none; !important;
+    left: 45px; !important;
+    bottom: 5px !important;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
 }
 
-.likeButton {
-    text-shadow: 0 0 3px #353535 !important;
-    vertical-align: middle !important;
+.dock:hover {
+    background-color: rgba(50, 50, 50, 0.9); !important;
 }
+
+.dock:hover .current-task {
+    color: white; !important;
+    background-color: rgba(7, 185, 79, 0.74); !important;
+}
+
+.dock:hover .current-task:hover {
+    color: white; !important;
+    background-color: #07b94f; !important;
+}
+
+.dock:hover .open-task-btn:hover {
+    color: black; !important;
+    /*background-color: #158ae2; !important;*/
+}
+
+.dock:hover .open-task-btn {
+    color: #343434; !important;
+}
+
+.dock:hover .sailboat-like-btn-liked{
+    color: white; !important;
+    background-color: #07b94f; !important;
+}
+
+
+.dock:hover .sailboat-like-btn-liked:hover {
+    color: white; !important;
+    background-color: #07b94f; !important;
+}
+
 
 .collapse-btn {
     width: 3%; !important;
@@ -80,25 +120,6 @@
     background-color: white;
 }
 
-.dock {
-    width: 96vw; !important;
-    height: 30px; !important;
-    background-color: rgba(50, 50, 50, 0.2); !important;
-    box-shadow: none; !important;
-    border-radius: 10px; !important;
-    display: inline-block; !important;
-    border: none; !important;
-    left: 45px; !important;
-    bottom: 5px !important;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-}
-
-.dock:hover {
-    background-color: rgba(50, 50, 50, 0.9); !important;
-}
-
 .sailboat-like-btn:hover{
     border: 1px solid rgba(18, 113, 236, 0.74);
     background-color: white;
@@ -106,6 +127,14 @@
 
 .dock:hover .task-btn {
     background-color: #f0f0f0; !important;
+}
+
+.tasks-area {
+    width: 94%;
+    float: left;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
 }
 
 .sailboat-like-btn {
@@ -134,13 +163,13 @@
     -webkit-box-sizing: border-box;
 }
 
-.open-task {
-    border: 0.8px solid #158ae2; !important;
-}
-
 .sailboat-like-btn-liked {
     color: white; !important;
     background-color: #07b94f; !important;
+}
+
+.open-task {
+    border: 0.8px solid #158ae2; !important;
 }
 
 textarea:focus, input:focus{
@@ -194,7 +223,7 @@ textarea:focus, input:focus{
     color: rgba(32, 32, 32, 0.79); !important;
     border: none; !important;
     font-size: 8pt; !important;
-    min-width: 120px; !important;
+    width: 120px; !important;
     margin-left: 10px; !important;
     margin-top: 4px; !important;
     background-color: rgba(237, 237, 237, 0.42); !important;
@@ -281,7 +310,7 @@ textarea:focus, input:focus{
 
 .highlighted-task {
     /*border: 2px solid rgb(0, 99, 185); !important;*/
-    background-color: #0063b9; !important; !important;
+    background-color: rgba(0, 149, 185, 0.67); !important; !important;
     color: white;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -289,27 +318,6 @@ textarea:focus, input:focus{
     /*-webkit-box-shadow:1px 0 5px #07B94F;*/
     /*-moz-box-shadow: 1px 0 5px #07B94F;*/
     /*box-shadow:1px 0 5px #07B94F;*/
-}
-
-
-.dock:hover .open-task-btn:hover {
-    color: black; !important;
-    /*background-color: #158ae2; !important;*/
-}
-
-.dock:hover .open-task-btn {
-    color: #343434; !important;
-}
-
-.dock:hover .sailboat-like-btn-liked{
-    color: white; !important;
-    background-color: #07b94f; !important;
-}
-
-
-.dock:hover .sailboat-like-btn-liked:hover {
-    color: white; !important;
-    background-color: #07b94f; !important;
 }
 
 .current-task {
@@ -337,12 +345,3 @@ textarea:focus, input:focus{
     -webkit-box-sizing: border-box;
 }
 
-.dock:hover .current-task {
-    color: white; !important;
-    background-color: rgba(7, 185, 79, 0.74); !important;
-}
-
-.dock:hover .current-task:hover {
-    color: white; !important;
-    background-color: #07b94f; !important;
-}
