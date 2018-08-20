@@ -162,6 +162,9 @@ function getTasksWithURL(targetURL) {
 }
 
 function loadKeyPressHandler() {
+
+    const nTasks = $('div.task-btn').length;
+
     // Keypress shortcut
     $(document).keyup(function (keyEvent) {
         const searchArchiveInput = $('#searchArchiveInput');
@@ -191,6 +194,7 @@ function loadKeyPressHandler() {
     });
 
     $(document).keydown(function (keyEvent) {
+
         if (keyEvent.ctrlKey) {
             ctrlPressed = true;
         }
@@ -202,14 +206,20 @@ function loadKeyPressHandler() {
         if (ctrlPressed && !shiftPressed && keyEvent.keyCode === 192) {
             $('div.dock').css({'background-color': 'white'});
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-            highlightIdx += 1;
+            if ($('div.task-btn').eq((highlightIdx + 1) % nTasks).find('div.current-task').length > 0) {
+                highlightIdx = (highlightIdx + 1) % nTasks;
+            }
+            highlightIdx = (highlightIdx + 1) % nTasks;
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').addClass('highlighted-task');
         }
 
         if (ctrlPressed && shiftPressed && keyEvent.keyCode === 192) {
             $('div.dock').css({'background-color': 'white'});
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-            highlightIdx += -1;
+            if ($('div.task-btn').eq((highlightIdx - 1) % nTasks).find('div.current-task').length > 0) {
+                highlightIdx = (highlightIdx - 1) % nTasks;
+            }
+            highlightIdx = (highlightIdx - 1) % nTasks;
             $('.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').addClass('highlighted-task');
         }
 
@@ -264,8 +274,8 @@ function loadDock(settings) {
     dock.sortable({
         cancel: '.non-sortable',
         cursor: "grabbing",
-        scroll:false,
-        zIndex:500,
+        scroll: false,
+        zIndex: 500,
         remove: function (event, ui) {
             console.log(event);
             console.log(ui);
