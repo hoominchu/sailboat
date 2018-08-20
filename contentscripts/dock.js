@@ -238,7 +238,7 @@ function loadArchiveSearchBar() {
 }
 
 function loadDock(settings) {
-    const dock = $('<div class="float dock" id="sailboat-dock"></div>');
+    const dock = $('<div class="float dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
     let collapseButton = $('<div id="collapse-dock-btn" class="float round-corner collapse-btn"><img src ="" id="collapse-img"></div>');
@@ -259,11 +259,21 @@ function loadDock(settings) {
         //     chrome.storage.local.set({"Settings": settings});
         // });
     });
-    body.append(dock);
+
     dock.resizable();
-    dock.sortable({axis: 'x', cancel: '.non-sortable'});
+    dock.sortable({
+        cancel: '.non-sortable',
+        cursor: "grabbing",
+        scroll:false,
+        zIndex:500,
+        remove: function (event, ui) {
+            console.log(event);
+            console.log(ui);
+        }
+    });
     dock.disableSelection();
 
+    body.append(dock);
 }
 
 function loadArchiveButton() {
@@ -323,7 +333,7 @@ function loadTaskNames(ctaskid, TASKS) {
 
     let plusIconPath = chrome.runtime.getURL("images/plus.svg");
     let closeIconPath = chrome.runtime.getURL("images/close.svg");
-    const dock = $("#sailboat-dock");
+    const dock = $('#tasks-area');
 
     for (let taskid in TASKS) {
         if (TASKS[taskid].archived === false) {
@@ -336,7 +346,7 @@ function loadTaskNames(ctaskid, TASKS) {
             }
 
             if (taskid === '0') {
-                openTaskBtn.addClass("non-sortable");
+                openTaskBtn.addClass("non-sortable default-task-btn");
             }
 
             openTaskBtn.click(function (task) {
@@ -396,19 +406,18 @@ function loadTaskNames(ctaskid, TASKS) {
             taskBtn.on('dragover', function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                $(this).css({"background-color": "#0087e2"});
+                $(this).toggleClass("highlighted-task", 1000);
             });
 
             taskBtn.on('dragenter', function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                $(this).css({"background-color": "#0087e2"});
             });
 
             taskBtn.on('dragleave', function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                $(this).css({"background-color": "rgba(237, 237, 237, 0.42)"});
+                $(this).toggleClass("highlighted-task", 1000);
             });
 
             taskBtn.on('drop', function (ev) {
@@ -417,8 +426,9 @@ function loadTaskNames(ctaskid, TASKS) {
                 const href = $(dropContext).find("a").attr('href');
                 const targetTaskID = ev.currentTarget.id;
                 addURLToTaskMessage(href, targetTaskID);
-                $(this).css({"background-color": "rgba(237, 237, 237, 0.42)"});
+                $(this).toggleClass("highlighted-task", 1000);
             });
+
             dock.append(taskBtn);
         }
     }
