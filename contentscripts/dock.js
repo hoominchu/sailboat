@@ -24,11 +24,13 @@ $(document).ready(function () {
                         loadHoverBooster();
                         loadClickLogger();
                         loadKeyPressHandler();
+                        setHighlightIdx();
                     }
                 });
             }
         });
     });
+
 });
 
 $(window).focus(function () {
@@ -37,7 +39,14 @@ $(window).focus(function () {
         $('.task-btn').remove();
         loadTaskNames(CTASKID, tasks);
     });
+    setHighlightIdx();
 });
+
+function setHighlightIdx() {
+    chrome.storage.local.get("highlightIdx", function (hi) {
+        highlightIdx = hi["highlightIdx"];
+    })
+}
 
 function showNewTaskPopup() {
     const newTaskBar = $('#new-task-input');
@@ -182,7 +191,8 @@ function loadKeyPressHandler() {
         }
 
         if (keyEvent.keyCode === 17) {
-            highlightIdx = -1;
+            chrome.storage.local.set({"highlightIdx":highlightIdx});
+            $('div.highlighted-task').click();
             $('div.task-btn').find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
             ctrlPressed = false;
             $('div.dock').css('background-color', 'rgba(255, 255, 255, 0.2)');
@@ -206,9 +216,7 @@ function loadKeyPressHandler() {
         if (ctrlPressed && !shiftPressed && keyEvent.keyCode === 192) {
             $('div.dock').css({'background-color': 'white'});
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-            if ($('div.task-btn').eq((highlightIdx + 1) % nTasks).find('div.current-task').length > 0) {
-                highlightIdx = (highlightIdx + 1) % nTasks;
-            }
+
             highlightIdx = (highlightIdx + 1) % nTasks;
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').addClass('highlighted-task');
         }
@@ -216,15 +224,9 @@ function loadKeyPressHandler() {
         if (ctrlPressed && shiftPressed && keyEvent.keyCode === 192) {
             $('div.dock').css({'background-color': 'white'});
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-            if ($('div.task-btn').eq((highlightIdx - 1) % nTasks).find('div.current-task').length > 0) {
-                highlightIdx = (highlightIdx - 1) % nTasks;
-            }
+
             highlightIdx = (highlightIdx - 1) % nTasks;
             $('.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').addClass('highlighted-task');
-        }
-
-        if (ctrlPressed && keyEvent.keyCode === 13) {
-            $('div.highlighted-task').click();
         }
     });
 
