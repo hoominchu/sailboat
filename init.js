@@ -57,6 +57,12 @@ chrome.storage.local.get("Page Content", function (e) {
     }
 });
 
+chrome.storage.local.get("highlightIdx", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"highlightIdx": 0});
+    }
+});
+
 // chrome.storage.local.get("Text Log", function (e) {
 //     if (isEmpty(e)) {
 //         chrome.storage.local.set({"Text Log": {}});
