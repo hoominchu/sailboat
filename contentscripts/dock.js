@@ -15,7 +15,7 @@ $(document).ready(function () {
                 chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
                     if (cTaskIdObject["CTASKID"] > -1) {
                         CTASKID = cTaskIdObject["CTASKID"];
-                        loadDock(settings);
+                        loadDock();
                         loadArchiveButton();
                         loadNewTaskBtn();
                         loadTaskNames(CTASKID, TASKS);
@@ -249,7 +249,7 @@ function loadArchiveSearchBar() {
     });
 }
 
-function loadDock(settings) {
+function loadDock() {
     const dock = $('<div class="float dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
@@ -261,28 +261,28 @@ function loadDock(settings) {
     collapseButton.click(function () {
         $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
         $('#collapse-img').transition({rotate: '+=180'}, 'slow');
-        // chrome.storage.local.get("Settings", function (settings) {
-        //     settings = settings["Settings"];
-        //     if (JSON.parse(settings["isDockCollapsed"])) {
-        //         settings["isDockCollapsed"] = "false";
-        //     } else {
-        //         settings["isDockCollapsed"] = "true";
-        //     }
-        //     chrome.storage.local.set({"Settings": settings});
-        // });
+        chrome.storage.local.get("Settings", function (settings) {
+            settings = settings["Settings"];
+            if (JSON.parse(settings["isDockCollapsed"])) {
+                settings["isDockCollapsed"] = "false";
+            } else {
+                settings["isDockCollapsed"] = "true";
+            }
+            chrome.storage.local.set({"Settings": settings});
+        });
     });
 
     dock.resizable();
-    dock.sortable({
-        cancel: '.non-sortable',
-        cursor: "grabbing",
-        scroll: false,
-        zIndex: 500,
-        remove: function (event, ui) {
-            console.log(event);
-            console.log(ui);
-        }
-    });
+    // dock.sortable({
+    //     cancel: '.non-sortable',
+    //     cursor: "grabbing",
+    //     scroll: false,
+    //     zIndex: 500,
+    //     remove: function (event, ui) {
+    //         console.log(event);
+    //         console.log(ui);
+    //     }
+    // });
     dock.disableSelection();
 
     body.append(dock);
@@ -444,6 +444,14 @@ function loadTaskNames(ctaskid, TASKS) {
             dock.append(taskBtn);
         }
     }
+    chrome.storage.local.get("Settings", function (settings) {
+        settings = settings["Settings"];
+        if (JSON.parse(settings["isDockCollapsed"])) {
+            $("#sailboat-dock").hide();
+        } else {
+            $("#sailboat-dock").show();
+        }
+    })
 }
 
 function addURLToTaskMessage(url, taskId) {
