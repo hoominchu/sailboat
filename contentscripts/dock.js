@@ -448,8 +448,10 @@ function loadTaskNames(ctaskid, TASKS) {
         settings = settings["Settings"];
         if (JSON.parse(settings["isDockCollapsed"])) {
             $("#sailboat-dock").hide();
+            $('#collapse-img').transition({rotate: '180'});
         } else {
             $("#sailboat-dock").show();
+            $('#collapse-img').transition({rotate: '0'});
         }
     })
 }
