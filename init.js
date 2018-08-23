@@ -31,12 +31,12 @@ var activeTabId = 0;
 var backgroundPageId = -1;
 var defaultTaskId = 0;
 
-//Suggestion log dictionary
-chrome.storage.local.get("Suggestions Log", function (e) {
-    if (isEmpty(e)) {
-        chrome.storage.local.set({"Suggestions Log": {"Correct suggestions": 0, "Incorrect suggestions": 0}});
-    }
-});
+// //Suggestion log dictionary
+// chrome.storage.local.get("Suggestions Log", function (e) {
+//     if (isEmpty(e)) {
+//         chrome.storage.local.set({"Suggestions Log": {"Correct suggestions": 0, "Incorrect suggestions": 0}});
+//     }
+// });
 
 
 chrome.storage.local.get("TASKS", function (taskObject) {
@@ -57,11 +57,11 @@ chrome.storage.local.get("Page Content", function (e) {
     }
 });
 
-chrome.storage.local.get("Text Log", function (e) {
-    if (isEmpty(e)) {
-        chrome.storage.local.set({"Text Log": {}});
-    }
-});
+// chrome.storage.local.get("Text Log", function (e) {
+//     if (isEmpty(e)) {
+//         chrome.storage.local.set({"Text Log": {}});
+//     }
+// });
 
 chrome.storage.local.get("Tags", function (e) {
     if (isEmpty(e)) {
@@ -74,6 +74,7 @@ chrome.storage.local.get("Click Log", function (e) {
         chrome.storage.local.set({"Click Log": {}});
     }
 });
+
 
 chrome.storage.local.get("Settings", function (e) {
     if (isEmpty(e)) {
