@@ -1,6 +1,6 @@
 // let TASKS = {};
 let CTASKID = 0;
-let highlightIdx = -1;
+let highlightIdx = 0;
 let ctrlPressed = false;
 let shiftPressed = false;
 let nTasks = 0;
@@ -349,7 +349,6 @@ function loadTaskNames(ctaskid) {
     const dock = $('#tasks-area');
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks['TASKS'];
-        nTasks = Object.keys(tasks).length - 2;
         for (let taskid in tasks) {
             if (tasks[taskid].archived === false) {
                 let taskBtn = $('<div class="task-btn" id="' + taskid + '"></div>');
@@ -447,6 +446,7 @@ function loadTaskNames(ctaskid) {
                 dock.append(taskBtn);
             }
         }
+        nTasks = $('.task-btn').length;
     });
 
     chrome.storage.local.get("Settings", function (settings) {
