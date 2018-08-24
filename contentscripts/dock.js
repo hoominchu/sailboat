@@ -146,38 +146,34 @@ function loadHoverBooster() {
     });
 }
 
-// function getTasksWithURL(targetURL) {
-//     const tasksWithURL = [];
-//     for (let taskid in TASKS) {
-//         if (taskid !== "lastAssignedId" && taskid !== CTASKID) {
-//             const task = TASKS[taskid];
-//             for (const tabIndex in task.tabs) {
-//                 const tab = task.tabs[tabIndex];
-//                 if (tab.url === targetURL) {
-//                     tasksWithURL.push(task.name);
-//                 }
-//             }
-//         }
-//     }
-//     return tasksWithURL;
-// }
-
 function makeDockBigInCenter() {
     $('#sailboat-dock').css({'height': '100px', 'margin-bottom': '45vh'});
-    $('.task-btn').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px','margin-top':'10px'});
-    $('.open-task-btn').css({'height': '75%', 'border-top-left-radius': '10px','border-bottom-left-radius': '10px', 'line-height': '75px', 'font-size':'14pt'});
-    $('.add-to-task-btn').css({'height': '75px'});
-    $('.close-task-btn').css({'height': '75px', 'border-top-right-radius': '10px','border-bottom-right-radius': '10px'});
-    $('.current-task').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'font-size':'14pt'});
+    $('.task-btn').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'margin-top': '10px'});
+    $('.open-task-btn').css({
+        'height': '75%',
+        'border-radius': '10px',
+        'line-height': '75px',
+        'font-size': '14pt',
+        'width': '100%'
+    });
+    $('.add-to-task-btn').hide();
+    $('.close-task-btn').hide();
+    $('.current-task').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'font-size': '14pt'});
 }
 
 function resetDockSizeNPosition() {
     $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0'});
-    $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px','margin-top':'4px'});
-    $('.open-task-btn').css({'height': '20px', 'border-radius': '0', 'line-height': '16px','font-size':'8pt'});
-    $('.add-to-task-btn').css({'height': '20px'});
-    $('.close-task-btn').css({'height': '20%', 'border-top-right-radius': '100px','border-bottom-right-radius': '100px'});
-    $('.current-task').css({'height': '20px', 'border-radius': '0', 'line-height': '16px','font-size':'8pt'});
+    $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px', 'margin-top': '4px'});
+    $('.open-task-btn').css({
+        'height': '20px',
+        'border-radius': '0',
+        'line-height': '16px',
+        'font-size': '8pt',
+        'width': '70%'
+    });
+    $('.add-to-task-btn').show();
+    $('.close-task-btn').show();
+    $('.current-task').css({'height': '20px', 'border-radius': '0', 'line-height': '16px', 'font-size': '8pt'});
 }
 
 function setDockBGActive() {
