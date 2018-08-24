@@ -162,6 +162,32 @@ function loadHoverBooster() {
 //     return tasksWithURL;
 // }
 
+function makeDockBigInCenter() {
+    $('#sailboat-dock').css({'height': '100px', 'margin-bottom': '45vh'});
+    $('.task-btn').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px','margin-top':'10px'});
+    $('.open-task-btn').css({'height': '75%', 'border-top-left-radius': '10px','border-bottom-left-radius': '10px', 'line-height': '75px', 'font-size':'14pt'});
+    $('.add-to-task-btn').css({'height': '75px'});
+    $('.close-task-btn').css({'height': '75px', 'border-top-right-radius': '10px','border-bottom-right-radius': '10px'});
+    $('.current-task').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'font-size':'14pt'});
+}
+
+function resetDockSizeNPosition() {
+    $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0'});
+    $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px','margin-top':'4px'});
+    $('.open-task-btn').css({'height': '20px', 'border-radius': '0', 'line-height': '16px','font-size':'8pt'});
+    $('.add-to-task-btn').css({'height': '20px'});
+    $('.close-task-btn').css({'height': '20%', 'border-top-right-radius': '100px','border-bottom-right-radius': '100px'});
+    $('.current-task').css({'height': '20px', 'border-radius': '0', 'line-height': '16px','font-size':'8pt'});
+}
+
+function setDockBGActive() {
+    $('div.dock').css({'background-color': 'rgba(50, 50, 50, 0.9)'});
+}
+
+function resetDockBG() {
+    $('div.dock').css({'background-color': 'rgba(50, 50, 50, 0.2)'});
+}
+
 function loadKeyPressHandler() {
 
     // const nTasks = $('div.task-btn').length;
@@ -187,9 +213,8 @@ function loadKeyPressHandler() {
             $('div.highlighted-task').click();
             $('div.task-btn').find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
             ctrlPressed = false;
-            $('div.dock').css('background-color', 'rgba(255, 255, 255, 0.2)');
-            // $('#sailboat-dock').css({'height': '30px'});
-            // $('.task-btn').css({'height': '20px'});
+            resetDockBG();
+            resetDockSizeNPosition();
         }
         if (keyEvent.keyCode === 16) {
             shiftPressed = false;
@@ -208,9 +233,8 @@ function loadKeyPressHandler() {
         }
 
         if (ctrlPressed && !shiftPressed && keyEvent.keyCode === 192) {
-            // $('#sailboat-dock').css({'height': '100px'});
-            // $('.task-btn').css({'height': '90px'});
-            $('div.dock').css({'background-color': 'white'});
+            makeDockBigInCenter();
+            setDockBGActive();
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
 
             highlightIdx = (highlightIdx + 1) % nTasks;
@@ -218,9 +242,8 @@ function loadKeyPressHandler() {
         }
 
         if (ctrlPressed && shiftPressed && keyEvent.keyCode === 192) {
-            // $('#sailboat-dock').css({'height': '100px'});
-            // $('.task-btn').css({'height': '90px'});
-            $('div.dock').css({'background-color': 'white'});
+            makeDockBigInCenter();
+            setDockBGActive();
             $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
 
             highlightIdx = (highlightIdx - 1) % nTasks;
