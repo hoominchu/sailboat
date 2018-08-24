@@ -21,6 +21,7 @@ $(document).ready(function () {
             loadClickLogger();
             loadKeyPressHandler();
             setHighlightIdx();
+            sendDetectTaskMessage();
         }
     });
 });
@@ -33,6 +34,17 @@ $(window).focus(function () {
     });
     setHighlightIdx();
 });
+
+function sendDetectTaskMessage() {
+    const contentString = cleanTag(document.documentElement.innerText);
+    const doc = window.nlp(contentString);
+    const topics = doc.nouns().data();
+    chrome.runtime.sendMessage({
+        type: "detect-task",
+        topics: topics,
+        url: window.location.href
+    });
+}
 
 function setHighlightIdx() {
     chrome.storage.local.get("highlightIdx", function (hi) {
@@ -147,6 +159,7 @@ function loadHoverBooster() {
 }
 
 function makeDockBigInCenter() {
+    $('#sailboat-dock').siblings().css({"filter": "blur(100px)"});
     $('#sailboat-dock').css({'height': '100px', 'margin-bottom': '45vh'});
     $('.task-btn').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'margin-top': '10px'});
     $('.open-task-btn').css({
@@ -162,6 +175,7 @@ function makeDockBigInCenter() {
 }
 
 function resetDockSizeNPosition() {
+    $('#sailboat-dock').siblings().css({"filter": ""});
     $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0'});
     $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px', 'margin-top': '4px'});
     $('.open-task-btn').css({
@@ -497,4 +511,67 @@ function addSelectedTabsToTaskMessage(taskId) {
             "taskId": taskId
         });
     // location.reload();
+}
+
+// Takes an uncleaned tag and cleans it. Add any required condition in this condition.
+function cleanTag(str) {
+
+    str = str.trim();
+
+    str = str.replace(/(\r\n\t|\n|\r\t)/gm, ". ");
+
+    str = str.replace(/\u21b5/g, ". ");
+
+    // Replaces spaces at the beginning
+    str = str.replace(/^\s+/g, '');
+    // Replaces spaces at the end
+    str = str.replace(/\s+$/g, '');
+
+    // Replaces " at the beginning
+    str = str.replace(/^"+/g, '');
+    // Replaces " at the end
+    str = str.replace(/"+$/g, '');
+
+    // Replaces , at the beginning
+    str = str.replace(/^,+/g, '');
+    // Replaces , at the end
+    str = str.replace(/,+$/g, '');
+
+    // Replaces - at the beginning
+    str = str.replace(/^-+/g, '');
+    // Replaces - at the end
+    str = str.replace(/-+$/g, '');
+
+    // Replaces ; at the beginning
+    str = str.replace(/^;+/g, '');
+    // Replaces ; at the end
+    str = str.replace(/;+$/g, '');
+
+    // Replaces ' at the beginning
+    str = str.replace(/^'+/g, '');
+    // Replaces ' at the end
+    str = str.replace(/'+$/g, '');
+
+    // Replaces . at the beginning
+    str = str.replace(/^\.+/g, '');
+    // Replaces . at the end
+    str = str.replace(/\.+$/g, '');
+
+    // Replaces ? at the beginning
+    str = str.replace(/^\?+/g, '');
+    // Replaces ? at the end
+    str = str.replace(/\?+$/g, '');
+
+    // Replaces 's at the end
+    str = str.replace(/'s+$/g, '');
+
+    // str = str.trim();
+    //
+    // str = window.nlp(str).nouns().toSingular().out();
+
+    str = str.trim();
+
+    // Convert everything to singular and other standardised forms.
+
+    return str;
 }
