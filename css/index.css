@@ -1,5 +1,5 @@
 body {
-  background: url("../images/background/kiwis.png") repeat;
+  /*background: url("../images/background/kiwis.png") repeat;*/
   /*background-size: cover;*/
 }
 
@@ -13,4 +13,16 @@ body {
 
 .active-task{
   background-color: #43ac6a;
+}
+
+.card-body, .card {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.card-header {
+  background-color: rgba(0, 10, 19, 0.5);
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
 }
