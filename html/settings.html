@@ -13,40 +13,90 @@
 <body>
 <script src="template.js"></script>
 
-<div class="container-fluid">
+<div class="container-fluid" style="background-color: rgba(255,255,255,0.8)">
     <div class="row" style="height: 1em;"></div>
     <div class="row">
-      <div class="col-lg-1"></div>
+        <div class="col-lg-1"></div>
 
-      <div class="col-lg-10">
+        <div class="col-lg-10">
 
-        <div class="row">
-          <h1>Settings</h1>
+            <div class="row">
+                <h1>Settings</h1>
+            </div>
+            <hr>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    Download tasks as JSON
+                </div>
+                <div class="col-lg-3">
+                    <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Download Tasks
+                    </button>
+                </div>
+                <div class="col-lg-3">
+                    Restore Tasks from JSON File
+                </div>
+                <div class="col-lg-3">
+                    <input type="file" id="file-input"/>
+                    <span id="fileUploadMessage"></span>
+                </div>
+            </div>
+            <hr>
+
+            <div class="row" style="height: 1em;"></div>
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-3" id="notification_settings">
+                    <h4>Notifications</h4>
+                    <p><small>These are task suggestion notifications.</small></p>
+                    <div id="notification_options" class="btn-group" role="group"></div>
+                </div>
+                <div class="col-lg-4" id="suggestion_settings">
+                    <h4>Suggestions based on</h4>
+                    <p>
+                        <small>You should have at least 3-4 open tabs/liked pages in every task for the suggestions to work
+                            well.
+                        </small>
+                    </p>
+                    <div id="suggestion_options" class="btn-group" role="group"></div>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Suggestions threshold</h4>
+                    <p>
+                        <small>You can experiment with threshold.</small>
+                    </p>
+                    <div id="suggestion_threshold" class="btn-group" role="group"></div>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row" style="height: 3em;"></div>
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-7">
+                    <h4>Block notifications on</h4>
+                    <p>
+                        <small>Add or remove domains where you would like to disable notifications.</small>
+                    </p>
+                    <div id="block_notifications_domains"></div>
+                    <div class="row" style="height: 1em;"></div>
+                    <div class="form-group input-group">
+                        <input type="text" autofocus="autofocus" autocomplete="on" class="form-control round-corner-left"
+                               style="" id="block_notifications_on_domains_input"
+                               placeholder="Enter domain name or URL">
+                        <div class="input-group-append">
+                            <button id="submit_block_notifications_on" type="submit" class="btn btn-primary round-corner-right">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="col-lg-3">-->
+                    <!--<button type="button" id="reset_index" style="margin-left: 3.5em" class="btn btn-secondary round-corner">Reset index</button>-->
+                <!--</div>-->
+                <div class="col-lg-1"></div>
+            </div>
+
         </div>
-        <hr>
-
-        <div class="row">
-          <div class="col-lg-3">
-            Download tasks as JSON
-          </div>
-          <div class="col-lg-9">
-            <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Download Tasks</button>
-          </div>
-        </div>
-          <hr>
-
-        <div class="row">
-          <div class="col-lg-3">
-            Restore Tasks from JSON File
-          </div>
-          <div class="col-lg-9" >
-            <input type="file" id="file-input"/>
-            <span id="fileUploadMessage"></span>
-          </div>
-        </div>
-
-      </div>
-    </div>
     </div>
 </div>
 <script src="../utils/web-util.js"></script>
