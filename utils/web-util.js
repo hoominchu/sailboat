@@ -107,7 +107,7 @@ function removeBookmarks() {
 function createBookmarks(bookmarks, parentId){
 
     var isRootFolder = !(bookmarks.id);
-    var isParentRoot = (bookmarks.id<3)
+    var isParentRoot = (bookmarks.id<3);
 
     if(isRootFolder){
         if(bookmarks[0]) { // check if bookmarks is empty
@@ -279,7 +279,7 @@ function getIdsOfCurrentlyOpenTabs(windowId, callback){
    }
    else{
      chrome.tabs.query({}, function(tabs){
-       console.log(tabs)
+       console.log(tabs);
        for(var i = 0; i < tabs.length; i++){
          ids.push(tabs[i].id);
        }

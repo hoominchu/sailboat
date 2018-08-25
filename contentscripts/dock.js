@@ -42,7 +42,8 @@ function sendDetectTaskMessage() {
     chrome.runtime.sendMessage({
         type: "detect-task",
         topics: topics,
-        url: window.location.href
+        url: window.location.href,
+        title: document.getElementsByTagName("title")[0].innerHTML
     });
 }
 
@@ -219,12 +220,12 @@ function loadKeyPressHandler() {
         }
 
         if (keyEvent.keyCode === 17) {
-            chrome.storage.local.set({"highlightIdx": highlightIdx});
-            $('div.highlighted-task').click();
-            $('div.task-btn').find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-            ctrlPressed = false;
             resetDockBG();
             resetDockSizeNPosition();
+            $('div.highlighted-task').click();
+            $('div.task-btn').find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
+            chrome.storage.local.set({"highlightIdx": highlightIdx});
+            ctrlPressed = false;
         }
         if (keyEvent.keyCode === 16) {
             shiftPressed = false;

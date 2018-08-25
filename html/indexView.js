@@ -24,7 +24,7 @@ function setUpUnarchivedTasks(Tasks, task_id, openTasks){
             "id": task_id
         });
         var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name + "       "});
-        var openPill = $('<span class="badge badge-pill badge-success">Active</span>')
+        var openPill = $('<span class="badge badge-pill badge-success">Active</span>');
         card_header.append(openPill);
     }
     else {
@@ -35,7 +35,7 @@ function setUpUnarchivedTasks(Tasks, task_id, openTasks){
             "id": task_id
         });
         var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name + "       "});
-        var openPill = $('<span class="badge badge-pill badge-primary">Open</span>')
+        var openPill = $('<span class="badge badge-pill badge-primary">Open</span>');
         card_header.append(openPill);
       }
       else{

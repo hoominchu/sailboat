@@ -315,7 +315,7 @@ textarea:focus, input:focus{
 .highlighted-task {
     border: none; !important;
     box-shadow: none; !important;
-    background: rgba(7, 69, 131, 0.84);
+    background: #20c997;
     /*background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(100,141,255,1) 2%, rgba(149,237,255,1) 100%);*/
     color: white; !important;
     box-sizing: border-box;

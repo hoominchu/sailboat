@@ -83,7 +83,7 @@ window.onload = function () {
                           tabs.push(window.tabs[i]);
                       }
                   }
-                  var closeCurrentTask = confirm("Switch to the new task?")
+                  var closeCurrentTask = confirm("Switch to the new task?");
                   sendCreateTaskMessage(closeCurrentTask, tabs);
               });
           });

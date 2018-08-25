@@ -63,11 +63,11 @@ chrome.storage.local.get("highlightIdx", function (e) {
     }
 });
 
-// chrome.storage.local.get("Text Log", function (e) {
-//     if (isEmpty(e)) {
-//         chrome.storage.local.set({"Text Log": {}});
-//     }
-// });
+chrome.storage.local.get("Text Log", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Text Log": {}});
+    }
+});
 
 chrome.storage.local.get("Tags", function (e) {
     if (isEmpty(e)) {
