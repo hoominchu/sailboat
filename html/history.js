@@ -1,6 +1,6 @@
 var idOfSelectedTask = 0;
 
-var domainsToExclude = ["mail.google.com", "chrome:", "chrome-extension:"]
+var domainsToExclude = ["mail.google.com", "chrome:", "chrome-extension:"];
 
 
 chrome.storage.local.get("TASKS", function (taskObject) {
@@ -49,9 +49,9 @@ function createRow(page) {
         tableRow.append('<td></td>')
     }
 
-    tableRow.append('<td> '+Math.round(page.timeSpent/60000)+ " minutes </td>")
+    tableRow.append('<td> '+Math.round(page.timeSpent/60000)+ " minutes </td>");
 
-    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>')
+    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>');
     $("#historyTable").append(tableRow)
   }
 
@@ -163,7 +163,7 @@ $(".custom-menu li").click(function(){
         "urls": urls,
         "type": type,
         "taskId": idOfSelectedTask
-    }
+    };
 
     chrome.runtime.sendMessage(temp);
 

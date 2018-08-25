@@ -1,3 +1,8 @@
+body {
+  background: url("../images/background/kiwis.png") repeat;
+  /*background-size: cover;*/
+}
+
 .content{
   margin-top:2em;
 }
