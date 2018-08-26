@@ -1,5 +1,5 @@
 var url = window.location.href;
-var navbar = $('<nav class="navbar navbar-expand-lg navbar-light bg-light">'+
+var navbar = $('<nav class="navbar navbar-expand-lg navbar-dark bg-dark">'+
 '    <a class="navbar-brand" href="#" style="padding-left: 1.5em"><img src="../images/logo_white_sails_no_text.png" width="40em"></a>'+
 '    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"'+
 '            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">'+

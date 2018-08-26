@@ -1,0 +1,8 @@
+.separator {
+    height: 1em;
+}
+
+.chalkboard-bg {
+    background: url("../images/background/chalkboard.jpg") repeat;
+    color: white;
+}
