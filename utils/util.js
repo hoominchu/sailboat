@@ -1,7 +1,7 @@
 function returnDuration(startingTime, endingTime) {
     var startingTime = new Date(startingTime);
     var endingTime = new Date(endingTime);
-    var duration = endingTime - startingTime;
+    const duration = endingTime - startingTime;
     return duration;
 }
 
@@ -18,7 +18,7 @@ function indexOfElementWithProperty(arr, propName, propValue){
 }
 
 function isEmpty(obj) {
-    for(var prop in obj) {
+    for(let prop in obj) {
         if(obj.hasOwnProperty(prop))
             return false;
     }
@@ -27,9 +27,9 @@ function isEmpty(obj) {
 }
 
 function getJaccardScores(urlTags1, urlTags2){
-    var intersection = _.intersection(urlTags1, urlTags2);
-    var union = _.union(urlTags1, urlTags2);
-    var jaccardScore = intersection.length / union.length;
+    const intersection = _.intersection(urlTags1, urlTags2);
+    const union = _.union(urlTags1, urlTags2);
+    const jaccardScore = intersection.length / union.length;
     if(!isNaN(jaccardScore)){
         return jaccardScore
     }
@@ -40,8 +40,8 @@ function getJaccardScores(urlTags1, urlTags2){
 }
 
 function sortElementsByFrequency(array){
-    var frequencyMap = {};
-    for(var i = 0; i<array.length; i++){
+    const frequencyMap = {};
+    for(let i = 0; i<array.length; i++){
         if(Object.keys(frequencyMap).indexOf(array[i])>0){
             frequencyMap[array[i]]= frequencyMap[array[i]]+ 1;
         }
@@ -50,8 +50,8 @@ function sortElementsByFrequency(array){
             frequencyMap[array[i]] = 1;
         }
     }
-    var sortable = [];
-    for (var element in frequencyMap) {
+    const sortable = [];
+    for (let element in frequencyMap) {
         sortable.push([element, frequencyMap[element]]);
     }
 
@@ -71,8 +71,8 @@ function compare(a,b) {
 }
 
 function htmlParser(htmlString) {
-    var parser = new DOMParser();
-    var htmlDoc = parser.parseFromString(htmlString, "text/html");
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(htmlString, "text/html");
     return htmlDoc;
 }
 
@@ -98,13 +98,13 @@ function httpGet(theUrl, options, callback) {
 
 function objectFromJSON(file, callback){
     $.getJSON(file, function(json){
-        var object = json;
+        const object = json;
         callback(object);
     });
 }
 
 function checkIfStringContainsAnyStrings(strings, string){
-    for(var j = 0; j<strings.length; j++){
+    for(let j = 0; j<strings.length; j++){
         if(string.indexOf(strings[j])>-1){
             return true;
         }
@@ -125,9 +125,9 @@ function saveJSON(data, filename){
         data = JSON.stringify(data, undefined, 4)
     }
 
-    var blob = new Blob([data], {type: 'text/json'}),
-        e    = document.createEvent('MouseEvents'),
-        a    = document.createElement('a');
+    const blob = new Blob([data], {type: 'text/json'}),
+        e = document.createEvent('MouseEvents'),
+        a = document.createElement('a');
 
     a.download = filename;
     a.href = window.URL.createObjectURL(blob);

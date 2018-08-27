@@ -18,7 +18,7 @@ chrome.commands.onCommand.addListener(function (command) {
 
 //Save downloads to appropriate task folder
 chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
-    var currentTaskName = TASKS[CTASKID].name;
+    const currentTaskName = TASKS[CTASKID].name;
     suggest({filename: currentTaskName + "/" + item.filename});
 });
 
@@ -63,7 +63,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
 
 
 function extrapolateUrlFromCookie(cookie) {
-    var prefix = cookie.secure ? "https://" : "http://";
+    let prefix = cookie.secure ? "https://" : "http://";
     if (cookie.domain.charAt(0) == ".")
         prefix += "www";
 
@@ -217,7 +217,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if (changeInfo.status === "complete") {
         if (tabIdToURL !== {}) {
-            var date = new Date();
+            const date = new Date();
             // updateExitTime(tabIdToURL[tabId], date.toString())
         }
         tabIdToURL[tabId] = tab.url;
@@ -318,16 +318,16 @@ chrome.windows.onCreated.addListener(function (window) {
 });
 
 function fireTaskSuggestion(response) {
-    var probableTaskID = response["probable task id"];
+    const probableTaskID = response["probable task id"];
     console.log("Notification should fire");
-    var matchedTags = response["matched tags"];
-    var matchedTagsString = "";
+    const matchedTags = response["matched tags"];
+    let matchedTagsString = "";
     for (var i = 0; i < matchedTags.length; i++) {
         matchedTagsString = matchedTagsString + matchedTags[i][0] + ", ";
     }
-    var fromPageURL = response["page url"];
-    var fromPageTitle = response["page title"];
-    var probableTask = response["probable task"];
+    const fromPageURL = response["page url"];
+    const fromPageTitle = response["page title"];
+    const probableTask = response["probable task"];
 
     chrome.notifications.create({
         "type": "basic",
@@ -379,8 +379,8 @@ function fireTaskSuggestion(response) {
                     chrome.storage.local.get("Text Log", function (textLog) {
                         textLog = textLog["Text Log"];
 
-                        for (var i = 0; i < matchedTags.length; i++) {
-                            var key = matchedTags[i][0].toLowerCase();
+                        for (let i = 0; i < matchedTags.length; i++) {
+                            const key = matchedTags[i][0].toLowerCase();
                             if (textLog.hasOwnProperty(key)) {
                                 textLog[key]["correctOccurences"]++;
                             }
@@ -403,10 +403,10 @@ function fireTaskSuggestion(response) {
             chrome.storage.local.get("Text Log", function (textLog) {
                 textLog = textLog["Text Log"];
 
-                for (var i = 0; i < matchedTags.length; i++) {
-                    var key = matchedTags[i][0].toLowerCase();
+                for (let i = 0; i < matchedTags.length; i++) {
+                    const key = matchedTags[i][0].toLowerCase();
                     if (textLog.hasOwnProperty(key)) {
-                        var tag = textLog[key];
+                        const tag = textLog[key];
                         textLog[key]["incorrectOccurences"]++;
                     }
                 }

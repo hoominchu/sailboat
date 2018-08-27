@@ -1,4 +1,4 @@
-var start;
+let start;
 
 $(document).ready(function(){
   start = new Date();
@@ -6,9 +6,9 @@ $(document).ready(function(){
 
 function handleVisibilityChange() {
     if (document.hidden || document.unloaded) {
-      var end = new Date();
-      var timeSpent = end-start;
-      chrome.runtime.sendMessage({
+        const end = new Date();
+        const timeSpent = end - start;
+        chrome.runtime.sendMessage({
         "type": "time spent on page",
         "url": window.location.href,
         "timeSpent": timeSpent

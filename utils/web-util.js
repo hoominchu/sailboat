@@ -2,7 +2,7 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 
     if (windowID != null && !shouldPinnedClose) {
         chrome.tabs.query({"windowId": windowID}, function (allTabs) {
-            for (var i = 0; i < allTabs.length; i++) {
+            for (let i = 0; i < allTabs.length; i++) {
                 if (!allTabs[i].pinned) {
                     chrome.tabs.remove(allTabs[i].id);
                 }
@@ -12,7 +12,7 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 
     else if (windowID != null && shouldPinnedClose) {
         chrome.tabs.query({"windowId": windowID}, function (allTabs) {
-            for (var i = 0; i < allTabs.length; i++) {
+            for (let i = 0; i < allTabs.length; i++) {
                 chrome.tabs.remove(allTabs[i].id);
             }
         });
@@ -20,7 +20,7 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 
     else if (windowID == null && !shouldPinnedClose) {
         chrome.tabs.query({}, function (allTabs) {
-            for (var i = 0; i < allTabs.length; i++) {
+            for (let i = 0; i < allTabs.length; i++) {
                 if (!allTabs[i].pinned) {
                     chrome.tabs.remove(allTabs[i].id);
                 }
@@ -30,7 +30,7 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 
     else {
         chrome.tabs.query({}, function (allTabs) {
-            for (var i = 0; i < allTabs.length; i++) {
+            for (let i = 0; i < allTabs.length; i++) {
                 chrome.tabs.remove(allTabs[i].id);
             }
         });
@@ -39,13 +39,13 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 
 function removeBookmarks() {
     chrome.bookmarks.getChildren("1", function (children) {
-        for (var i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
             chrome.bookmarks.removeTree(children[i].id)
         }
     });
 
     chrome.bookmarks.getChildren("2", function (children) {
-        for (var i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
             chrome.bookmarks.removeTree(children[i].id)
         }
     });
@@ -106,8 +106,8 @@ function removeBookmarks() {
 
 function createBookmarks(bookmarks, parentId){
 
-    var isRootFolder = !(bookmarks.id);
-    var isParentRoot = (bookmarks.id<3);
+    let isRootFolder = !(bookmarks.id);
+    let isParentRoot = (bookmarks.id < 3);
 
     if(isRootFolder){
         if(bookmarks[0]) { // check if bookmarks is empty
@@ -131,7 +131,7 @@ function createBookmarks(bookmarks, parentId){
                 "index": bookmarks.index,
                 "title": bookmarks.title
             }, function(newNode){
-                for(var i =0; i<bookmarks.children.length; i++){
+                for(let i =0; i<bookmarks.children.length; i++){
                     createBookmarks(bookmarks.children[i], newNode.id)
                 }
             });
@@ -184,10 +184,10 @@ function createBookmarks(bookmarks, parentId){
 // }
 
 function returnQuery(selectorDict) {
-    var query = "";
+    let query = "";
 
-    for (var i = 0; i < selectorDict.length; i++) {
-        var tagName, className, idName, attributeName, attributeValue;
+    for (let i = 0; i < selectorDict.length; i++) {
+        let tagName, className, idName, attributeName, attributeValue;
 
         if (selectorDict[i]["tag"] != null) {
             tagName = selectorDict[i]["tag"];
@@ -221,7 +221,7 @@ function returnQuery(selectorDict) {
         }
 
         if (className != null) {
-            var classes = className.replace(/\s/g, ".");
+            const classes = className.replace(/\s/g, ".");
             query = query + "." + classes;
         }
 
@@ -242,14 +242,14 @@ function returnQuery(selectorDict) {
 }
 
 function updateStorage(key, obj) {
-    var tempObj = {};
+    const tempObj = {};
     tempObj[key] = obj;
     chrome.storage.local.set(tempObj);
 }
 
 function getDomainFromURL(url) {
-    var domain = "";
-    var arr = url.split('/');
+    let domain = "";
+    const arr = url.split('/');
     if (url.search("http") != -1) {
         domain = arr[2];
     }
@@ -260,16 +260,16 @@ function getDomainFromURL(url) {
 }
 
 function openTabs(arrayOfUrls){
-  for(var i = 0; i<arrayOfUrls.length; i++){
+  for(let i = 0; i<arrayOfUrls.length; i++){
     chrome.tabs.create({"url": arrayOfUrls[i]});
   }
 }
 
 function getIdsOfCurrentlyOpenTabs(windowId, callback){
-   var ids = [];
-   if(windowId){
+    const ids = [];
+    if(windowId){
      chrome.tabs.query({"windowId": windowId}, function(tabs){
-       for(var i = 0; i < tabs.length; i++){
+       for(let i = 0; i < tabs.length; i++){
          ids.push(tabs[i].id);
        }
        if(callback){
@@ -280,7 +280,7 @@ function getIdsOfCurrentlyOpenTabs(windowId, callback){
    else{
      chrome.tabs.query({}, function(tabs){
        console.log(tabs);
-       for(var i = 0; i < tabs.length; i++){
+       for(let i = 0; i < tabs.length; i++){
          ids.push(tabs[i].id);
        }
        if(callback){
@@ -293,23 +293,23 @@ function getIdsOfCurrentlyOpenTabs(windowId, callback){
 
 function setTaskBadge(windowId, task_id) {
     getIdsOfCurrentlyOpenTabs(windowId, function (ids) {
-        for (var i = 0; i < ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             chrome.browserAction.setBadgeText({"text": TASKS[task_id].name.slice(0, 4), "tabId": ids[i]});
         }
     });
 }
 
 function removeFromPageContentAndTextLog(url){
-    var isLiked = false;
-    var isOpen = false;
+    let isLiked = false;
+    let isOpen = false;
 
     if(TASKS){
-        for(var task in TASKS){
+        for(let task in TASKS){
           if(task != "lastAssignedId"){
             if(TASKS[task]["likedPages"].indexOf(url)>-1){
               isLiked = true;
             }
-            for(var i = 0; i<TASKS[task]["tabs"].length; i++){
+            for(let i = 0; i<TASKS[task]["tabs"].length; i++){
               if(TASKS[task]["tabs"][i].url == url){
                 isOpen = true;
               }

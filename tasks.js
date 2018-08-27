@@ -12,7 +12,7 @@ function Task(task_id, task_name, tabs, bookmarks, isActive) {
 }
 
 function createDefaultTask() {
-    var task = new Task(0, "Default", {}, {}, true);
+    const task = new Task(0, "Default", {}, {}, true);
     TASKS[task.id] = task;
     chrome.windows.getCurrent(function (window) {
         taskToWindow[0] = window.id;
@@ -51,7 +51,7 @@ function addToHistory(url, title, task_id) {
             TASKS[task_id].history.find((page) => page.url === url).timeVisited.push(date.toString());
         }
         else {
-            var newPage = new Page(url, title);
+            const newPage = new Page(url, title);
             const date = new Date;
             newPage.timeVisited.push(date.toString());
             TASKS[task_id].history.push(newPage);
@@ -60,8 +60,8 @@ function addToHistory(url, title, task_id) {
 }
 
 function getLikedPages(task_id) {
-    var likedPages = [];
-    for (var i = 0; i < TASKS[task_id].history.length; i++) {
+    const likedPages = [];
+    for (let i = 0; i < TASKS[task_id].history.length; i++) {
         if (TASKS[task_id].history[i].isLiked) {
             likedPages.push(TASKS[task_id].history[i]);
         }
@@ -70,14 +70,14 @@ function getLikedPages(task_id) {
 }
 
 function likePages(urls, task_id) {
-    for (var i = 0; i < urls.length; i++) {
+    for (let i = 0; i < urls.length; i++) {
         TASKS[task_id].history[indexOfElementWithProperty(TASKS[task_id].history, "url", urls[i])].isLiked = !TASKS[task_id].history[indexOfElementWithProperty(TASKS[task_id].history, "url", urls[i])].isLiked;
     }
     updateStorage("TASKS", TASKS);
 }
 
 function deleteFromHistory(urls, task_id) {
-    for (var i = 0; i < urls.length; i++) {
+    for (let i = 0; i < urls.length; i++) {
         TASKS[task_id].history.splice(indexOfElementWithProperty(TASKS[task_id].history, "url", urls[i]), 1);
     }
     updateStorage("TASKS", TASKS);
@@ -95,7 +95,7 @@ function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
         updateStorage("TASKS", TASKS);
     }
     else {
-        var emptyArray = [];
+        const emptyArray = [];
         var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, bookmarks);
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
         TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
@@ -109,13 +109,13 @@ function addTabsToTask(taskId, tabs) {
     if (taskToWindow.hasOwnProperty(taskId)) {
         //If there is a task that is not open but is in Task urls then open that
         chrome.windows.get(taskToWindow[taskId], {"populate": true}, function (window) {
-            var tabs = window.tabs;
-            var openUrls = new Set();
-            for (var i = 0; i < tabs.length; i++) {
+            const tabs = window.tabs;
+            const openUrls = new Set();
+            for (let i = 0; i < tabs.length; i++) {
                 openUrls.add(tabs[i].url);
             }
-            var taskUrls = new Set();
-            for (var j = 0; j < TASKS[taskId].tabs.length; j++) {
+            const taskUrls = new Set();
+            for (let j = 0; j < TASKS[taskId].tabs.length; j++) {
                 taskUrls.add(TASKS[taskId].tabs[j].url);
             }
             if (taskUrls.size > openUrls.size) {
@@ -143,19 +143,19 @@ function activateTaskInWindow(task_id) {
                 //If task has any urls, then open them in a new window and assign the new window to the task.
 
                 if (tasks[task_id].tabs.length > 0) {
-                    var urls = [];
-                    for (var i = 0; i < tasks[task_id].tabs.length; i++) {
+                    const urls = [];
+                    for (let i = 0; i < tasks[task_id].tabs.length; i++) {
                         urls.push(tasks[task_id].tabs[i].url);
                     }
                     chrome.windows.create({"url": urls}, function (window) {
-                        var taskId = task_id;
+                        const taskId = task_id;
                         taskToWindow[taskId] = window.id;
                     });
                 }
                 //If not, then just open a new page.
                 else {
                     chrome.windows.create({"url": "about:blank"}, function (window) {
-                        var taskId = task_id;
+                        const taskId = task_id;
                         taskToWindow[taskId] = window.id;
                     });
                 }
@@ -168,7 +168,7 @@ function activateTaskInWindow(task_id) {
             chrome.browserAction.setBadgeText({"text": TASKS[task_id].name.slice(0, 4)});
 
             //Mark task as active.
-            var now = new Date();
+            const now = new Date();
             tasks[task_id].activationTime.push(now.toString());
             tasks[task_id].isActive = true;
 
@@ -204,7 +204,7 @@ function deactivateTaskInWindow(task_id) {
         // saveTaskInWindow(task_id);
         // closeAllTabs(false, taskToWindow[task_id]);
         // removeBookmarks();
-        var now = new Date();
+        const now = new Date();
         TASKS[task_id].deactivationTime.push(now.toString());
         TASKS[task_id].isActive = false;
         updateStorage("TASKS", TASKS);
@@ -219,7 +219,7 @@ function deleteTask(task_id) {
             alert("This task is open. Please close it before deleting.");
         }
         else {
-            var confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it ?");
+            const confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it ?");
             if (confirmation) {
                 delete TASKS[task_id];
                 if (taskToWindow[task_id]) {
@@ -260,9 +260,9 @@ function archiveTask(task_id) {
 }
 
 function openLikedPages(task_id) {
-    var likedPages = getLikedPages(task_id);
-    var likedPagesUrls = [];
-    for (var i = 0; i < likedPages.length; i++) {
+    const likedPages = getLikedPages(task_id);
+    const likedPagesUrls = [];
+    for (let i = 0; i < likedPages.length; i++) {
         likedPagesUrls.push(likedPages[i].url);
     }
     openTabs(likedPagesUrls);
