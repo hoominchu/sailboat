@@ -11,14 +11,9 @@ function Task(task_id, task_name, tabs, bookmarks, isActive) {
     this.archived = false;
 }
 
-<<<<<<< HEAD
 function createAndActivateDefaultTask() {
   chrome.bookmarks.getTree(function(bookmarks){ //Get the bookmarks and add them to the default task.
     var task = new Task(0, "Default", {}, bookmarks, true); //The default task is active when created.
-=======
-function createDefaultTask() {
-    const task = new Task(0, "Default", {}, {}, true);
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
     TASKS[task.id] = task;
     chrome.windows.getCurrent(function (window) {
         taskToWindow[0] = window.id; //Assigned to the current window.
@@ -168,7 +163,6 @@ function activateTaskInWindow(task_id) {
                 chrome.windows.update(taskToWindow[task_id], {"focused": true});
             }
 
-<<<<<<< HEAD
             else { //Task is not open, so we create a new window with its tabs.
 
                 if (tasks[task_id].tabs.length > 0) { //task has more than 0 tabs.
@@ -179,28 +173,12 @@ function activateTaskInWindow(task_id) {
                     chrome.windows.create({"url": urls}, function (window) { //create a window with these tabs
                         var taskId = task_id;
                         taskToWindow[taskId] = window.id; //assign the window id to the task
-=======
-                if (tasks[task_id].tabs.length > 0) {
-                    const urls = [];
-                    for (let i = 0; i < tasks[task_id].tabs.length; i++) {
-                        urls.push(tasks[task_id].tabs[i].url);
-                    }
-                    chrome.windows.create({"url": urls}, function (window) {
-                        const taskId = task_id;
-                        taskToWindow[taskId] = window.id;
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
                     });
                 }
                 else {
-<<<<<<< HEAD
                     chrome.windows.create({"url": "about:blank"}, function (window) { //task has 0 tabs.
                         var taskId = task_id;
                         taskToWindow[taskId] = window.id; //assign the window id to the task
-=======
-                    chrome.windows.create({"url": "about:blank"}, function (window) {
-                        const taskId = task_id;
-                        taskToWindow[taskId] = window.id;
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
                     });
                 }
             }
@@ -208,15 +186,8 @@ function activateTaskInWindow(task_id) {
             CTASKID = task_id; //Set the CTASKID as the id of the task/
             console.log("CTASKID set as " + task_id)
 
-<<<<<<< HEAD
             //Add the bookmarks for the current task;
             //createBookmarks(TASKS[task_id].bookmarks);
-=======
-            //Mark task as active.
-            const now = new Date();
-            tasks[task_id].activationTime.push(now.toString());
-            tasks[task_id].isActive = true;
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
 
             updateStorage("TASKS", tasks); //Update chrome storage.
             updateStorage("CTASKID", task_id)
@@ -247,7 +218,6 @@ function saveTaskInWindow(task_id) {
 
 //Run this when a task is deactivated.
 function deactivateTaskInWindow(task_id) {
-<<<<<<< HEAD
   //Deativating a task involves the following:
   //1. Set the CTASKID to the default id. This is done last so that everything else is done considering the current task as active.
   //2. Mark its task object as inactive and add the current time to its deactivation time.
@@ -269,16 +239,6 @@ function deactivateTaskInWindow(task_id) {
 
       updateStorage("TASKS", TASKS);
       updateStorage("CTASKID", task_id);
-=======
-    if (taskToWindow.hasOwnProperty(task_id)) {
-        // saveTaskInWindow(task_id);
-        // closeAllTabs(false, taskToWindow[task_id]);
-        // removeBookmarks();
-        const now = new Date();
-        TASKS[task_id].deactivationTime.push(now.toString());
-        TASKS[task_id].isActive = false;
-        updateStorage("TASKS", TASKS);
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
     }
 
 }
