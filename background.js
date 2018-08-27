@@ -2,8 +2,6 @@
 
 createAndActivateDefaultTask();
 
-<<<<<<< HEAD
-=======
 //Add keyboard shortcuts here.
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "like-page") {
@@ -74,7 +72,6 @@ function extrapolateUrlFromCookie(cookie) {
 
 
 //todo consolidate all the message listeners into one listner
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
 chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "create-task") {
         createTask(request.taskName, request.tabs, false, {});
@@ -242,14 +239,11 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // 3. reload the like button (Do I need this anymore?)
 
     if (changeInfo.status === "complete") {
-<<<<<<< HEAD
-=======
         if (tabIdToURL !== {}) {
             const date = new Date();
             // updateExitTime(tabIdToURL[tabId], date.toString())
         }
         tabIdToURL[tabId] = tab.url;
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
         saveTaskInWindow(CTASKID);
         addToHistory(tab.url, tab.title, CTASKID);
     }
@@ -294,13 +288,6 @@ chrome.commands.onCommand.addListener(function (command) {
     }
 });
 
-<<<<<<< HEAD
-//Save downloads to appropriate task folder
-chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
-    var currentTaskName = TASKS[CTASKID].name;
-    suggest({filename: currentTaskName + "/" + item.filename});
-});
-=======
 function fireTaskSuggestion(response) {
     const probableTaskID = response["probable task id"];
     console.log("Notification should fire");
@@ -408,4 +395,3 @@ function fireTaskSuggestion(response) {
 //
 //     }
 // });
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
