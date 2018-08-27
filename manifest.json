@@ -11,10 +11,13 @@
   "background": {
     "scripts": [
       "lib/jquery-3.2.1.min.js",
+      "lib/compromise.js",
       "utils/util.js",
       "utils/web-util.js",
       "init.js",
       "tasks.js",
+      "tag.js",
+      "contentanalyser.js",
       "webpage.js",
       "contextmenu.js",
       "background.js"
@@ -34,6 +37,7 @@
         "lib/jquery-3.2.1.min.js",
         "lib/jquery-ui.min.js",
         "lib/jquery.transit.min.js",
+        "lib/compromise.js",
         "utils/util.js",
         "utils/web-util.js",
         "contentscripts/dock.js",
@@ -54,6 +58,7 @@
     "downloads",
     "tabs",
     "storage",
+    "notifications",
     "history",
     "bookmarks",
     "unlimitedStorage",
@@ -61,7 +66,6 @@
     "cookies",
     "https://*/*",
     "http://*/*"
-
   ],
   "icons": {
     "16": "images/SailBoat.png"

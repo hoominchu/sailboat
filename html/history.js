@@ -1,13 +1,13 @@
-var idOfSelectedTask = 0;
+let idOfSelectedTask = 0;
 
-var domainsToExclude = ["mail.google.com", "chrome:", "chrome-extension:"]
+const domainsToExclude = ["mail.google.com", "chrome:", "chrome-extension:"];
 
 
 chrome.storage.local.get("TASKS", function (taskObject) {
     if (taskObject["TASKS"]) {
-        var Tasks = taskObject["TASKS"];
+        const Tasks = taskObject["TASKS"];
         // console.log(Tasks);
-        for (var task_id in Tasks) {
+        for (let task_id in Tasks) {
             if (task_id != "lastAssignedId") {
                 $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name + '</button>');
             }
@@ -15,8 +15,8 @@ chrome.storage.local.get("TASKS", function (taskObject) {
         $(".tasks").click(function () {
             idOfSelectedTask = Tasks[$(this).attr('id')].id;
             $("#historyTable").empty();
-            var selectedTask = Tasks[$(this).attr('id')];
-            for (var i = selectedTask.history.length - 1; i > -1; i--) {
+            const selectedTask = Tasks[$(this).attr('id')];
+            for (let i = selectedTask.history.length - 1; i > -1; i--) {
                 createRow(selectedTask.history[i])
             }
             $("#taskNameBanner").text("History for " + Tasks[$(this).attr('id')].name + " Task");
@@ -36,9 +36,9 @@ chrome.storage.local.get("TASKS", function (taskObject) {
 function createRow(page) {
 
   if(domainsToExclude.indexOf(getDomainFromURL(page.url))<0){ //Show only if domain is not in domainsToExclude
-    var tableRow = $('<tr class="historyRow"></tr>');
+      const tableRow = $('<tr class="historyRow"></tr>');
 
-    tableRow.append('<td><input type="checkbox" class="selectBox" value="'+page.url+'"></td>');
+      tableRow.append('<td><input type="checkbox" class="selectBox" value="'+page.url+'"></td>');
     tableRow.append('<td><a href="' + page.url + '">' + page.title + '</a></td>');
 
     //Check if page is archived
@@ -49,9 +49,9 @@ function createRow(page) {
         tableRow.append('<td></td>')
     }
 
-    tableRow.append('<td> '+Math.round(page.timeSpent/60000)+ " minutes </td>")
+    tableRow.append('<td> '+Math.round(page.timeSpent/60000)+ " minutes </td>");
 
-    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>')
+    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>');
     $("#historyTable").append(tableRow)
   }
 
@@ -60,15 +60,15 @@ function createRow(page) {
 
 //Sorting Methods
 
-var table = $("#table");
+const table = $("#table");
 
 $('#title, #liked, #time, #lastVisit')
     .wrapInner('<span title="sort this column"/>')
     .each(function () {
 
-        var th = $(this),
-            thIndex = th.index(),
-            inverse = false;
+        const th = $(this),
+            thIndex = th.index();
+        let inverse = false;
 
         th.click(function () {
 
@@ -111,7 +111,7 @@ $("#openLikedPages").click(function () {
 
 
 $("#selectAll").click(function(){
-    var checkBoxes = $(".selectBox");
+    const checkBoxes = $(".selectBox");
     checkBoxes.prop("checked", !checkBoxes.prop("checked"));
 });
 
@@ -150,20 +150,20 @@ $(document).bind("mousedown", function (e) {
 
 // If the menu element is clicked
 $(".custom-menu li").click(function(){
-    var type = $(this).attr("data-action");
-    var urls = [];
+    const type = $(this).attr("data-action");
+    const urls = [];
     $('input[type=checkbox]').each(function () {
-        var x = (this.checked ? $(this).val() : "");
+        const x = (this.checked ? $(this).val() : "");
         if(x != ""){
             urls.push(x);
         }
     });
 
-    var temp = {
+    const temp = {
         "urls": urls,
         "type": type,
         "taskId": idOfSelectedTask
-    }
+    };
 
     chrome.runtime.sendMessage(temp);
 

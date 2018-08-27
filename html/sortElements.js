@@ -24,15 +24,15 @@
  */
 jQuery.fn.sortElements = (function(){
 
-    var sort = [].sort;
+    const sort = [].sort;
 
     return function(comparator, getSortable) {
 
         getSortable = getSortable || function(){return this;};
 
-        var placements = this.map(function(){
+        const placements = this.map(function () {
 
-            var sortElement = getSortable.call(this),
+            const sortElement = getSortable.call(this),
                 parentNode = sortElement.parentNode,
 
                 // Since the element itself will change position, we have
@@ -43,7 +43,7 @@ jQuery.fn.sortElements = (function(){
                     sortElement.nextSibling
                 );
 
-            return function() {
+            return function () {
 
                 if (parentNode === this) {
                     throw new Error(

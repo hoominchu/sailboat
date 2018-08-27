@@ -37,8 +37,8 @@ window.onload = function () {
               });
 
               funcOnClick("deleteTask", "class", function (element) {
-                  var Tasks = taskObject["TASKS"];
-                      return function (element) {
+                  const Tasks = taskObject["TASKS"];
+                  return function (element) {
                           chrome.runtime.sendMessage(
                               {
                                   "type": "delete-task",
@@ -53,7 +53,7 @@ window.onload = function () {
 
               funcOnClick("renameTask", "class", function (element) {
 
-                  var renameElement = element;
+                  const renameElement = element;
 
                   $('#renameModal').modal('show');
 
@@ -76,14 +76,14 @@ window.onload = function () {
           }
 
           document.getElementById("createTask").addEventListener("click", function(){
-              var tabs = [];
+              const tabs = [];
               chrome.windows.getCurrent({"populate": true}, function (window) {
-                  for (var i = 0; i < window.tabs.length; i++) {
+                  for (let i = 0; i < window.tabs.length; i++) {
                       if (window.tabs[i].highlighted) {
                           tabs.push(window.tabs[i]);
                       }
                   }
-                  var closeCurrentTask = confirm("Switch to the new task?")
+                  const closeCurrentTask = confirm("Switch to the new task?");
                   sendCreateTaskMessage(closeCurrentTask, tabs);
               });
           });
@@ -125,7 +125,7 @@ function sendCreateTaskMessage(closeCurrentTask, tabs) {
 
 function funcOnClick(classNameOrIdName, type, func) {
     if (type == "class") {
-        for (var i = 0; i < document.getElementsByClassName(classNameOrIdName).length; i++) {
+        for (let i = 0; i < document.getElementsByClassName(classNameOrIdName).length; i++) {
             document.getElementsByClassName(classNameOrIdName)[i].addEventListener("click", function (element) {
                 func(element);
             });

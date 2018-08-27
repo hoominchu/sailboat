@@ -2,6 +2,79 @@
 
 createAndActivateDefaultTask();
 
+<<<<<<< HEAD
+=======
+//Add keyboard shortcuts here.
+chrome.commands.onCommand.addListener(function (command) {
+    if (command === "like-page") {
+        chrome.tabs.get(activeTabId, function (tab) {
+            likePage(tab.url, "shortcut");
+        })
+    } else if (command === "pause-tasks") {
+        saveTaskInWindow(CTASKID);
+        deactivateTaskInWindow(CTASKID);
+        activateTaskInWindow("0");
+    }
+});
+
+
+//Save downloads to appropriate task folder
+chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
+    const currentTaskName = TASKS[CTASKID].name;
+    suggest({filename: currentTaskName + "/" + item.filename});
+});
+
+
+// // When a cookie is being set
+// chrome.cookies.onChanged.addListener(function (changeInfo) {
+//     if (!changeInfo['removed']) {
+//         const cookie = changeInfo['cookie'];
+//         const cause = changeInfo['cause'];
+//         const url = extrapolateUrlFromCookie(cookie);
+//         delete cookie['hostOnly'];
+//         delete cookie['session'];
+//         chrome.storage.local.get("CTASKID", function (ctaskid) {
+//             ctaskid = ctaskid["CTASKID"];
+//             cookie['url'] = url;
+//             cookie['storeId'] = ctaskid;
+//             chrome.cookies.set(cookie, function (c) {
+//                 if (c['storeId'] !== '0') {
+//                     console.log(c);
+//                 }
+//             });
+//         })
+//     }
+// });
+//
+// // When a cookie is being removed
+// chrome.cookies.onChanged.addListener(function (changeInfo) {
+//     if (changeInfo['removed']) {
+//         const cookie = changeInfo['cookie'];
+//         const cause = changeInfo['cause'];
+//         const url = extrapolateUrlFromCookie(cookie);
+//         let newCookie = {};
+//         newCookie['url'] = url;
+//         newCookie['name'] = cookie['name'];
+//         chrome.storage.local.get("CTASKID", function (ctaskid) {
+//             ctaskid = ctaskid["CTASKID"];
+//             newCookie['storeId'] = ctaskid;
+//             chrome.cookies.remove(newCookie);
+//         })
+//     }
+// });
+
+
+function extrapolateUrlFromCookie(cookie) {
+    let prefix = cookie.secure ? "https://" : "http://";
+    if (cookie.domain.charAt(0) == ".")
+        prefix += "www";
+
+    return prefix + cookie.domain + cookie.path;
+}
+
+
+//todo consolidate all the message listeners into one listner
+>>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
 chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "create-task") {
         createTask(request.taskName, request.tabs, false, {});
@@ -124,6 +197,12 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
     else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
+<<<<<<< HEAD
+=======
+      console.log("Time Spent on " + request.url + " is " + request.timeSpent/60000 + " minutes");
+    } else if (request.type === "detect-task") {
+        detectTask(request.topics, request.url, request.title);
+>>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
     }
 });
 
@@ -163,6 +242,14 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // 3. reload the like button (Do I need this anymore?)
 
     if (changeInfo.status === "complete") {
+<<<<<<< HEAD
+=======
+        if (tabIdToURL !== {}) {
+            const date = new Date();
+            // updateExitTime(tabIdToURL[tabId], date.toString())
+        }
+        tabIdToURL[tabId] = tab.url;
+>>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
         saveTaskInWindow(CTASKID);
         addToHistory(tab.url, tab.title, CTASKID);
     }
@@ -207,8 +294,118 @@ chrome.commands.onCommand.addListener(function (command) {
     }
 });
 
+<<<<<<< HEAD
 //Save downloads to appropriate task folder
 chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     var currentTaskName = TASKS[CTASKID].name;
     suggest({filename: currentTaskName + "/" + item.filename});
 });
+=======
+function fireTaskSuggestion(response) {
+    const probableTaskID = response["probable task id"];
+    console.log("Notification should fire");
+    const matchedTags = response["matched tags"];
+    let matchedTagsString = "";
+    for (var i = 0; i < matchedTags.length; i++) {
+        matchedTagsString = matchedTagsString + matchedTags[i][0] + ", ";
+    }
+    const fromPageURL = response["page url"];
+    const fromPageTitle = response["page title"];
+    const probableTask = response["probable task"];
+
+    chrome.notifications.create({
+        "type": "basic",
+        "iconUrl": "images/logo_white_sails_no_text.png",
+        "title": "Task Suggestion : " + probableTask,
+        "message": matchedTagsString,
+        "buttons": [{"title": "See all matched tags"}, {"title": "Add to task " + probableTask}],
+        // "items":[{"title":"sdfs","message":"sdfawefar"},{"title":"erwq","message":"qweqwer"},{"title":"zxz","message":"vbcxvbx"}],
+        "isClickable": true,
+        "requireInteraction": false
+    }, function (notificationID) {
+        // Respond to the user's clicking one of the buttons
+        chrome.notifications.onButtonClicked.addListener(function (notifId, btnIdx) {
+            if (notifId === notificationID) {
+
+                // This button adds the current webpage to the suggested task and takes the user to the suggested task.
+                if (btnIdx === 0) {
+                    // // Logging that the suggestion is correct.
+                    // chrome.storage.local.get("Suggestions Log", function (resp) {
+                    //     resp["Suggestions Log"]["Correct suggestions"]++;
+                    //     updateStorage("Suggestions Log", resp);
+                    // });
+
+                    // Call function to add to task and move to task.
+
+                    // Redirecting to matchedTags.html and displaying all matched tags.
+                    chrome.storage.local.set({
+                        "Matched Tags": {
+                            "type": "show matched tags",
+                            "matched tags": matchedTags,
+                            "from page URL": fromPageURL,
+                            "from page title": fromPageTitle,
+                            "probable task name": probableTask
+                        }
+                    }, function () {
+                        chrome.tabs.create({"url": "html/matchedTags.html"})
+                    });
+                }
+                // // This button adds the current webpage to the suggested task and stays in the current task.
+                else if (btnIdx === 1) {
+                    //     // Logging that the suggestion is correct.
+                    //     chrome.storage.local.get("Suggestions Log", function (resp) {
+                    //         resp["Suggestions Log"]["Correct suggestions"]++;
+                    //         updateStorage("Suggestions Log", resp);
+                    //     });
+                    //
+                    //     // Call function to add to task but not move to task.
+
+                    chrome.storage.local.get("Text Log", function (textLog) {
+                        textLog = textLog["Text Log"];
+
+                        for (let i = 0; i < matchedTags.length; i++) {
+                            const key = matchedTags[i][0].toLowerCase();
+                            if (textLog.hasOwnProperty(key)) {
+                                textLog[key]["correctOccurences"]++;
+                            }
+                        }
+
+                        updateStorage("Text Log", textLog);
+
+                    });
+                }
+            }
+        });
+
+        // When the user clicks on close the current page is added to the current task.
+        chrome.notifications.onClosed.addListener(function () {
+            // Logging that the suggestion is incorrect.
+            // chrome.storage.local.get("Suggestions Log", function (resp) {
+            //     resp["Suggestions Log"]["Incorrect suggestions"]++;
+            //     updateStorage("Suggestions Log", resp);
+            // });
+            chrome.storage.local.get("Text Log", function (textLog) {
+                textLog = textLog["Text Log"];
+
+                for (let i = 0; i < matchedTags.length; i++) {
+                    const key = matchedTags[i][0].toLowerCase();
+                    if (textLog.hasOwnProperty(key)) {
+                        const tag = textLog[key];
+                        textLog[key]["incorrectOccurences"]++;
+                    }
+                }
+
+                updateStorage("Text Log", textLog);
+
+            });
+        });
+    });
+}
+
+// Creates notification for suggested task.
+// chrome.runtime.onMessage.addListener(function (response, sender) {
+//     if (response.type == "task suggestion") {
+//
+//     }
+// });
+>>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
