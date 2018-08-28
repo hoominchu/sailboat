@@ -216,6 +216,15 @@ function loadKeyPressHandler() {
             $('#collapse-dock-btn').click();
         }
 
+        if (keyEvent.ctrlKey && keyEvent.keyCode === 80) {
+            chrome.runtime.sendMessage(
+                {
+                    "type": "switch-task",
+                    "nextTaskId": 0
+                }
+            );
+        }
+
         if (keyEvent.keyCode === 27) {
             $("input.input-bar").siblings().css({"filter": ""});
             $("input.input-bar").hide();
