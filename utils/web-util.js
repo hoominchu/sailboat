@@ -37,7 +37,6 @@ function closeAllTabs(shouldPinnedClose, windowID) {
     }
 }
 
-<<<<<<< HEAD
 // function removeBookmarks() {
 //     chrome.bookmarks.getChildren("1", function (children) {
 //         for (var i = 0; i < children.length; i++) {
@@ -51,21 +50,6 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 //         }
 //     });
 // }
-=======
-function removeBookmarks() {
-    chrome.bookmarks.getChildren("1", function (children) {
-        for (let i = 0; i < children.length; i++) {
-            chrome.bookmarks.removeTree(children[i].id)
-        }
-    });
-
-    chrome.bookmarks.getChildren("2", function (children) {
-        for (let i = 0; i < children.length; i++) {
-            chrome.bookmarks.removeTree(children[i].id)
-        }
-    });
-}
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
 
 // function createBookmarks(bookmarksNode, parentId) {
 //     for (var i = 0; i < bookmarksNode.length; i++) {
@@ -120,7 +104,6 @@ function removeBookmarks() {
 //     }
 // }
 
-<<<<<<< HEAD
 // function createBookmarks(bookmarks, parentId){
 //
 //     var isRootFolder = !(bookmarks.id);
@@ -163,50 +146,6 @@ function removeBookmarks() {
 //         }
 //     }
 // }
-=======
-function createBookmarks(bookmarks, parentId){
-
-    let isRootFolder = !(bookmarks.id);
-    let isParentRoot = (bookmarks.id < 3);
-
-    if(isRootFolder){
-        if(bookmarks[0]) { // check if bookmarks is empty
-            for (var i = 0; i < bookmarks[0].children.length; i++) {
-                createBookmarks(bookmarks[0].children[i], bookmarks[0].id);
-            }
-        }
-
-    }
-
-    else if(isParentRoot){
-        for(var i = 0; i<bookmarks.children.length; i++){
-            createBookmarks(bookmarks.children[i], bookmarks.id)
-        }
-    }
-
-    else if(!isRootFolder && !isParentRoot){
-        if(bookmarks.url == null){
-            chrome.bookmarks.create({
-                "parentId": parentId,
-                "index": bookmarks.index,
-                "title": bookmarks.title
-            }, function(newNode){
-                for(let i =0; i<bookmarks.children.length; i++){
-                    createBookmarks(bookmarks.children[i], newNode.id)
-                }
-            });
-        }
-        else{
-            chrome.bookmarks.create({
-                "parentId": parentId,
-                "index": bookmarks.index,
-                "title": bookmarks.title,
-                "url": bookmarks.url
-            });
-        }
-    }
-}
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
 
 // function createBookmarks(bookmarksNode, parentId) {
 //     for (var i = 0; i < bookmarksNode.length; i++) {
@@ -359,7 +298,6 @@ function setTaskBadge(windowId, task_id) {
         }
     });
 }
-<<<<<<< HEAD
 //
 // function removeFromPageContentAndTextLog(url){
 //     var isLiked = false;
@@ -396,41 +334,3 @@ function setTaskBadge(windowId, task_id) {
 //       });
 //     }
 // }
-=======
-
-function removeFromPageContentAndTextLog(url){
-    let isLiked = false;
-    let isOpen = false;
-
-    if(TASKS){
-        for(let task in TASKS){
-          if(task != "lastAssignedId"){
-            if(TASKS[task]["likedPages"].indexOf(url)>-1){
-              isLiked = true;
-            }
-            for(let i = 0; i<TASKS[task]["tabs"].length; i++){
-              if(TASKS[task]["tabs"][i].url == url){
-                isOpen = true;
-              }
-            }
-          }
-        }
-    }
-
-    if(!isLiked && !isOpen){
-      chrome.storage.local.get("Text Log", function(textlog){
-        var textlog = textlog["Text Log"];
-        delete textlog[url];
-        //console.log("Deleted %s from Text Log", url);
-        updateStorage("Text Log", textlog);
-      });
-
-      chrome.storage.local.get("Page Content", function(pageContent){
-        var pageContent = pageContent["Page Content"];
-        delete pageContent[url];
-        //console.log("Deleted %s from Page Content.", url);
-        updateStorage("Page Content", pageContent);
-      });
-    }
-}
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f

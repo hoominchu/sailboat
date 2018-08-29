@@ -62,7 +62,7 @@ function createRow(page) {
 
 const table = $("#table");
 
-$('#title, #liked, #time, #lastVisit')
+$('#title, #liked, #lastVisit')
     .wrapInner('<span title="sort this column"/>')
     .each(function () {
 
@@ -101,6 +101,43 @@ $("#openLikedPages").click(function () {
         "taskId": idOfSelectedTask
     });
 });
+
+$('#time')
+    .wrapInner('<span title="sort this column"/>')
+    .each(function () {
+
+        const th = $(this),
+            thIndex = th.index();
+        let inverse = false;
+
+        th.click(function () {
+
+            table.find('td').filter(function () {
+
+                return $(this).index() === thIndex;
+
+            }).sortElements(function (a, b) {
+                console.log(a);
+                console.log(b);
+
+                return $.text([a]) > $.text([b]) ?
+                    inverse ? -1 : 1
+                    : inverse ? 1 : -1;
+
+            }, function () {
+
+                // parentNode is the element we want to move
+                return this.parentNode;
+
+            });
+
+            inverse = !inverse;
+
+        });
+
+    });
+
+
 
 // var options = {
 //     valueNames: [ 'name', 'born' ]
