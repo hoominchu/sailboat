@@ -6,7 +6,7 @@ chrome.storage.local.get("TASKS", function(tasksObject){
 
         $("#taskNameBanner").text(task.name); //Add task Name
 
-        $("#lastOpenedTime").text("LAST OPENED: " + task.activationTime[task.activationTime.length-1].split("GMT")[0]);
+        // $("#lastOpenedTime").text("LAST OPENED: " + task.activationTime[task.activationTime.length-1].split("GMT")[0]);
 
           let timeSpent = 0;
 

@@ -2,64 +2,11 @@
 
 createAndActivateDefaultTask();
 
-//Add keyboard shortcuts here.
-chrome.commands.onCommand.addListener(function (command) {
-    if (command === "like-page") {
-        chrome.tabs.get(activeTabId, function (tab) {
-            likePage(tab.url, "shortcut");
-        })
-    } else if (command === "pause-tasks") {
-        saveTaskInWindow(CTASKID);
-        deactivateTaskInWindow(CTASKID);
-        activateTaskInWindow("0");
-    }
-});
-
-
 //Save downloads to appropriate task folder
 chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     const currentTaskName = TASKS[CTASKID].name;
     suggest({filename: currentTaskName + "/" + item.filename});
 });
-
-
-// // When a cookie is being set
-// chrome.cookies.onChanged.addListener(function (changeInfo) {
-//     if (!changeInfo['removed']) {
-//         const cookie = changeInfo['cookie'];
-//         const cause = changeInfo['cause'];
-//         const url = extrapolateUrlFromCookie(cookie);
-//         delete cookie['hostOnly'];
-//         delete cookie['session'];
-//         chrome.storage.local.get("CTASKID", function (ctaskid) {
-//             ctaskid = ctaskid["CTASKID"];
-//             cookie['url'] = url;
-//             cookie['storeId'] = ctaskid;
-//             chrome.cookies.set(cookie, function (c) {
-//                 if (c['storeId'] !== '0') {
-//                     console.log(c);
-//                 }
-//             });
-//         })
-//     }
-// });
-//
-// // When a cookie is being removed
-// chrome.cookies.onChanged.addListener(function (changeInfo) {
-//     if (changeInfo['removed']) {
-//         const cookie = changeInfo['cookie'];
-//         const cause = changeInfo['cause'];
-//         const url = extrapolateUrlFromCookie(cookie);
-//         let newCookie = {};
-//         newCookie['url'] = url;
-//         newCookie['name'] = cookie['name'];
-//         chrome.storage.local.get("CTASKID", function (ctaskid) {
-//             ctaskid = ctaskid["CTASKID"];
-//             newCookie['storeId'] = ctaskid;
-//             chrome.cookies.remove(newCookie);
-//         })
-//     }
-// });
 
 
 function extrapolateUrlFromCookie(cookie) {
@@ -104,10 +51,12 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         });
     }
     else if (request.type === "switch-task" && request.nextTaskId !== "") {
+       if(CTASKID != request.nextTaskId){
         saveTaskInWindow(CTASKID);
         console.log("switch from " + CTASKID +" to " + request.nextTaskId);
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
+      }
     }
     else if (request.type === "close-task") {
         closeTask(request.taskId);
@@ -194,12 +143,9 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
     else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
-<<<<<<< HEAD
-=======
       console.log("Time Spent on " + request.url + " is " + request.timeSpent/60000 + " minutes");
     } else if (request.type === "detect-task") {
         detectTask(request.topics, request.url, request.title);
->>>>>>> 62bfe8d94b84eb75667331fd798b60022c592a3f
     }
 });
 
