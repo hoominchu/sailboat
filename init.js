@@ -1,35 +1,35 @@
 // Local storage fields
-var preferredDomainsFieldName = "Preferred domains";
-var totalFrequencyFieldName = "Total frequency";
-var domainsMetadataFieldName = "metadata";
+const preferredDomainsFieldName = "Preferred domains";
+const totalFrequencyFieldName = "Total frequency";
+const domainsMetadataFieldName = "metadata";
 preferredAuthorsFieldName = "Preferred authors";
 
 // Setting fields of author object
-var domainFrequencyFieldName = "frequency";
-var activeTasksFieldName = "Active tasks";
-var archivedTasksFieldName = "Archived tasks";
+const domainFrequencyFieldName = "frequency";
+const activeTasksFieldName = "Active tasks";
+const archivedTasksFieldName = "Archived tasks";
 
 // Local storage fields
 var preferredAuthorsFieldName = "Preferred authors";
-var authorsMetadataFieldName = "metadata";
+const authorsMetadataFieldName = "metadata";
 
 // Setting fields of author object
-var authorFrequencyFieldName = "frequency";
-var authorURL = "URL"; // Not being used yet
+const authorFrequencyFieldName = "frequency";
+const authorURL = "URL"; // Not being used yet
 
 // Getting current task id
-var TASKS = {lastAssignedId: 0};
+let TASKS = {lastAssignedId: 0};
 // var HISTORY = {};
-var CTASKID = 0;
+const CTASKID = 0;
 
-var taskToWindow = {};
+const taskToWindow = {};
 
-var tabIdToURL = {};
-var activeTabId = 0;
+const tabIdToURL = {};
+const activeTabId = 0;
 
 //
-var backgroundPageId = -1;
-var defaultTaskId = 0;
+const backgroundPageId = -1;
+const defaultTaskId = 0;
 
 // //Suggestion log dictionary
 // chrome.storage.local.get("Suggestions Log", function (e) {
@@ -84,12 +84,12 @@ chrome.storage.local.get("Click Log", function (e) {
 
 chrome.storage.local.get("Settings", function (e) {
     if (isEmpty(e)) {
-        var DEFAULT_SETTINGS = {
+        const DEFAULT_SETTINGS = {
             "notifications": "Enabled",
             "suggestions based on": "Open tabs",
             "suggestions threshold": "Medium",
-            "block notifications on": ["www.google.com","www.google.co.in","www.facebook.com"],
-            "isDockCollapsed" : "false"
+            "block notifications on": ["www.google.com", "www.google.co.in", "www.facebook.com"],
+            "isDockCollapsed": "false"
         };
 
         // Setting default settings in local storage.
@@ -101,7 +101,7 @@ chrome.storage.local.get("Settings", function (e) {
 
 chrome.storage.local.get("Advanced Search Settings", function (e) {
     if (isEmpty(e)) {
-        var defaultAdvSearchSettings = {
+        const defaultAdvSearchSettings = {
             "search in": "Open tabs"
         };
         chrome.storage.local.set({"Advanced Search Settings": defaultAdvSearchSettings}, function () {

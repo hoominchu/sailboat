@@ -183,7 +183,6 @@ function searchArchivedPages(query, tasks, pageContent) {
             //     searchThroughPages = task["likedPages"];
             // }
             if (searchThroughPages.length === 0) {
-                return [];
             }
             else {
                 for (let i = 0; i < searchThroughPages.length; i++) {

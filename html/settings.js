@@ -1,17 +1,17 @@
 // If default settings object is changed here, it should be changed in init.js also.
-var DEFAULT_SETTINGS = {
+const DEFAULT_SETTINGS = {
     "notifications": "Enabled",
     "suggestions based on": "Open tabs",
     "suggestions threshold": "Medium",
     "block notifications on": ["www.google.com", "www.google.co.in", "www.facebook.com"]
 };
 
-var settings = DEFAULT_SETTINGS;
+let settings = DEFAULT_SETTINGS;
 
 chrome.storage.local.get("Settings", function (settings) {
 
     // This variable contains all the options for each of the settings option.
-    var settingsOptions = {
+    const settingsOptions = {
         "notifications": ["Enabled", "Disabled"],
         "suggestions based on": ["Open tabs", "Liked pages"],
         "suggestions threshold": ["Low", "Medium", "High"]
@@ -41,13 +41,13 @@ chrome.storage.local.get("Settings", function (settings) {
 
 function showNotificationOptions(settings, settingsOptions) {
     // Displaying notification options
-    var notification_set_to = settings["notifications"];
+    const notification_set_to = settings["notifications"];
 
-    var notifications_options = settingsOptions["notifications"];
-    var notifications_options_element = document.getElementById("notification_options");
-    for (var i = 0; i < notifications_options.length; i++) {
-        var option = document.createElement("button");
-        var classString = "btn";
+    const notifications_options = settingsOptions["notifications"];
+    const notifications_options_element = document.getElementById("notification_options");
+    for (let i = 0; i < notifications_options.length; i++) {
+        const option = document.createElement("button");
+        let classString = "btn";
         if (notifications_options[i] == notification_set_to) {
             classString = classString + " " + "btn-primary";
         }
@@ -81,13 +81,13 @@ function showNotificationOptions(settings, settingsOptions) {
 
 function showSuggestionsBasedOnOptions(settings, settingsOptions) {
     // Displaying options for suggestions
-    var suggestions_based_on_options_element = document.getElementById("suggestion_options");
-    var suggestions_based_on_set_to = settings["suggestions based on"];
-    var suggestions_based_on_options = settingsOptions["suggestions based on"];
+    const suggestions_based_on_options_element = document.getElementById("suggestion_options");
+    const suggestions_based_on_set_to = settings["suggestions based on"];
+    const suggestions_based_on_options = settingsOptions["suggestions based on"];
 
-    for (var i = 0; i < suggestions_based_on_options.length; i++) {
-        var option = document.createElement("button");
-        var classString = "btn";
+    for (let i = 0; i < suggestions_based_on_options.length; i++) {
+        const option = document.createElement("button");
+        let classString = "btn";
         if (suggestions_based_on_options[i] == suggestions_based_on_set_to) {
             classString = classString + " " + "btn-primary";
         }
@@ -128,27 +128,27 @@ function showNoNotificationDomains(settings, settingsOptions) {
     // <button type="button" class="btn btn-outline-primary">Primary</button>
 
     // Displaying options for suggestions
-    var block_notifications_on_element = document.getElementById("block_notifications_domains");
-    var block_notifications_on = settings["block notifications on"];
+    const block_notifications_on_element = document.getElementById("block_notifications_domains");
+    const block_notifications_on = settings["block notifications on"];
 
-    for (var i = 0; i < block_notifications_on.length; i++) {
-        var card = document.createElement("button");
+    for (let i = 0; i < block_notifications_on.length; i++) {
+        const card = document.createElement("button");
         card.setAttribute("type", "button");
         card.className = "btn btn-outline-primary round-corner";
         card.style.margin = "5px";
 
-        var closeButton = document.createElement("button");
+        const closeButton = document.createElement("button");
         closeButton.className = "close";
         closeButton.setAttribute("data-dismiss", "alert");
         closeButton.innerHTML = "<span style=\"color:black\">&nbsp;&times;</span>";
         closeButton.onclick = function (ev) {
-            var domainToBeRemoved = this.parentElement.getElementsByTagName("strong")[0].innerText;
+            const domainToBeRemoved = this.parentElement.getElementsByTagName("strong")[0].innerText;
             settings["block notifications on"].splice(settings["block notifications on"].indexOf(domainToBeRemoved), 1);
             updateStorage("Settings", settings);
             location.reload();
         };
 
-        var domainName = document.createElement("strong");
+        const domainName = document.createElement("strong");
         domainName.innerText = block_notifications_on[i];
         card.appendChild(closeButton);
         card.appendChild(domainName);
@@ -156,11 +156,11 @@ function showNoNotificationDomains(settings, settingsOptions) {
         block_notifications_on_element.appendChild(card);
     }
 
-    var inputElement = document.getElementById("block_notifications_on_domains_input");
-    var addButton = document.getElementById("submit_block_notifications_on");
+    const inputElement = document.getElementById("block_notifications_on_domains_input");
+    const addButton = document.getElementById("submit_block_notifications_on");
 
     addButton.onclick = function (ev) {
-        var enteredString = inputElement.value;
+        let enteredString = inputElement.value;
         enteredString = enteredString.trim();
         if (isURL(enteredString)) {
             enteredString = extractHostname(enteredString);
@@ -168,7 +168,7 @@ function showNoNotificationDomains(settings, settingsOptions) {
         if (enteredString.substring(0, 4) != "www.") {
             enteredString = "www." + enteredString;
         }
-        var existingDomains = settings["block notifications on"];
+        const existingDomains = settings["block notifications on"];
         if (existingDomains.indexOf(enteredString) > -1) {
             alert("Notifications on this domain are already blocked.");
         } else {
@@ -181,7 +181,7 @@ function showNoNotificationDomains(settings, settingsOptions) {
 }
 
 function extractHostname(url) {
-    var hostname;
+    let hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
 
     if (url.indexOf("://") > -1) {
@@ -200,7 +200,7 @@ function extractHostname(url) {
 }
 
 function isURL(str) {
-    var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
     if (regex.test(str)) {
         return true;
     }
@@ -209,13 +209,13 @@ function isURL(str) {
 
 function showSuggestionThresholdOptions(settings, settingsOptions) {
     // Threshold for suggestions
-    var suggestions_threshold_element = document.getElementById("suggestion_threshold");
-    var suggestions_threshold_set_to = settings["suggestions threshold"];
-    var suggestions_threshold_options = settingsOptions["suggestions threshold"];
+    const suggestions_threshold_element = document.getElementById("suggestion_threshold");
+    const suggestions_threshold_set_to = settings["suggestions threshold"];
+    const suggestions_threshold_options = settingsOptions["suggestions threshold"];
 
-    for (var i = 0; i < suggestions_threshold_options.length; i++) {
-        var option = document.createElement("button");
-        var classString = "btn";
+    for (let i = 0; i < suggestions_threshold_options.length; i++) {
+        const option = document.createElement("button");
+        let classString = "btn";
         if (suggestions_threshold_options[i] == suggestions_threshold_set_to) {
             classString = classString + " " + "btn-primary";
         }
@@ -249,7 +249,7 @@ function resetIndex() {
 }
 
 function updateStorage(key, obj) {
-    var tempObj = {};
+    const tempObj = {};
     tempObj[key] = obj;
     chrome.storage.local.set(tempObj);
 }
@@ -271,13 +271,13 @@ $("#restoreTasks").click(function () {
 
 // function restoreTaskObjectFromFile()
 function readSingleFile(fileInput) {
-    var file = fileInput.target.files[0];
+    let file = fileInput.target.files[0];
     if (!file) {
         return;
     }
-    var reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = function (e) {
-        var contents = e.target.result;
+        const contents = e.target.result;
         restoreTasksFromString(contents);
     };
     reader.readAsText(file);
@@ -285,9 +285,9 @@ function readSingleFile(fileInput) {
 
 //Need some form of validation for string.
 function restoreTasksFromString(string) {
-    var tasks = JSON.parse(string);
+    const tasks = JSON.parse(string);
     chrome.runtime.sendMessage({"type": "restore-tasks", "taskObject": tasks}, function () {
-        var successIcon = $('<i style="color:#43ac6a">Tasks Restored</i>');
+        const successIcon = $('<i style="color:#43ac6a">Tasks Restored</i>');
         $("#fileUploadMessage").append(successIcon);
     });
 }

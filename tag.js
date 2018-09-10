@@ -33,14 +33,14 @@ function Tag(str, tasksList, correctOccurences, incorrectOccurences) {
     };
 
     this.getTaskWeightsNew = function (taskURLs) {
-        var taskScores = {};
-        var taskFrequencies = {};
-        var maxTaskFrequency = 0;
+        const taskScores = {};
+        const taskFrequencies = {};
+        let maxTaskFrequency = 0;
 
         for (var taskid in this.tasks) {
-            var urls = taskURLs[taskid];
-            var totalTagFrequencyInTask = 0;
-            for (var i = 0; i < urls.length; i++) {
+            const urls = taskURLs[taskid];
+            let totalTagFrequencyInTask = 0;
+            for (let i = 0; i < urls.length; i++) {
                 if (urls[i] != null) {
                     if (urls[i].indexOf("chrome-extension://") < 0 && urls[i].indexOf("chrome://") < 0) {
                         if (typeof (this.tasks[taskid][urls[i]]) == typeof (3)) {
@@ -64,9 +64,9 @@ function Tag(str, tasksList, correctOccurences, incorrectOccurences) {
 
     this.getTaskWeight = function (taskid, taskURLs) {
         if (this.tasks.hasOwnProperty(taskid)) {
-            var urls = taskURLs[taskid];
-            var totalTagFrequencyInTask = 0;
-            for (var i = 0; i < urls.length; i++) {
+            const urls = taskURLs[taskid];
+            let totalTagFrequencyInTask = 0;
+            for (let i = 0; i < urls.length; i++) {
                 if (urls[i] != null) {
                     if (urls[i].indexOf("chrome-extension://") < 0 && urls[i].indexOf("chrome://") < 0) {
                         if (typeof (this.tasks[taskid][urls[i]]) == typeof (3)) {
@@ -76,7 +76,7 @@ function Tag(str, tasksList, correctOccurences, incorrectOccurences) {
                 }
             }
 
-            var weight = totalTagFrequencyInTask / Object.keys(this.tasks).length;
+            let weight = totalTagFrequencyInTask / Object.keys(this.tasks).length;
 
             if (this.correctOccurences != null) {
                 weight = weight + (this.correctOccurences * this.positiveFactor);
@@ -93,24 +93,24 @@ function Tag(str, tasksList, correctOccurences, incorrectOccurences) {
 
     this.getTaskWeights = function (taskURLs) {
 
-        var taskScores = {};
+        const taskScores = {};
 
-        for (var tid in taskURLs) {
+        for (let tid in taskURLs) {
             taskScores[tid] = 0;
         }
 
-        for (var taskid in taskURLs) {
+        for (let taskid in taskURLs) {
             if (this.tasks.hasOwnProperty(taskid)) {
-                var urls = taskURLs[taskid];
-                var totalTagFrequencyInTask = 0;
-                for (var i = 0; i < urls.length; i++) {
+                const urls = taskURLs[taskid];
+                let totalTagFrequencyInTask = 0;
+                for (let i = 0; i < urls.length; i++) {
                     if (urls[i].indexOf("chrome-extension://") < 0 && urls[i].indexOf("chrome://") < 0) {
                         if (typeof (this.tasks[taskid][urls[i]]) == typeof (3)) {
                             totalTagFrequencyInTask = totalTagFrequencyInTask + this.tasks[taskid][urls[i]];
                         }
                     }
                 }
-                var weight = totalTagFrequencyInTask / Object.keys(this.tasks).length;
+                let weight = totalTagFrequencyInTask / Object.keys(this.tasks).length;
 
                 if (this.correctOccurences != null) {
                     weight = weight + (this.correctOccurences * this.positiveFactor);
@@ -134,10 +134,10 @@ function getMatchScore(tag1, tag2) {
 
 // Tag1 should be the smaller one that needs to be merged into the bigger Tag2.
 function mergeTags(tag1, tag2) {
-    for (var taskid in tag1["tasks"]) {
-        var taskurls = tag1["tasks"][taskid];
-        for (var url in taskurls) {
-            var urlFrequency = taskurls[url];
+    for (let taskid in tag1["tasks"]) {
+        const taskurls = tag1["tasks"][taskid];
+        for (let url in taskurls) {
+            const urlFrequency = taskurls[url];
             if (!tag2["tasks"].hasOwnProperty(taskid)) {
                 tag2["tasks"][taskid] = {};
             }

@@ -1,69 +1,16 @@
 "use strict";
 
-createDefaultTask();
-
-//Add keyboard shortcuts here.
-chrome.commands.onCommand.addListener(function (command) {
-    if (command === "like-page") {
-        chrome.tabs.get(activeTabId, function (tab) {
-            likePage(tab.url, "shortcut");
-        })
-    } else if (command === "pause-tasks") {
-        saveTaskInWindow(CTASKID);
-        deactivateTaskInWindow(CTASKID);
-        activateTaskInWindow("0");
-    }
-});
-
+createAndActivateDefaultTask();
 
 //Save downloads to appropriate task folder
 chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
-    var currentTaskName = TASKS[CTASKID].name;
+    const currentTaskName = TASKS[CTASKID].name;
     suggest({filename: currentTaskName + "/" + item.filename});
 });
 
 
-// // When a cookie is being set
-// chrome.cookies.onChanged.addListener(function (changeInfo) {
-//     if (!changeInfo['removed']) {
-//         const cookie = changeInfo['cookie'];
-//         const cause = changeInfo['cause'];
-//         const url = extrapolateUrlFromCookie(cookie);
-//         delete cookie['hostOnly'];
-//         delete cookie['session'];
-//         chrome.storage.local.get("CTASKID", function (ctaskid) {
-//             ctaskid = ctaskid["CTASKID"];
-//             cookie['url'] = url;
-//             cookie['storeId'] = ctaskid;
-//             chrome.cookies.set(cookie, function (c) {
-//                 if (c['storeId'] !== '0') {
-//                     console.log(c);
-//                 }
-//             });
-//         })
-//     }
-// });
-//
-// // When a cookie is being removed
-// chrome.cookies.onChanged.addListener(function (changeInfo) {
-//     if (changeInfo['removed']) {
-//         const cookie = changeInfo['cookie'];
-//         const cause = changeInfo['cause'];
-//         const url = extrapolateUrlFromCookie(cookie);
-//         let newCookie = {};
-//         newCookie['url'] = url;
-//         newCookie['name'] = cookie['name'];
-//         chrome.storage.local.get("CTASKID", function (ctaskid) {
-//             ctaskid = ctaskid["CTASKID"];
-//             newCookie['storeId'] = ctaskid;
-//             chrome.cookies.remove(newCookie);
-//         })
-//     }
-// });
-
-
 function extrapolateUrlFromCookie(cookie) {
-    var prefix = cookie.secure ? "https://" : "http://";
+    let prefix = cookie.secure ? "https://" : "http://";
     if (cookie.domain.charAt(0) == ".")
         prefix += "www";
 
@@ -73,33 +20,15 @@ function extrapolateUrlFromCookie(cookie) {
 
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
-
-    // refreshContextMenu();
-
     if (request.type === "create-task") {
-
-        if (CTASKID === 0) {
-
-            chrome.bookmarks.getTree(function (bookmarks) {
-                createTask(request.taskName, request.tabs, bookmarks);
-                if (request.activated) {
-                    saveTaskInWindow(CTASKID);
-                    console.log("task created");
-                    deactivateTaskInWindow(CTASKID);
-                    activateTaskInWindow(TASKS["lastAssignedId"]);
-                }
-            });
+        createTask(request.taskName, request.tabs, false, {});
+        if (request.activated) {
+            saveTaskInWindow(CTASKID);
+            deactivateTaskInWindow(CTASKID);
+            activateTaskInWindow(TASKS["lastAssignedId"]);
         }
-        else {
-            createTask(request.taskName, request.tabs, {});
-            if (request.activated) {
-                saveTaskInWindow(CTASKID);
-                console.log("task created with tabs");
-                deactivateTaskInWindow(CTASKID);
-                activateTaskInWindow(TASKS["lastAssignedId"]);
-            }
-        }
-    } else if (request.type === "add-to-task") {
+    }
+    else if (request.type === "add-to-task") {
         // console.log(window.tabs);
         const senderTab = sender.tab;
         const senderWindowId = senderTab.windowId;
@@ -110,9 +39,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
                     tabs.push(window.tabs[i]);
                 }
             }
-
             //tabs array is now ready to use
-
             //remove tabs that were highlighted
             const tabIdsToClose = [];
             for (let j = 0; j < tabs.length; j++) {
@@ -122,35 +49,49 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
             addTabsToTask(request.taskId, tabs);
         });
-    } else if (request.type === "switch-task" && request.nextTaskId !== "") {
+    }
+    else if (request.type === "switch-task" && request.nextTaskId !== "") {
+       if(CTASKID != request.nextTaskId){
         saveTaskInWindow(CTASKID);
-        console.log("switch");
+        console.log("switch from " + CTASKID +" to " + request.nextTaskId);
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
-    } else if (request.type === "close-task") {
+      }
+    }
+    else if (request.type === "close-task") {
         closeTask(request.taskId);
-    } else if (request.type === "rename-task") {
+    }
+    else if (request.type === "rename-task") {
         renameTask(request.taskId, request.newTaskName);
-    } else if (request.type === "delete-task") {
+    }
+    else if (request.type === "delete-task") {
         deleteTask(request.taskToRemove);
-    } else if (request.type === "download-tasks") {
+    }
+    else if (request.type === "download-tasks") {
         downloadTasks();
-    } else if (request.type === "like-page") {
+    }
+    else if (request.type === "like-page") {
         likePage(request.url, CTASKID);
-    } else if (request.type === "add-url-to-task") {
+    }
+    else if (request.type === "add-url-to-task") {
         addURLToTask(request.url, request.taskId);
-    } else if (request.type === "archive-task") {
+    }
+    else if (request.type === "archive-task") {
         archiveTask(request.taskId);
-    } else if (request.type === "pause-tasks") {
+    }
+    else if (request.type === "pause-tasks") {
         CTASKID = 0;
         updateStorage("CTASKID", 0);
-    } else if (request.type === "open-liked-pages") {
+    }
+    else if (request.type === "open-liked-pages") {
         openLikedPages(request.taskId);
-    } else if (request.type === "search-archive") {
+    }
+    else if (request.type === "search-archive") {
         if (request.query != null) {
             chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
         }
-    } else if (request.type === "onmouseover") {
+    }
+    else if (request.type === "onmouseover") {
         const fromWindowID = sender.tab.windowId;
         const targetURL = request["target-url"];
         const highlightTabIndexes = [sender.tab.index];
@@ -162,9 +103,11 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             });
             chrome.tabs.highlight({"windowId": fromWindowID, "tabs": highlightTabIndexes});
         });
-    } else if (request.type === "onmouseout") {
+    }
+    else if (request.type === "onmouseout") {
         chrome.tabs.highlight({"windowId": sender.tab.windowId, "tabs": sender.tab.index});
-    } else if (request.type === "clicklog") {
+    }
+    else if (request.type === "clicklog") {
         chrome.storage.local.get("Click Log", function (clickLog) {
             clickLog = clickLog["Click Log"];
             if (clickLog.hasOwnProperty(request.text)) {
@@ -174,25 +117,31 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             }
             chrome.storage.local.set({"Click Log": clickLog});
         });
-    } else if (request.type === "give me open tasks") {
+    }
+    else if (request.type === "give me open tasks") {
         chrome.runtime.sendMessage({
             "type": "array of open tasks",
             "openTasks": Object.keys(taskToWindow)
         });
-    } else if (request.type === "likePages") {
+    }
+    else if (request.type === "likePages") {
         likePages(request.urls, request.taskId);
-    } else if (request.type === "deletePages") {
+    }
+    else if (request.type === "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
-    } else if(request.type === "restore-tasks"){
+    }
+    else if(request.type === "restore-tasks"){
       TASKS = request.taskObject;
       updateStorage("TASKS", TASKS);
-    } else if(request.type === "give unarchived tasks dict"){
+    }
+    else if(request.type === "give unarchived tasks dict"){
       let tasksDict = filterTasks({"archived": false});
       chrome.runtime.sendMessage({
         "type": "unarchived tasks dict",
         "tasksDict":tasksDict
       });
-    } else if(request.type === "time spent on page"){
+    }
+    else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
       console.log("Time Spent on " + request.url + " is " + request.timeSpent/60000 + " minutes");
     } else if (request.type === "detect-task") {
@@ -200,134 +149,102 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 });
 
-
-
-
 chrome.windows.onRemoved.addListener(function (windowId) {
+  //If window is removed deactivate the task and delete taskId from taskToWindow dict and
+  //Don't need to save it because already saved on each tab open/close/update;
     if (windowId !== backgroundPageId) {
-        // deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
-        //console.log("Window Removed" + TASKS);
-        //console.log(TASKS);
+        deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
         delete taskToWindow[getKeyByValue(taskToWindow, windowId)];
-        // getIdsOfCurrentlyOpenTabs(windowId, function(ids){console.log(ids)});
     }
 });
 
+// chrome.bookmarks.onCreated.addListener(function (e){
+//   saveTaskInWindow(CTASKID);
+// });
+//
+// chrome.bookmarks.onRemoved.addListener(function (e){
+//   saveTaskInWindow(CTASKID);
+// });
+//
+// chrome.bookmarks.onChanged.addListener(function (e){
+//   saveTaskInWindow(CTASKID);
+// });
+//
+// chrome.bookmarks.onMoved.addListener(function (e){
+//   saveTaskInWindow(CTASKID);
+// });
+//
+// chrome.bookmarks.onChildrenReordered.addListener(function (e){
+//   saveTaskInWindow(CTASKID);
+// });
+
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  //If another webpage is opened in the same tab then:
+  // 1. save the task
+  // 2. add the new url to history.
+  // 3. reload the like button (Do I need this anymore?)
 
     if (changeInfo.status === "complete") {
         if (tabIdToURL !== {}) {
-            var date = new Date();
+            const date = new Date();
             // updateExitTime(tabIdToURL[tabId], date.toString())
         }
         tabIdToURL[tabId] = tab.url;
         saveTaskInWindow(CTASKID);
-        // console.log(tab);
-        // chrome.tabs.get(tab.openerTabId, function(tab){
-        //     console.log(tab.url);
-        // });
         addToHistory(tab.url, tab.title, CTASKID);
     }
     chrome.tabs.sendMessage(tabId, {"type": "reload-like-button", data: tab})
-
 });
 
-// chrome.tabs.onActivated.addListener(function(activeInfo){
-//
-//   // //Set the exit time for previous url
-//   // if(tabIdToURL!= {} && activeTabId != 0){
-//   //   var date = new Date();
-//   //   updateExitTime(tabIdToURL[activeTabId], date.toString());
-//   // }
-//
-//   activeTabId = activeInfo.tabId;
-//
-//   // chrome.tabs.get(activeTabId, function(tab){
-//   //   if(tab.url){
-//   //     if(TASKS[CTASKID].history.find((page) => page.url === tab.url)){
-//   //       var date = new Date();
-//   //       TASKS[CTASKID].history.find((page) => page.url === tab.url).timeVisited.push(date.toString());
-//   //     }
-//   //   }
-//   // })
-// });
-
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-    if (removeInfo.isWindowClosing) {
-        console.log("window closing");
-        deactivateTaskInWindow(CTASKID);
-        CTASKID = 0;
-        // chrome.windows.getCurrent(function(window){
-        //   if(getKeyByValue(taskToWindow, window.id)){
-        //     activateTaskInWindow(getKeyByValue(taskToWindow, window.id));
-        //   }
-        //   else{
-        //     CTASKID = 0;
-        //   }
-        // });
-    }
-    else {
-
+  //If a tab is closed check if the window is closing too.
+  //If the window is not closing, save the task.
+    if (!removeInfo.isWindowClosing) {
         saveTaskInWindow(CTASKID);
     }
 });
 
 chrome.windows.onFocusChanged.addListener(function (newWindowId) {
-    if (newWindowId !== chrome.windows.WINDOW_ID_NONE) {
+  if(CTASKID != getKeyByValue(taskToWindow, newWindowId)){
+    deactivateTaskInWindow(CTASKID); //Deactivate the current task.
+    if (newWindowId !== chrome.windows.WINDOW_ID_NONE) { //Check if the focus has changed to some new window.
         chrome.windows.get(newWindowId, function (window) {
             if (window.type === "normal") {
-                if (getKeyByValue(taskToWindow, newWindowId)) {
-                    //saveTaskInWindow(CTASKID);
-                    console.log("focus changed and window not default");
-                    deactivateTaskInWindow(CTASKID);
-                    activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
-                }
-                else {
-                    chrome.browserAction.setBadgeText({"text": ""});
-                }
+              if(getKeyByValue(taskToWindow, newWindowId)){ //Check if the window that is switched to has a task associated with it.
+                activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
+              }
+              else{ //If the window has no task associated with it, what should we do?
+              }
             }
         });
     }
-    else {
-        if (getKeyByValue(taskToWindow, newWindowId)) {
-            console.log("focus changed and window default");
-            deactivateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
-            CTASKID = 0;
-            chrome.storage.local.set({"CTASKID": 0});
-        }
-        else {
-            chrome.browserAction.setBadgeText({"text": ""});
-        }
+    else{ //If there in no window to switch to, don't do anything.
+
     }
-
-    // chrome.storage.local.get("Text Log", function(textLog){
-    //   if(textLog["Text Log"]){
-    //     for(var url in textLog["Text Log"]){
-    //       // removeFromPageContentAndTextLog(url);
-    //     }
-    //   }
-    // })
-
+  }
 });
 
-//If a window is created outside Task context then remove task Badge
-chrome.windows.onCreated.addListener(function (window) {
-    if (!getKeyByValue(taskToWindow, window.id)) {
-        chrome.browserAction.setBadgeText({"text": ""});
+
+//Add keyboard shortcuts here.
+chrome.commands.onCommand.addListener(function (command) {
+    if (command === "like-page") {
+        chrome.tabs.get(activeTabId, function (tab) {
+            likePage(tab.url, "shortcut");
+        });
     }
 });
 
 function fireTaskSuggestion(response) {
-    var probableTaskID = response["probable task id"];
+    const probableTaskID = response["probable task id"];
     console.log("Notification should fire");
-    var matchedTags = response["matched tags"];
-    var matchedTagsString = "";
+    const matchedTags = response["matched tags"];
+    let matchedTagsString = "";
     for (var i = 0; i < matchedTags.length; i++) {
         matchedTagsString = matchedTagsString + matchedTags[i][0] + ", ";
     }
-    var fromPageURL = response["page url"];
-    var fromPageTitle = response["page title"];
-    var probableTask = response["probable task"];
+    const fromPageURL = response["page url"];
+    const fromPageTitle = response["page title"];
+    const probableTask = response["probable task"];
 
     chrome.notifications.create({
         "type": "basic",
@@ -379,8 +296,8 @@ function fireTaskSuggestion(response) {
                     chrome.storage.local.get("Text Log", function (textLog) {
                         textLog = textLog["Text Log"];
 
-                        for (var i = 0; i < matchedTags.length; i++) {
-                            var key = matchedTags[i][0].toLowerCase();
+                        for (let i = 0; i < matchedTags.length; i++) {
+                            const key = matchedTags[i][0].toLowerCase();
                             if (textLog.hasOwnProperty(key)) {
                                 textLog[key]["correctOccurences"]++;
                             }
@@ -403,10 +320,10 @@ function fireTaskSuggestion(response) {
             chrome.storage.local.get("Text Log", function (textLog) {
                 textLog = textLog["Text Log"];
 
-                for (var i = 0; i < matchedTags.length; i++) {
-                    var key = matchedTags[i][0].toLowerCase();
+                for (let i = 0; i < matchedTags.length; i++) {
+                    const key = matchedTags[i][0].toLowerCase();
                     if (textLog.hasOwnProperty(key)) {
-                        var tag = textLog[key];
+                        const tag = textLog[key];
                         textLog[key]["incorrectOccurences"]++;
                     }
                 }
