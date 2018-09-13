@@ -120,7 +120,7 @@ function getContextString(term, string, length) {
 function showArchivedResults(results) {
     console.log(results);
     const $archiveResults = $('<div id="sailboat-archive-results" style="padding: 10px; border: 1px solid lightblue;"><p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
-    $archiveResults.css({'max-height':'330px','width':'420px', 'overflow':'scroll'});
+    $archiveResults.css({'max-height':'330px','width':'420px', 'overflow':'scroll', 'margin-bottom':'10px'});
     $('#rhs').prepend($archiveResults);
 
     const resultsElement = document.getElementById("sailboat-archive-results");
@@ -139,7 +139,7 @@ function showArchivedResults(results) {
             }
             matchedTermsString = matchedTermsString + "</p></small>";
             contextStrings = contextStrings + "</p></small>";
-            resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
+            resultElement.innerHTML = urlString + matchedTermsString + "<br>";
             resultsElement.appendChild(resultElement);
         }
     } else {
