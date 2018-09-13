@@ -81,9 +81,8 @@ function searchArchivedPages(query) {
             }
 
             results = sortResults(results);
-            if (results.length > 0) {
-                showArchivedResults(results);
-            }
+            showArchivedResults(results);
+
 
             function sortResults(results) {
                 results.sort(function (a, b) {
@@ -143,5 +142,7 @@ function showArchivedResults(results) {
             resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
             resultsElement.appendChild(resultElement);
         }
+    } else {
+        $archiveResults.append($("<p>No matches found. Archive more pages!</p>"));
     }
 }

@@ -62,8 +62,7 @@ function showResults(results) {
             resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
             resultsElement.appendChild(resultElement);
         }
-    }
-    else {
+    } else {
         resultsElement.innerText = "No matches found. Archive more pages!";
     }
 }
