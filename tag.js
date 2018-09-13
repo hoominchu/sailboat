@@ -69,7 +69,7 @@ function Tag(str, tasksList, correctOccurences, incorrectOccurences) {
             for (let i = 0; i < urls.length; i++) {
                 if (urls[i] != null) {
                     if (urls[i].indexOf("chrome-extension://") < 0 && urls[i].indexOf("chrome://") < 0) {
-                        if (typeof (this.tasks[taskid][urls[i]]) == typeof (3)) {
+                        if (typeof (this.tasks[taskid][urls[i]]) === typeof (3)) {
                             totalTagFrequencyInTask = totalTagFrequencyInTask + this.tasks[taskid][urls[i]];
                         }
                     }
@@ -104,18 +104,20 @@ function Tag(str, tasksList, correctOccurences, incorrectOccurences) {
                 const urls = taskURLs[taskid];
                 let totalTagFrequencyInTask = 0;
                 for (let i = 0; i < urls.length; i++) {
-                    if (urls[i].indexOf("chrome-extension://") < 0 && urls[i].indexOf("chrome://") < 0) {
-                        if (typeof (this.tasks[taskid][urls[i]]) == typeof (3)) {
-                            totalTagFrequencyInTask = totalTagFrequencyInTask + this.tasks[taskid][urls[i]];
+                    if (urls[i] !== null) {
+                        if (urls[i].indexOf("chrome-extension://") < 0 && urls[i].indexOf("chrome://") < 0) {
+                            if (typeof (this.tasks[taskid][urls[i]]) === typeof (3)) {
+                                totalTagFrequencyInTask = totalTagFrequencyInTask + this.tasks[taskid][urls[i]];
+                            }
                         }
                     }
                 }
                 let weight = totalTagFrequencyInTask / Object.keys(this.tasks).length;
 
-                if (this.correctOccurences != null) {
+                if (this.correctOccurences !== null) {
                     weight = weight + (this.correctOccurences * this.positiveFactor);
                 }
-                if (this.incorrectOccurences != null) {
+                if (this.incorrectOccurences !== null) {
                     weight = weight + (this.incorrectOccurences * this.negativeFactor); // negative factor is negative so the weight will get decreased.
                 }
 

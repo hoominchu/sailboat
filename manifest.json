@@ -41,7 +41,8 @@
         "utils/util.js",
         "utils/web-util.js",
         "contentscripts/dock.js",
-        "contentscripts/timeSpent.js"
+        "contentscripts/timeSpent.js",
+        "contentscripts/archiveResults.js"
       ],
       "run_at": "document_end"
     }
