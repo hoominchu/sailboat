@@ -119,8 +119,8 @@ function getContextString(term, string, length) {
 
 function showArchivedResults(results) {
     console.log(results);
-    const $archiveResults = $('<div id="sailboat-archive-results"><p style="color: #008cba"><b>From your archive</b></p><hr></div>');
-    $archiveResults.css({'max-height':'330px','width':'450px', 'overflow':'scroll'});
+    const $archiveResults = $('<div id="sailboat-archive-results" style="padding: 10px; border: 1px solid lightblue;"><p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
+    $archiveResults.css({'max-height':'330px','width':'420px', 'overflow':'scroll'});
     $('#rhs').prepend($archiveResults);
 
     const resultsElement = document.getElementById("sailboat-archive-results");
