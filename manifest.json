@@ -8,6 +8,7 @@
     "default_popup": "popup/browserAction.html",
     "default_title": "Sail Boat"
   },
+  "omnibox": { "keyword" : "sb" },
   "background": {
     "scripts": [
       "lib/jquery-3.2.1.min.js",
@@ -66,7 +67,8 @@
     "contextMenus",
     "cookies",
     "https://*/*",
-    "http://*/*"
+    "http://*/*",
+    "webRequest"
   ],
   "icons": {
     "16": "images/SailBoat.png"
