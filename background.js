@@ -335,6 +335,12 @@ function fireTaskSuggestion(response) {
     });
 }
 
+chrome.omnibox.onInputEntered.addListener(function(query, disposition) {
+    if (query != null) {
+        chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
+    }
+});
+
 // Creates notification for suggested task.
 // chrome.runtime.onMessage.addListener(function (response, sender) {
 //     if (response.type == "task suggestion") {

@@ -20,7 +20,7 @@ const authorURL = "URL"; // Not being used yet
 // Getting current task id
 let TASKS = {lastAssignedId: 0};
 // var HISTORY = {};
-const CTASKID = 0;
+let CTASKID = 0;
 
 const taskToWindow = {};
 
