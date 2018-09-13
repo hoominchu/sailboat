@@ -1,3 +1,5 @@
+const commonwords = ["the", "of", "and", "a", "to", "in", "is", "you", "that", "it", "he", "was", "for", "on", "are", "as", "with", "his", "they", "i", "at", "be", "this", "have", "from", "or", "one", "had", "by", "word", "but", "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see", "number", "no", "way", "could", "people", "my", "than", "first", "been", "call", "who", "its", "now", "find", "long", "down", "day", "did", "get", "come", "made", "may", "part"];
+
 $(document).ready(function () {
     if (getDomainFromURL(window.location.href).indexOf('.google.') > -1) {
         var query = getUrlParameter('q', window.location.href);
@@ -23,22 +25,18 @@ function searchArchivedPages(query) {
             } else {
                 queryTerms = query.split("+");
             }
+
+            for (let i = 0; i < queryTerms.length; i++) {
+                if (commonwords.indexOf(queryTerms[i]) > -1) {
+                    queryTerms.splice(i, 1);
+                }
+            }
+
             for (let taskid in tasks) {
                 if (taskid !== "lastAssignedId") {
                     const task = tasks[taskid];
                     let searchThroughPages = task["likedPages"];
 
-                    // if (searchIn === "Open tabs") {
-                    //     let taskPages = task["tabs"];
-                    //     for (let key in taskPages) {
-                    //         if (taskPages[key]["url"].indexOf("chrome-extension://") < 0 && taskPages[key]["url"].indexOf("chrome://") < 0) {
-                    //             searchThroughPages.push(taskPages[key]["url"]);
-                    //         }
-                    //     }
-                    // }
-                    // if (searchIn === "Archived pages") {
-                    //     searchThroughPages = task["likedPages"];
-                    // }
                     if (searchThroughPages.length === 0) {
                     }
                     else {
