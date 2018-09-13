@@ -135,3 +135,18 @@ function saveJSON(data, filename){
     e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     a.dispatchEvent(e)
 }
+
+function getUrlParameter(sParam, url) {
+    let sPageURL = decodeURIComponent(url),
+        sURLVariables = sPageURL.replace('?','&').split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+}
