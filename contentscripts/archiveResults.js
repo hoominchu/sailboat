@@ -138,7 +138,7 @@ function showArchivedResults(results) {
             }
             matchedTermsString = matchedTermsString + "</p></small>";
             contextStrings = contextStrings + "</p></small>";
-            resultElement.innerHTML = urlString + matchedTermsString + "<br>";
+            resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
             resultsElement.appendChild(resultElement);
         }
     } else {
