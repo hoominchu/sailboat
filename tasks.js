@@ -300,3 +300,9 @@ function openLikedPages(task_id) {
 function closeTask(taskId) {
     chrome.windows.remove(taskToWindow[taskId]);
 }
+
+function downloadTasks(){
+  let dateObj = new Date();
+  var date = dateObj.toDateString();
+  downloadObjectAsJson(TASKS, "Sailboat Tasks from " + date);
+}
