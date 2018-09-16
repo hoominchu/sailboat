@@ -30,7 +30,7 @@ function detectTask(topics, url, pageTitle) {
 
                         // var taskURLs = getTaskURLs(tasksObject);
                         newLogTags(window.location.href, ctaskid, tags);
-                        console.log("Tags of current page logged");
+                        // console.log("Tags of current page logged");
                     });
                 });
             });
@@ -182,7 +182,7 @@ function newTaskDetector(ctaskid, pageTitle, tasks, textLog, tagsInput, settings
 
     if (shouldDetectTaskForPage(current_page_URL, settings)) {
 
-        console.log("Executing detector based on tag comparison");
+        // console.log("Executing detector based on tag comparison");
 
         const taskURLs = getTaskURLs(tasks);
 
@@ -222,22 +222,22 @@ function newTaskDetector(ctaskid, pageTitle, tasks, textLog, tagsInput, settings
             const referrerContent = pageContent[referrerURL];
             tagsInput = getNamedEntityTagsOnCurrentDocument(ctaskid, referrerContent);
             newTaskDetector(ctaskid, pageTitle, tasks, textLog, tagsInput, settings, pageContent, false);
-            console.log("Detecting task based on referrer.")
+            // console.log("Detecting task based on referrer.")
         }
 
-        console.log("Common tags in tasks in descending order");
-        console.log(taskWiseTotalScoresArray);
+        // console.log("Common tags in tasks in descending order");
+        // console.log(taskWiseTotalScoresArray);
 
-        console.log("Matched tags with current page and most similar task.");
+        // console.log("Matched tags with current page and most similar task.");
         const matchedTags = allMatchedTags[taskWiseTotalScoresArray[0][0]]; //taskWiseTotalScoresArray[0][0]
-        console.log(matchedTags);
+        // console.log(matchedTags);
 
         if (IS_SHOW_NOTIFICATIONS) {
             suggestProbableTask(taskWiseTotalScoresArray, matchedTags, pageTitle, ctaskid, tasks, settings);
         }
 
     } else {
-        console.log("Domain is to be ignored. Did not execute detector.");
+        // console.log("Domain is to be ignored. Did not execute detector.");
     }
 }
 
@@ -283,7 +283,7 @@ function suggestProbableTask(taskWiseTotalScoresArray, matchedTags, pageTitle, c
 
         const mostProbableTaskName = tasks[mostProbableTaskID]["name"];
 
-        console.log("This page might belong to task " + mostProbableTaskName);
+        // console.log("This page might belong to task " + mostProbableTaskName);
 
         const taskURLs = getTaskURLs(tasks);
 
@@ -323,7 +323,7 @@ function shouldShowSuggestion(matchesWithMostProbableTask, matchesWithSecondMost
     }
 
     const diff = matchesWithMostProbableTask - matchesWithSecondMostProbableTask;
-    console.log(diff / matchesWithMostProbableTask);
+    // console.log(diff / matchesWithMostProbableTask);
 
     if ((diff / matchesWithMostProbableTask) > threshold) {
         if ((Object.keys(matchedTags).length) > 10) {

@@ -155,11 +155,8 @@ function activateTaskInWindow(task_id) {
             tasks[task_id].activationTime.push(now.toString());
             tasks[task_id].isActive = true;
 
-            //Set the badge text as new task name.
-            chrome.browserAction.setBadgeText({"text": TASKS[task_id].name.slice(0, 4)});
 
             if (taskToWindow.hasOwnProperty(task_id)) { //Task is already open in some window, so just switch to that window.
-                console.log("activate task "+ task_id);
                 chrome.windows.update(taskToWindow[task_id], {"focused": true});
             }
 
@@ -183,8 +180,10 @@ function activateTaskInWindow(task_id) {
                 }
             }
 
+            //Set the badge text as new task name.
+            chrome.browserAction.setBadgeText({"text": TASKS[task_id].name.slice(0, 4)});
+
             CTASKID = task_id; //Set the CTASKID as the id of the task/
-            console.log("CTASKID set as " + task_id)
 
             //Add the bookmarks for the current task;
             //createBookmarks(TASKS[task_id].bookmarks);

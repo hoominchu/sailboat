@@ -94,7 +94,7 @@ chrome.storage.local.get("Settings", function (e) {
 
         // Setting default settings in local storage.
         chrome.storage.local.set({"Settings": DEFAULT_SETTINGS}, function () {
-            console.log("Settings object initialised in local storage.");
+            // console.log("Settings object initialised in local storage.");
         })
     }
 });
@@ -105,7 +105,7 @@ chrome.storage.local.get("Advanced Search Settings", function (e) {
             "search in": "Open tabs"
         };
         chrome.storage.local.set({"Advanced Search Settings": defaultAdvSearchSettings}, function () {
-            console.log("Advanced search settings initialised.");
+            // console.log("Advanced search settings initialised.");
         })
     }
 });
@@ -113,7 +113,7 @@ chrome.storage.local.get("Advanced Search Settings", function (e) {
 chrome.storage.local.get("Debug Stopwords", function (e) {
     if (isEmpty(e)) {
         chrome.storage.local.set({"Debug Stopwords": []}, function () {
-            console.log("Debug stopwords initialised.");
+            // console.log("Debug stopwords initialised.");
         })
     }
 });

@@ -29,7 +29,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         }
     }
     else if (request.type === "add-to-task") {
-        // console.log(window.tabs);
         const senderTab = sender.tab;
         const senderWindowId = senderTab.windowId;
         chrome.windows.get(senderWindowId, {populate: true}, function (window) {
@@ -53,7 +52,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     else if (request.type === "switch-task" && request.nextTaskId !== "") {
        if(CTASKID != request.nextTaskId){
         saveTaskInWindow(CTASKID);
-        console.log("switch from " + CTASKID +" to " + request.nextTaskId);
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
       }
@@ -143,18 +141,8 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
     else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
-      console.log("Time Spent on " + request.url + " is " + request.timeSpent/60000 + " minutes");
     } else if (request.type === "detect-task") {
         detectTask(request.topics, request.url, request.title);
-    }
-});
-
-chrome.windows.onRemoved.addListener(function (windowId) {
-  //If window is removed deactivate the task and delete taskId from taskToWindow dict and
-  //Don't need to save it because already saved on each tab open/close/update;
-    if (windowId !== backgroundPageId) {
-        deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
-        delete taskToWindow[getKeyByValue(taskToWindow, windowId)];
     }
 });
 
@@ -204,22 +192,29 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     }
 });
 
-chrome.windows.onFocusChanged.addListener(function (newWindowId) {
-  if(CTASKID != getKeyByValue(taskToWindow, newWindowId)){
-    deactivateTaskInWindow(CTASKID); //Deactivate the current task.
-    if (newWindowId !== chrome.windows.WINDOW_ID_NONE) { //Check if the focus has changed to some new window.
-        chrome.windows.get(newWindowId, function (window) {
-            if (window.type === "normal") {
-              if(getKeyByValue(taskToWindow, newWindowId)){ //Check if the window that is switched to has a task associated with it.
-                activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
-              }
-              else{ //If the window has no task associated with it, what should we do?
-              }
-            }
-        });
+chrome.windows.onRemoved.addListener(function (windowId) {
+  //If window is removed deactivate the task and delete taskId from taskToWindow dict and
+  //Don't need to save it because already saved on each tab open/close/update;
+    if (windowId !== backgroundPageId) {
+        deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
+        delete taskToWindow[getKeyByValue(taskToWindow, windowId)];
     }
-    else{ //If there in no window to switch to, don't do anything.
+});
 
+chrome.windows.onFocusChanged.addListener(function (newWindowId) {
+  if(getKeyByValue(taskToWindow, newWindowId)){ //Check if the window that is switched to has an id associated with it.
+    if(CTASKID != getKeyByValue(taskToWindow, newWindowId)){ //If the window that is switched to is not already active do the following..
+      deactivateTaskInWindow(CTASKID); //Deactivate the current task.
+      if (newWindowId !== chrome.windows.WINDOW_ID_NONE) { //Check if the focus has changed to some new window.
+          chrome.windows.get(newWindowId, function (window) {
+              if (window.type === "normal") {
+                  activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
+              }
+          });
+      }
+      else{ //If there in no window to switch to, don't do anything.
+
+      }
     }
   }
 });
@@ -234,9 +229,24 @@ chrome.commands.onCommand.addListener(function (command) {
     }
 });
 
+
+
+chrome.omnibox.onInputEntered.addListener(function(query, disposition) {
+    if (query != null) {
+        chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
+    }
+});
+
+// Creates notification for suggested task.
+// chrome.runtime.onMessage.addListener(function (response, sender) {
+//     if (response.type == "task suggestion") {
+//
+//     }
+// });
+
 function fireTaskSuggestion(response) {
     const probableTaskID = response["probable task id"];
-    console.log("Notification should fire");
+    // console.log("Notification should fire");
     const matchedTags = response["matched tags"];
     let matchedTagsString = "";
     for (var i = 0; i < matchedTags.length; i++) {
@@ -334,16 +344,3 @@ function fireTaskSuggestion(response) {
         });
     });
 }
-
-chrome.omnibox.onInputEntered.addListener(function(query, disposition) {
-    if (query != null) {
-        chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
-    }
-});
-
-// Creates notification for suggested task.
-// chrome.runtime.onMessage.addListener(function (response, sender) {
-//     if (response.type == "task suggestion") {
-//
-//     }
-// });
