@@ -344,3 +344,11 @@ function setTaskBadge(windowId, task_id) {
 //       });
 //     }
 // }
+
+function reloadSailboatTabs(){
+  chrome.tabs.query({"title": "Sail Boat"}, function(tabs){ //Reload the Sail Boat page when window is switched.
+    for(var i = 0; i<tabs.length;i++){
+        chrome.tabs.reload(tabs[i].id);
+    }
+  });
+}

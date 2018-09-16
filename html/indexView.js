@@ -1,4 +1,4 @@
-function showTasks(Tasks, openTasks) {
+function showTasks(Tasks, ctaskid) {
   $("#tasks-container").empty();
   $("#archived-tasks").empty();
 
@@ -7,47 +7,55 @@ function showTasks(Tasks, openTasks) {
 
     for (let task_id in Tasks) {
         if (task_id != "lastAssignedId" && Tasks[task_id].id != 0 && !(Tasks[task_id].archived)) {
-            setUpUnarchivedTasks(Tasks, task_id, openTasks);
+            setUpUnarchivedTasks(Tasks, task_id, ctaskid);
         }
         else if (task_id != "lastAssignedId" && Tasks[task_id].id != 0 && Tasks[task_id].archived) {
             setUpArchivedTasks(Tasks, task_id);
         }
     }
+    document.getElementById("createTask").addEventListener("click", function(){
+        const tabs = [];
+        chrome.windows.getCurrent({"populate": true}, function (window) {
+            for (let i = 0; i < window.tabs.length; i++) {
+                if (window.tabs[i].highlighted) {
+                    tabs.push(window.tabs[i]);
+                }
+            }
+            const closeCurrentTask = confirm("Switch to the new task?");
+            sendCreateTaskMessage(closeCurrentTask, tabs);
+        });
+    });
 }
 
-function setUpUnarchivedTasks(Tasks, task_id, openTasks){
+function setUpUnarchivedTasks(Tasks, task_id, ctaskid){
     const col = $("<div class='col-lg-3'></div>");
 
-    if (Tasks[task_id].isActive) {
+    if (Tasks[task_id].isOpen) {
+      if(ctaskid == task_id){
         var card = $("<div>", {
             "class": "card border-primary mb-3 task",
             "style": "max-width: 20rem; height:12em; border-radius:0.8em",
             "id": task_id
         });
-        var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name + "       "});
-        var openPill = $('<span class="badge badge-pill badge-success">Active</span>');
-        card_header.append(openPill);
-    }
-    else {
-      if(openTasks.indexOf(task_id)>-1){
-        var card = $("<div>", {
-            "class": "card border-secondary mb-3 task",
-            "style": "max-width: 20rem; height:12em; border-radius:0.8em",
-            "id": task_id
-        });
-        var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name + "       "});
-        var openPill = $('<span class="badge badge-pill badge-primary">Open</span>');
-        card_header.append(openPill);
       }
       else{
         var card = $("<div>", {
-            "class": "card border-secondary mb-3 task",
+            "class": "card mb-3 task",
             "style": "max-width: 20rem; height:12em; border-radius:0.8em",
             "id": task_id
         });
-        var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name});
       }
-
+        var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name + "       "});
+        var openPill = $('<span class="badge badge-pill badge-success">Open</span>');
+        card_header.append(openPill);
+    }
+    else{
+      var card = $("<div>", {
+          "class": "card border-secondary mb-3 task",
+          "style": "max-width: 20rem; height:12em; border-radius:0.8em",
+          "id": task_id
+      });
+      var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name});
     }
 
     const card_body = $("<div>", {"class": "card-body text-dark"});
@@ -75,7 +83,7 @@ function setUpArchivedTasks(Tasks, task_id){
 
     const col = $("<div class='col-lg-3'></div>");
 
-    if (Tasks[task_id].isActive) {
+    if (Tasks[task_id].isOpen) {
         var card = $("<div>", {
             "class": "card border-primary mb-3 task",
             "style": "max-width: 20rem; height:12em; border-radius:0.8em",

@@ -1,10 +1,10 @@
-function Task(task_id, task_name, tabs, bookmarks, isActive) {
+function Task(task_id, task_name, tabs, bookmarks, isOpen) {
     this.id = task_id;
     this.name = task_name;
     this.tabs = tabs;
     this.bookmarks = bookmarks;
     this.history = [];
-    this.active = isActive;
+    this.isOpen = isOpen;
     this.activationTime = [];
     this.deactivationTime = [];
     this.likedPages = [];
@@ -153,8 +153,8 @@ function activateTaskInWindow(task_id) {
             //Mark task as active.
             var now = new Date();
             tasks[task_id].activationTime.push(now.toString());
-            tasks[task_id].isActive = true;
-
+            tasks[task_id].isOpen = true;
+            console.log(tasks[task_id].name + " marked as active.");
 
             if (taskToWindow.hasOwnProperty(task_id)) { //Task is already open in some window, so just switch to that window.
                 chrome.windows.update(taskToWindow[task_id], {"focused": true});
@@ -188,8 +188,12 @@ function activateTaskInWindow(task_id) {
             //Add the bookmarks for the current task;
             //createBookmarks(TASKS[task_id].bookmarks);
 
+            TASKS = tasks;
+
             updateStorage("TASKS", tasks); //Update chrome storage.
             updateStorage("CTASKID", task_id)
+
+
         }
         catch (err) {
             console.log(err.message);
@@ -229,7 +233,6 @@ function deactivateTaskInWindow(task_id) {
       //Mark task object as inactive and add the current time to its deactivation time.
       var now = new Date();
       TASKS[task_id].deactivationTime.push(now.toString());
-      TASKS[task_id].isActive = false;
 
       chrome.browserAction.setBadgeText({"text": "Default"});  //Set the badge text to Default
 
@@ -298,6 +301,7 @@ function openLikedPages(task_id) {
 
 function closeTask(taskId) {
     chrome.windows.remove(taskToWindow[taskId]);
+    TASKS[taskId].isOpen = false;
 }
 
 function downloadTasks(){

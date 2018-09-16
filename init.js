@@ -42,8 +42,18 @@ const defaultTaskId = 0;
 chrome.storage.local.get("TASKS", function (taskObject) {
     if (taskObject["TASKS"]) {
         TASKS = taskObject["TASKS"];//On retreiving TASKS from chrome storage, one gets an object {TASKS: balhah}, to retreive the actual array call taskObject["TASKS"]
+
+        for(taskId in TASKS){ //Mark all tasks as inactive, this needs to be done here because there is no way of marking tasks as inactive when the browser closes.
+          if(taskId != "lastAssignedId" && taskId != 0){
+            TASKS[taskId].isOpen = false;
+          }
+        }
+
+        chrome.storage.local.set({"TASKS": TASKS});
     }
 });
+
+reloadSailboatTabs();
 
 // chrome.storage.local.get(historyFieldName, function(historyObj){
 //   if(historyObj[historyFieldName]){
