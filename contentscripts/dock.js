@@ -23,7 +23,8 @@ $(document).ready(function () {
             loadClickLogger();
             loadKeyPressHandler();
             setHighlightIdx();
-            sendDetectTaskMessage();
+            // sendDetectTaskMessage();
+            // groupElementsByClass();
         }
     });
 });
@@ -62,6 +63,44 @@ function showNewTaskPopup() {
     newTaskBar.siblings().css({"filter": "blur(100px)"});
     newTaskBar.show();
     newTaskBar.focus();
+}
+
+function groupElementsByClass() {
+    let groups = {};
+    $('*').each(function () {
+        if ($(this).is(':visible'))  {
+            let text = $(this).text();
+            if ($(this).text()) {
+                text = text.trim();
+            }
+            if ($(this).text() && text.length < 100 && stopwords.indexOf(text.toLowerCase()) < 0 && /[a-zA-Z]/.test(text)) {
+                const classes = $(this).attr('class');
+                const style = $(this).attr('style');
+                const link = $(this).attr('href');
+                if (classes) {
+                    if (groups.hasOwnProperty(classes)) {
+                        groups[classes].push($(this).text());
+                    } else {
+                        groups[classes] = [$(this).text()];
+                    }
+                }
+                if (style) {
+                    if (groups.hasOwnProperty(style)) {
+                        groups[style].push($(this).text());
+                    } else {
+                        groups[style] = [$(this).text()];
+                    }
+                }
+                // if (link) {
+                //     if (groups.hasOwnProperty(link)) {
+                //         groups[link].push($(this).text());
+                //     } else {
+                //         groups[link] = [$(this).text()];
+                //     }
+                // }
+            }
+        }
+    }, console.log(groups));
 }
 
 function sendCreateTaskMsg(taskName) {
