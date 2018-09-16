@@ -23,7 +23,7 @@ $(document).ready(function () {
             loadClickLogger();
             loadKeyPressHandler();
             setHighlightIdx();
-            sendDetectTaskMessage();
+            // sendDetectTaskMessage();
         }
     });
 });
