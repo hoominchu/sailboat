@@ -41,7 +41,7 @@ function returnPage(page, url) {
 function likePage(url, method) {
     var page = TASKS[CTASKID].history[indexOfElementWithProperty(TASKS[CTASKID].history, "url", url)];
     if (TASKS[CTASKID].likedPages.indexOf(url) > -1) {
-        delete TASKS[CTASKID].likedPages[TASKS[CTASKID].likedPages.indexOf(url)];
+        TASKS[CTASKID].likedPages.splice([TASKS[CTASKID].likedPages.indexOf(url)],1);
     } else {
         TASKS[CTASKID].likedPages.push(url);
     }
