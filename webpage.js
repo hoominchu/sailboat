@@ -39,14 +39,14 @@ function returnPage(page, url) {
 // }
 
 function likePage(url, method) {
-    // var page = TASKS[CTASKID].history[indexOfElementWithProperty(TASKS[CTASKID].history, "url", url)];
+    var page = TASKS[CTASKID].history[indexOfElementWithProperty(TASKS[CTASKID].history, "url", url)];
     if (TASKS[CTASKID].likedPages.indexOf(url) > -1) {
         delete TASKS[CTASKID].likedPages[TASKS[CTASKID].likedPages.indexOf(url)];
     } else {
         TASKS[CTASKID].likedPages.push(url);
     }
 
-    // page.isLiked = !(page.isLiked);
+    page.isLiked = !(page.isLiked);
     if (method == "shortcut") {
         chrome.tabs.sendMessage(activeTabId, {
             "type": "page-liked-with-shortcut"
