@@ -24,7 +24,7 @@ $(document).ready(function () {
             loadKeyPressHandler();
             setHighlightIdx();
             // sendDetectTaskMessage();
-            // groupElementsByClass();
+            groupElementsByClass();
         }
     });
 });
@@ -65,37 +65,47 @@ function showNewTaskPopup() {
     newTaskBar.focus();
 }
 
+function cleanElemText(txt) {
+    txt = txt.trim();
+    txt = txt.replace(/(\r\n\t|\n|\r\t)/gm, "");
+    txt = txt.replace(/\u21b5/g, "");
+    txt = txt.replace(/\s+/g,' ');
+    return txt;
+}
+
 function groupElementsByClass() {
     let groups = {};
     $('*').each(function () {
         if ($(this).is(':visible'))  {
             let text = $(this).text();
-            if ($(this).text()) {
-                text = text.trim();
-            }
+            text = cleanElemText(text);
             if ($(this).text() && text.length < 100 && stopwords.indexOf(text.toLowerCase()) < 0 && /[a-zA-Z]/.test(text)) {
                 const classes = $(this).attr('class');
                 const style = $(this).attr('style');
                 const link = $(this).attr('href');
                 if (classes) {
                     if (groups.hasOwnProperty(classes)) {
-                        groups[classes].push($(this).text());
+                        if (groups[classes].indexOf(text) < 0) {
+                            groups[classes].push(text);
+                        }
                     } else {
-                        groups[classes] = [$(this).text()];
+                        groups[classes] = [text];
                     }
                 }
                 if (style) {
                     if (groups.hasOwnProperty(style)) {
-                        groups[style].push($(this).text());
+                        if (groups[classes].indexOf(text) < 0) {
+                            groups[classes].push(text);
+                        }
                     } else {
-                        groups[style] = [$(this).text()];
+                        groups[style] = [text];
                     }
                 }
                 // if (link) {
                 //     if (groups.hasOwnProperty(link)) {
-                //         groups[link].push($(this).text());
+                //         groups[link].push(text);
                 //     } else {
-                //         groups[link] = [$(this).text()];
+                //         groups[link] = [text];
                 //     }
                 // }
             }
