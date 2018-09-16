@@ -94,8 +94,8 @@ function groupElementsByClass() {
                 }
                 if (style) {
                     if (groups.hasOwnProperty(style)) {
-                        if (groups[classes].indexOf(text) < 0) {
-                            groups[classes].push(text);
+                        if (groups[style].indexOf(text) < 0) {
+                            groups[style].push(text);
                         }
                     } else {
                         groups[style] = [text];
