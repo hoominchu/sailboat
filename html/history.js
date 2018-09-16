@@ -49,7 +49,14 @@ function createRow(page) {
         tableRow.append('<td></td>')
     }
 
-    tableRow.append('<td> '+Math.round(page.timeSpent/60000)+ " minutes </td>");
+    let timeSpent = Math.round(page.timeSpent/60000);
+    if(timeSpent == 0){
+      tableRow.append('<td> Less than a minute</td>');
+    }
+    else{
+      tableRow.append('<td>'+ timeSpent + ' minutes</td>');
+    }
+
 
     tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>');
     $("#historyTable").append(tableRow)
