@@ -52,7 +52,7 @@ function filterTasks(filter) {
 }
 
 function addToHistory(url, title, task_id) {
-    if (url != "chrome://newtab/" && url != "about:blank" && url) {
+    if (url != "chrome://newtab/" && url != "html/index.html" && url) {
         if (TASKS[task_id].history.find((page) => page.url === url)) {
             const date = new Date();
             TASKS[task_id].history.find((page) => page.url === url).timeVisited.push(date.toString());
@@ -173,7 +173,7 @@ function activateTaskInWindow(task_id) {
                     });
                 }
                 else {
-                    chrome.windows.create({"url": "about:blank"}, function (window) { //task has 0 tabs.
+                    chrome.windows.create({"url": "html/index.html"}, function (window) { //task has 0 tabs.
                         var taskId = task_id;
                         taskToWindow[taskId] = window.id; //assign the window id to the task
                     });

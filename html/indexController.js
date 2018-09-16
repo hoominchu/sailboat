@@ -11,7 +11,6 @@ window.onload = function () {
 
           if (taskObject["TASKS"]) {
 
-
               showTasks(taskObject["TASKS"], request.openTasks);
 
               funcOnClick("openTask", "class", function (element) {
@@ -93,9 +92,6 @@ window.onload = function () {
         }
       });
     });
-
-
-
 
 };
 
