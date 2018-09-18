@@ -57,6 +57,12 @@ chrome.storage.local.get("Page Content", function (e) {
     }
 });
 
+chrome.storage.local.get("Collections", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Collections": {}});
+    }
+});
+
 chrome.storage.local.get("highlightIdx", function (e) {
     if (isEmpty(e)) {
         chrome.storage.local.set({"highlightIdx": 0});
@@ -151,3 +157,12 @@ chrome.storage.local.get("Debug Stopwords", function (e) {
 //         });
 //     }
 // });
+
+function isEmpty(obj) {
+    for(let prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return JSON.stringify(obj) === JSON.stringify({});
+}

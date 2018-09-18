@@ -1,25 +1,31 @@
-// function refreshContextMenu() {
-//     chrome.contextMenus.removeAll(function () {
-//         chrome.contextMenus.create({"title": "Add to task", "id": "rootMenu", "contexts": ["link"]});
-//         for (var task_id in TASKS) {
-//             if (task_id != "lastAssignedId") {
-//                 chrome.contextMenus.create({
-//                     "title": TASKS[task_id].name,
-//                     "parentId": "rootMenu",
-//                     "id": TASKS[task_id].id.toString(),
-//                     "contexts": ["link"]
-//                 });
-//             }
-//         }
-//         chrome.contextMenus.create({"title": "Save to Sailboat", "id": "saveToSailboat", "contexts": ["link"]});
-//
-//     })
-// }
-//
-//
-//
-// chrome.contextMenus.onClicked.addListener(function (info, tab) {
-//     if (info.parentMenuItemId == "rootMenu") {
-//         addToTask(info.linkUrl, info.menuItemId);
-//     }
-// });
+refreshContextMenu();
+
+function refreshContextMenu() {
+    chrome.storage.local.get("Collections", function (collections) {
+        collections = collections["Collections"];
+        chrome.contextMenus.removeAll(function () {
+            chrome.contextMenus.create({"title": "Add to collection", "id": "rootMenu", "contexts": ["selection","link"]});
+            for (let collectionName in collections) {
+                chrome.contextMenus.create({
+                    "title": collectionName,
+                    "parentId": "rootMenu",
+                    "id": collectionName,
+                    "contexts": ["selection","link"]
+                });
+            }
+        })
+    });
+}
+
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    if (info.parentMenuItemId === "rootMenu") {
+        console.log(info);
+        chrome.storage.local.get("Collections", function (collections) {
+            collections = collections["Collections"];
+            if (!collections[info.menuItemId].hasOwnProperty(info.selectionText)) {
+                collections[info.menuItemId][info.selectionText] = 1;
+            }
+            chrome.storage.local.set({"Collections":collections});
+        })
+    }
+});

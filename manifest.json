@@ -68,7 +68,8 @@
     "cookies",
     "https://*/*",
     "http://*/*",
-    "webRequest"
+    "webRequest",
+    "contextMenu"
   ],
   "icons": {
     "16": "images/SailBoat.png"
