@@ -72,11 +72,13 @@ function checkAndUpdateCollections() {
                 }
             }
         }
-        chrome.runtime.sendMessage({
-            "type" : "interests found",
-            "interests" : foundInterests
-        });
-        chrome.storage.local.set({"Collections":collections});
+        if (foundInterests.length > 0) {
+            chrome.runtime.sendMessage({
+                "type" : "interests found",
+                "interests" : foundInterests
+            });
+            chrome.storage.local.set({"Collections":collections});
+        }
     })
 }
 
