@@ -124,11 +124,11 @@ chrome.storage.local.get("Debug Stopwords", function (e) {
     }
 });
 
-// chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
-//     if (cTaskIdObject["CTASKID"]>0) {
-//         CTASKID = cTaskIdObject["CTASKID"];
-//     }
-// });
+chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
+    if (cTaskIdObject["CTASKID"]>0) {
+        CTASKID = cTaskIdObject["CTASKID"];
+    }
+});
 
 // chrome.storage.local.get(preferredAuthorsFieldName, function (prefAuthObj) {
 //     if (JSON.stringify(prefAuthObj) == "{}") {

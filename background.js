@@ -115,34 +115,30 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             }
             chrome.storage.local.set({"Click Log": clickLog});
         });
-    }
-    else if (request.type === "give me open tasks") {
+    } else if (request.type === "give me open tasks") {
         chrome.runtime.sendMessage({
             "type": "array of open tasks",
             "openTasks": Object.keys(taskToWindow)
         });
-    }
-    else if (request.type === "likePages") {
+    } else if (request.type === "likePages") {
         likePages(request.urls, request.taskId);
-    }
-    else if (request.type === "deletePages") {
+    } else if (request.type === "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
-    }
-    else if(request.type === "restore-tasks"){
+    } else if(request.type === "restore-tasks"){
       TASKS = request.taskObject;
       updateStorage("TASKS", TASKS);
-    }
-    else if(request.type === "give unarchived tasks dict"){
+    } else if(request.type === "give unarchived tasks dict"){
       let tasksDict = filterTasks({"archived": false});
       chrome.runtime.sendMessage({
         "type": "unarchived tasks dict",
         "tasksDict":tasksDict
       });
-    }
-    else if(request.type === "time spent on page"){
+    } else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
     } else if (request.type === "detect-task") {
         detectTask(request.topics, request.url, request.title);
+    } else if (request.type === "interests found") {
+        fireInterestNotification(request.interests);
     }
 });
 
@@ -243,6 +239,32 @@ chrome.omnibox.onInputEntered.addListener(function(query, disposition) {
 //
 //     }
 // });
+
+function fireInterestNotification(interests) {
+    const interestsList = [];
+    let messageString = "";
+    for (let i = 0; i < interests.length; i++) {
+        const interest = interests[i];
+        const collectionName = interest.collectionName;
+        const itemName = interest.itemName;
+        const frequency = interest.frequency;
+        const interestListItem = {};
+        interestListItem['title'] = itemName;
+        interestListItem['message'] = collectionName + ' (' + frequency + ')';
+        interestsList.push(interestListItem);
+        messageString += itemName + ' (' + collectionName + ') | ';
+    }
+
+    chrome.notifications.create({
+        "type": "basic",
+        "iconUrl": "images/logo_white_sails_no_text.png",
+        "title": "This page looks interesting!",
+        "message": messageString,
+        "requireInteraction": false
+    }, function (notificationID) {
+        console.log("Last error:", chrome.runtime.lastError);
+    });
+}
 
 function fireTaskSuggestion(response) {
     const probableTaskID = response["probable task id"];

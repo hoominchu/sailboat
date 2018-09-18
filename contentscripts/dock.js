@@ -24,7 +24,8 @@ $(document).ready(function () {
             loadKeyPressHandler();
             setHighlightIdx();
             // sendDetectTaskMessage();
-            groupElementsByClass();
+            // groupElementsByClass();
+            checkAndUpdateCollections();
         }
     });
 });
@@ -48,6 +49,35 @@ function sendDetectTaskMessage() {
         url: window.location.href,
         title: document.getElementsByTagName("title")[0].innerHTML
     });
+}
+
+function checkAndUpdateCollections() {
+    chrome.storage.local.get("Collections", function (collections) {
+        collections = collections["Collections"];
+        const foundInterests = [];
+        const pageText = document.documentElement.innerText;
+        for (let collectionName in collections) {
+            const collection = collections[collectionName];
+            for (let item in collection) {
+                if (pageText.toLowerCase().indexOf(item.toLowerCase()) > -1) {
+                    console.log(item);
+                    const frequency = collection[item];
+                    collection[item]++;
+                    const interest = {
+                        "collectionName":collectionName,
+                        "itemName":item,
+                        "frequency":frequency
+                    };
+                    foundInterests.push(interest);
+                }
+            }
+        }
+        chrome.runtime.sendMessage({
+            "type" : "interests found",
+            "interests" : foundInterests
+        });
+        chrome.storage.local.set({"Collections":collections});
+    })
 }
 
 function setHighlightIdx() {
