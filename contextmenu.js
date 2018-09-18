@@ -1,16 +1,26 @@
 refreshContextMenu();
 
+chrome.runtime.onMessage.addListener(function (request, sender) {
+    if (request.type === "collections edited") {
+        refreshContextMenu();
+    }
+});
+
 function refreshContextMenu() {
-    chrome.storage.local.get("Collections", function (collections) {
-        collections = collections["Collections"];
-        chrome.contextMenus.removeAll(function () {
-            chrome.contextMenus.create({"title": "Add to collection", "id": "rootMenu", "contexts": ["selection","link"]});
+    chrome.contextMenus.removeAll(function () {
+        chrome.storage.local.get("Collections", function (collections) {
+            collections = collections["Collections"];
+            chrome.contextMenus.create({
+                "title": "Add to collection",
+                "id": "rootMenu",
+                "contexts": ["selection", "link"]
+            });
             for (let collectionName in collections) {
                 chrome.contextMenus.create({
                     "title": collectionName,
                     "parentId": "rootMenu",
                     "id": collectionName,
-                    "contexts": ["selection","link"]
+                    "contexts": ["selection", "link"]
                 });
             }
         })
@@ -25,7 +35,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             if (!collections[info.menuItemId].hasOwnProperty(info.selectionText)) {
                 collections[info.menuItemId][info.selectionText] = 1;
             }
-            chrome.storage.local.set({"Collections":collections});
+            chrome.storage.local.set({"Collections": collections});
         })
     }
 });
