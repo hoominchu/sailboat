@@ -119,7 +119,7 @@ function showArchivedResults(results) {
     let sailboatIconPath = chrome.runtime.getURL("images/logo_white_sails.png");
     // <div style="display: inline-block; margin-right: 8px; height: 20px; width: 20px; background-image: url("'+ sailboatIconPath.trim() + '");"></div>
     const $archiveResults = $('<div id="sailboat-archive-results" style="padding: 10px; border: 1px solid lightblue;"><p style="color: #008cba; display: inline-block"><b>From your archive</b></p><hr></div>');
-    $archiveResults.css({'max-height':'330px','width':'420px', 'overflow':'scroll', 'margin-bottom':'10px'});
+    $archiveResults.css({'max-height':'330px','width':'435px', 'overflow':'scroll', 'margin-bottom':'10px'});
     $('#rhs').prepend($archiveResults);
 
     const resultsElement = document.getElementById("sailboat-archive-results");

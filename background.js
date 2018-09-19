@@ -192,6 +192,7 @@ chrome.windows.onRemoved.addListener(function (windowId) {
   //If window is removed deactivate the task and delete taskId from taskToWindow dict and
   //Don't need to save it because already saved on each tab open/close/update;
     if (windowId !== backgroundPageId) {
+        TASKS[getKeyByValue(taskToWindow, windowId)].isOpen = false; //Don't need to save the Tasks object because it is already saved.
         deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
         delete taskToWindow[getKeyByValue(taskToWindow, windowId)];
     }
@@ -209,10 +210,12 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
           });
       }
       else{ //If there in no window to switch to, don't do anything.
-
       }
+
     }
   }
+
+  reloadSailboatTabs();
 });
 
 

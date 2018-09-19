@@ -485,6 +485,8 @@ function loadTaskNames(ctaskid) {
                 if (taskid === ctaskid) {
                     openTaskBtn.removeClass("open-task-btn");
                     openTaskBtn.addClass("current-task");
+                } else if (tasks[taskid].isOpen == true) {
+                    openTaskBtn.addClass("open-task");
                 }
 
                 if (taskid === '0') {
@@ -531,6 +533,7 @@ function loadTaskNames(ctaskid) {
                     let closeTaskBtn = $('<div class="close-task-btn" data-toggle="tooltip" title="Close this task"></div>');
                     closeTaskBtn.css('background-image', 'url(' + closeIconPath + ')');
                     closeTaskBtn.click(function (closeButton) {
+                        $(this).parent().find('.open-task').removeClass('open-task');
                         return function (closeButton) {
                             chrome.runtime.sendMessage(
                                 {
