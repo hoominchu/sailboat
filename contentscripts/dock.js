@@ -172,7 +172,7 @@ function loadNewTaskBtn() {
 
     const newTaskBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="new-task-input" placeholder="Enter task name">');
     $('body').append(newTaskBar);
-    newTaskBar.draggable();
+    // newTaskBar.draggable();
     newTaskBar.hide();
 
     newTaskBar.keyup(function (event) {
@@ -398,7 +398,7 @@ function loadDock() {
         });
     });
 
-    dock.resizable();
+    // dock.resizable();
     // dock.sortable({
     //     cancel: '.non-sortable',
     //     cursor: "grabbing",
@@ -482,7 +482,7 @@ function loadTaskNames(ctaskid) {
                 let taskBtn = $('<div class="task-btn" id="' + taskid + '"></div>');
                 let openTaskBtn = $('<div class="open-task-btn" data-toggle="tooltip">' + tasks[taskid].name + '</div>');
 
-                if (taskid === ctaskid) {
+                if (taskid == ctaskid) {
                     openTaskBtn.removeClass("open-task-btn");
                     openTaskBtn.addClass("current-task");
                 } else if (tasks[taskid].isOpen == true) {
