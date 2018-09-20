@@ -3,7 +3,9 @@ const commonwords = ["the", "of", "and", "a", "to", "in", "is", "you", "that", "
 $(document).ready(function () {
     if (getDomainFromURL(window.location.href).indexOf('.google.') > -1) {
         var query = getUrlParameter('q', window.location.href);
-        searchArchivedPages(query);
+        if (query) {
+            searchArchivedPages(query);
+        }
     }
 });
 

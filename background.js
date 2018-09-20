@@ -179,7 +179,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         }
         tabIdToURL[tabId] = tab.url;
         saveTaskInWindow(CTASKID);
-        addToHistory(tab.url, tab.title, CTASKID);
+        // addToHistory(tab.url, tab.title, CTASKID);
     }
     chrome.tabs.sendMessage(tabId, {"type": "reload-like-button", data: tab})
 });
