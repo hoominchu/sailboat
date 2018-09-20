@@ -3,30 +3,15 @@
 <head>
     <title>Sail Boat</title>
     <script src="../lib/jquery-3.2.1.min.js"></script>
+    <script src="../lib/moment.min.js"></script>
+    <script src="../lib/Chart.js"></script>
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/custom.css">
 </head>
 <body>
 <script src="template.js"></script>
-<div class="jumbotron" style="height:260pt; background:#008cba; color:white;">
-  <h1 class="display-3 font-weight-bold" id="taskNameBanner"></h1>
-  <hr class="my-4">
-  <p id ="lastOpenedTime"></p>
-  <p id ="timeSpent"></p>
-</div>
-<div class="containter-fluid">
-  <div class="row">
-    <div class="col-lg-10 offset-lg-1">
-      <h3 class="text-center">Archived Pages</h3>
-    </div>
-  </div>
-<div class="row"  style="margin-top:20pt">
-  <div class="col-lg-10 offset-lg-1" id="archivedPagesContainer">
-  </div>
-</div>
-</div>
-</div>
+<canvas id="myChart" width="250" height="100"></canvas>
 </body>
 <script src="dashboard.js"></script>
 </html>

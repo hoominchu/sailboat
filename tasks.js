@@ -51,20 +51,6 @@ function filterTasks(filter) {
     return tasksDict;
 }
 
-function addToHistory(url, title, task_id) {
-    if (url != "chrome://newtab/" && url != "html/index.html" && url) {
-        if (TASKS[task_id].history.find((page) => page.url === url)) {
-            const date = new Date();
-            TASKS[task_id].history.find((page) => page.url === url).timeVisited.push(date.toString());
-        }
-        else {
-            const newPage = new Page(url, title);
-            const date = new Date;
-            newPage.timeVisited.push(date.toString());
-            TASKS[task_id].history.push(newPage);
-        }
-    }
-}
 
 function getLikedPages(task_id) {
     const likedPages = [];
