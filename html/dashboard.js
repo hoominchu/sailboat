@@ -10,7 +10,8 @@ function getTaskNamesFromIDs(taskIds) {
     chrome.storage.local.get("TASKS", function (tasksObject) {
         tasksObject = tasksObject["TASKS"];
         if (tasksObject) {
-            for (taskId in taskIds) {
+            for (var idx in taskIds) {
+                var taskId = taskIds[idx];
                 var task = tasksObject[taskId];
                 if (task) {
                     taskNames.push(task.name);
