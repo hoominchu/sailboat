@@ -28,7 +28,8 @@
     {
       "matches": [
         "https://*/*",
-        "http://*/*"
+        "http://*/*",
+        "file:///*"
       ],
       "css": [
         "css/custom.css",
