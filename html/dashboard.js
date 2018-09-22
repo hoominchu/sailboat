@@ -1,12 +1,13 @@
-let historyStats = {};
-let taskNames = [];
-let n = 0;
-let allTaskNameRetrieved = 0;
-let numDays = 1;
-let timeSpentArray = [];
+function processHistoryStats(historyStats) {
+    let taskNames = [];
+    let taskIds = [];
+    let timeSpentOnTasks = [];
 
+    for (var task in historyStats) {
+        taskIds.push(task);
+        timeSpentOnTasks.push(historyStats[task]);
+    }
 
-function getTaskNamesFromIDs(taskIds) {
     chrome.storage.local.get("TASKS", function (tasksObject) {
         tasksObject = tasksObject["TASKS"];
         if (tasksObject) {
@@ -19,43 +20,34 @@ function getTaskNamesFromIDs(taskIds) {
                     taskNames.push("NULL");
                 }
             }
-            allTaskNameRetrieved = 1;
         }
-        renderChart();
+        renderChart(taskNames, timeSpentOnTasks);
     });
-    // while (1 === 1) {
-    //     if (allTaskNameRetrieved === 1) {
-    //         break;
-    //     }
-    // }
+
 }
 
-function getHistoryStats(historyDate, callback) {
-    chrome.storage.local.get(historyDate, function (history) {
-        history = history[historyDate];
-        for (task in history) {
-            if (!(historyStats[task])) {
-                historyStats[task] = 0;
+function getHistoryStats(historyDateArray) {
+    let historyStats = {};
+    chrome.storage.local.get(historyDateArray, function (results) {
+        for (let historyDate in results) {
+            let history = results[historyDate];
+            for (let task in history) {
+                if (!(historyStats[task])) {
+                    historyStats[task] = 0;
+                }
+                let taskHistory = history[task];
+                historyStats[task] += taskHistory["totalTime"];
             }
-
-            var taskHistory = history[task];
-            historyStats[task] += taskHistory["totalTime"];
         }
-        n += 1;
-        var taskIds = [];
-        for (task in historyStats) {
-            taskIds.push(task);
-            timeSpentArray.push(historyStats[task]);
-        }
-        callback(taskIds);
+        processHistoryStats(historyStats);
     });
-
 }
 
-function getLastWeekHistory() {
+
+function getHistory(numDays) {
 
     let date = new Date();
-
+    let historyDatesArrray = [];
     for (var i = 0; i < numDays; i++) {
         let dd = date.getDate();
         let mm = date.getMonth() + 1; //January is 0!
@@ -68,36 +60,36 @@ function getLastWeekHistory() {
         }
         var dateString = dd + '-' + mm + '-' + yyyy;
         var historyDate = 'HISTORY-' + dateString;
-        getHistoryStats(historyDate, getTaskNamesFromIDs);
+        historyDatesArrray.push(historyDate);
         date.setDate(date.getDate() - 1);
-
     }
-
-    // while (1 === 1) {
-    //     if (n === numDays) {
-    //         break;
-    //     }
-    // }
+    getHistoryStats(historyDate);
 }
 
-getLastWeekHistory();
-// var taskIds = [];
-// var timeSpent = [];
-// for (task in historyStats) {
-// taskIds.push(task);
-// timeSpent.push(historyStats[task]);
-// }
-// getTaskNamesFromIDs(taskIds);
 
-function renderChart() {
+$('#today').click(function () {
+    getHistory(1);
+});
+$('#last-1-week').click(function () {
+    getHistory(7);
+});
+$('#last-15-days').click(function () {
+    getHistory(15);
+});
+$('#last-1-month').click(function () {
+    getHistory(30);
+});
+
+function renderChart(tasks, timeSpentOnTasks) {
+    document.getElementById("myChart").innerHTML = '';
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: taskNames,
+            labels: tasks,
             datasets: [{
                 label: 'Time Spent',
-                data: timeSpentArray,
+                data: timeSpentOnTasks,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -128,3 +120,7 @@ function renderChart() {
         }
     });
 }
+
+$(document).ready(function () {
+    getHistory(1);
+});
