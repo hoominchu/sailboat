@@ -1,5 +1,12 @@
 "use strict";
 
+function searchHistory(query, tabId){
+  chrome.history.search(query, function(results){
+    chrome.tabs.sendMessage(tabId, {"type":"set-search-results-from-history", "results":results});
+  });
+}
+
+
 createAndActivateDefaultTask();
 
 //Save downloads to appropriate task folder
@@ -141,8 +148,12 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
     else if(request.type === "time spent on page"){
       addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
-    } else if (request.type === "detect-task") {
+    }
+    else if (request.type === "detect-task") {
         detectTask(request.topics, request.url, request.title);
+    }
+    else if (request.type === "get-search-results-from-history") {
+      searchHistory({"text":request.query}, sender.tab.id);
     }
 });
 
