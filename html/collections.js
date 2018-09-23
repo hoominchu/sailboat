@@ -29,6 +29,15 @@ function showCurrentCollections() {
             let collection = collections[collectionName];
             const $collectionObj = $('<div></div>');
             const $collectionNames = $('<h6 class="text-primary">' + collectionName + '</h6><hr>');
+            $trashIconForCollection.click(function () {
+                const collectionName = $(this).parent().text().trim();
+                $(this).parent().parent().remove();
+                chrome.storage.local.get("Collections", function (collections) {
+                    collections = collections["Collections"];
+                    delete collections[collectionName];
+                    chrome.storage.local.set({"Collections":collections});
+                });
+            });
             $collectionNames.append($trashIconForCollection);
             $collectionObj.append($collectionNames);
             for (let item in collection) {
