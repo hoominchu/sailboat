@@ -9,7 +9,12 @@ chrome.storage.local.get("TASKS", function (taskObject) {
         // console.log(Tasks);
         for (let task_id in Tasks) {
             if (task_id != "lastAssignedId") {
-                $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name + '</button>');
+                if(Tasks[task_id].name.length<21){
+                  $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name + '</button>');
+                }
+                else{
+                  $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name.slice(0,18) + ".." + '</button>');
+                }
             }
         }
         $(".tasks").click(function () {
@@ -39,7 +44,7 @@ function createRow(page) {
       const tableRow = $('<tr class="historyRow"></tr>');
 
       tableRow.append('<td><input type="checkbox" class="selectBox" value="'+page.url+'"></td>');
-    tableRow.append('<td><a href="' + page.url + '">' + page.title + '</a></td>');
+    tableRow.append('<td><a href="' + page.url + '">' + page.title.slice(0,100) + '</a></td>');
 
     //Check if page is archived
     if (page.isLiked) {
