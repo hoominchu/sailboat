@@ -6,11 +6,11 @@ const sailboatLogo = chrome.extension.getURL("images/logo_white_sails_no_text.pn
 $(document).ready(function () {
     if (getDomainFromURL(window.location.href).indexOf('.google.') > -1) {
         const $resultsBox = $('<div id="sailboat-results" style="border: 1px solid lightblue;">');
-        $resultsBox.css({'max-height':'330px','width':'435px', 'overflow':'scroll'});
+        $resultsBox.css({'max-height': '330px', 'width': '454px', 'overflow': 'scroll'});
         $('#rhs').prepend($resultsBox);
 
-        const $sailboatHeader = $("<div id ='sailboat-header' style='height:40px; display:inline-block; width:100%'><img src='" +sailboatLogo+"' style='height:40px; display:block; margin:auto;'/></div>");
-        $sailboatHeader.css({'margin-bottom':'5px'});
+        const $sailboatHeader = $("<div id ='sailboat-header' style='height:40px; display:inline-block; width:100%'><img src='" + sailboatLogo + "' style='height:40px; display:block; margin:auto;'/></div>");
+        $sailboatHeader.css({'margin-bottom': '5px'});
         $resultsBox.append($sailboatHeader);
 
         const $resultsContentDiv = $('<div style="padding: 10px;" id="sailboat-results-content">');
@@ -19,9 +19,8 @@ $(document).ready(function () {
         var query = getUrlParameter('q', window.location.href);
         if (query) {
             searchArchivedPages(query);
+            getSearchResultsFromHistory(query);
         }
-        searchArchivedPages(query);
-        getSearchResultsFromHistory(query);
     }
 });
 
@@ -134,10 +133,10 @@ function getContextString(term, string, length) {
 }
 
 function showArchivedResults(results) {
-    console.log(results);
-    const $archiveResults = $('<div id="sailboat-archive-results" style="padding: 10px; border: 1px solid lightblue;"><p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
-    $archiveResults.css({'max-height':'330px','width':'435px', 'overflow':'scroll', 'margin-bottom':'10px'});
-    $('#rhs').prepend($archiveResults);
+    // console.log(results);
+    // const $archiveResults = $('<div id="sailboat-archive-results" style="padding: 10px; border: 1px solid lightblue;"><p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
+    // $archiveResults.css({'max-height':'330px','width':'435px', 'overflow':'scroll', 'margin-bottom':'10px'});
+    // $('#rhs').prepend($archiveResults);
 
     const fromYourArchive = $('<p style="color: #008cba;"><b>From your archive</b></p><hr></div>')
     $("#sailboat-results-content").append(fromYourArchive);
@@ -148,7 +147,7 @@ function showArchivedResults(results) {
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
             let resultElement = document.createElement("p");
-            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : "+results[i]["task"]+"</p>";
+            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : " + results[i]["task"] + "</p>";
             let matchedTermsString = "<p><small>Matched terms : ";
             let contextStrings = "<p><small>";
             let matchedTerms = results[i]["matched terms"];
@@ -166,29 +165,29 @@ function showArchivedResults(results) {
     }
 }
 
-function getSearchResultsFromHistory(query){
-  chrome.runtime.sendMessage({"type":"get-search-results-from-history", "query": query});
+function getSearchResultsFromHistory(query) {
+    chrome.runtime.sendMessage({"type": "get-search-results-from-history", "query": query});
 }
 
-chrome.runtime.onMessage.addListener(function(message){
-  if(message.type == "set-search-results-from-history"){
-    const resultsFromHistory = $('<div><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
-    const resultsElement = $("#sailboat-results-content");
-    resultsElement.append(resultsFromHistory);
-    results = message.results;
-    let resultsMinusResultsFromGoogleSearch = 0;
-    for(var i = 0; i<results.length;i++){
-        if(domainsToExclude.indexOf(getDomainFromURL(results[i]["url"]))<0){
-          console.log(getDomainFromURL(results[i]["url"]));
-          let urlString = $("<p><a href='" + results[i]["url"] + "'>" + results[i]["title"] + "</a>"+"</p>");
-          resultsElement.append(urlString);
-          resultsMinusResultsFromGoogleSearch++;
+chrome.runtime.onMessage.addListener(function (message) {
+    if (message.type == "set-search-results-from-history") {
+        const resultsFromHistory = $('<div><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
+        const resultsElement = $("#sailboat-results-content");
+        resultsElement.append(resultsFromHistory);
+        results = message.results;
+        let resultsMinusResultsFromGoogleSearch = 0;
+        for (var i = 0; i < results.length; i++) {
+            if (domainsToExclude.indexOf(getDomainFromURL(results[i]["url"])) < 0) {
+                console.log(getDomainFromURL(results[i]["url"]));
+                let urlString = $("<p><a href='" + results[i]["url"] + "'>" + results[i]["title"] + "</a>" + "</p>");
+                resultsElement.append(urlString);
+                resultsMinusResultsFromGoogleSearch++;
+            }
         }
+        if (resultsMinusResultsFromGoogleSearch == 0) {
+            var historyNoMatches = $("<p>No matches found in history.</p>");
+            resultsElement.append(historyNoMatches);
+        }
+        resultsElement.append("<div style='height:5px;'></div>");
     }
-    if(resultsMinusResultsFromGoogleSearch == 0){
-      var historyNoMatches = $("<p>No matches found in history.</p>");
-      resultsElement.append(historyNoMatches);
-    }
-    resultsElement.append("<div style='height:5px;'></div>");
-  }
 });
