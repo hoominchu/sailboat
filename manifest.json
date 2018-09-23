@@ -5,7 +5,6 @@
   "version": "0.1",
   "browser_action": {
     "default_icon": "images/SailBoat.png",
-    "default_popup": "popup/browserAction.html",
     "default_title": "Sail Boat"
   },
   "omnibox": { "keyword" : "sb" },

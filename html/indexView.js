@@ -6,10 +6,10 @@ function showTasks(Tasks, ctaskid) {
   $("#tasks-container").append(createTaskDiv);
 
     for (let task_id in Tasks) {
-        if (task_id != "lastAssignedId" && Tasks[task_id].id != 0 && !(Tasks[task_id].archived)) {
+        if (task_id != "lastAssignedId" && !(Tasks[task_id].archived)) {
             setUpUnarchivedTasks(Tasks, task_id, ctaskid);
         }
-        else if (task_id != "lastAssignedId" && Tasks[task_id].id != 0 && Tasks[task_id].archived) {
+        else if (task_id != "lastAssignedId" && Tasks[task_id].archived) {
             setUpArchivedTasks(Tasks, task_id);
         }
     }
@@ -61,14 +61,22 @@ function setUpUnarchivedTasks(Tasks, task_id, ctaskid){
     const card_body = $("<div>", {"class": "card-body text-dark"});
     const card_buttons = $("<div>", {"class": "btn-group"});
     const open_button = $("<button class='btn btn-outline-success btn-sm round-corner-left openTask' type='button' id='" + Tasks[task_id].id + "'>Open</button>");
+    const open_button_rounded = $("<button class='btn btn-outline-success btn-sm openTask' style='border-radius:10px;'type='button' id='" + Tasks[task_id].id + "'>Open</button>");
     const rename_button = $("<button class='btn btn-outline-dark btn-sm renameTask' type='button' id='" + Tasks[task_id].id + "'>Rename</button>");
     const delete_button = $("<button class='btn btn-outline-danger btn-sm round-corner-right deleteTask' type='button' id='" + Tasks[task_id].id + "'>Delete</button>");
     const archive_button = $("<button class='btn btn-outline-dark btn-sm archiveTask' type='button' id='" + Tasks[task_id].id + "'>Archive</button>");
 
-    card_buttons.append(open_button);
-    card_buttons.append(rename_button);
-    card_buttons.append(archive_button);
-    card_buttons.append(delete_button);
+    //Don't Add rename/archive/delete buttons to default task.
+    if(task_id != "0"){
+      card_buttons.append(open_button);
+      card_buttons.append(rename_button);
+      card_buttons.append(archive_button);
+      card_buttons.append(delete_button);
+    }
+    else{
+      card_buttons.append(open_button_rounded);
+    }
+
     card_body.append(card_buttons);
 
     card.append(card_header);

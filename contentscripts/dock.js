@@ -385,6 +385,10 @@ function loadKeyPressHandler() {
             $('#collapse-dock-btn').click();
         }
 
+        if (keyEvent.ctrlKey && keyEvent.keyCode === 65) {
+          archivePage();
+        }
+
         if (keyEvent.ctrlKey && keyEvent.keyCode === 80) {
             chrome.runtime.sendMessage(
                 {
@@ -413,6 +417,7 @@ function loadKeyPressHandler() {
         if (keyEvent.keyCode === 16) {
             shiftPressed = false;
         }
+
     });
 
     $(document).keydown(function (keyEvent) {
@@ -502,23 +507,27 @@ function loadDock() {
     body.append(dock);
 }
 
+function archivePage(){
+  $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
+  chrome.runtime.sendMessage({
+      "type": "like-page",
+      "url": window.location.href
+  });
+
+  if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
+      //Store page content only after a page is liked.
+      storePageContent(window.location.href, document.documentElement.innerText);
+  } else {
+      deletePageContent(window.location.href);
+  }
+}
+
 function loadArchiveButton() {
     const archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
     const likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
     likeButton.css('background-image', 'url(' + archiveIconPath + ')');
     $(document).on('click', '#sailboat-like-btn', function () {
-        $(this).toggleClass("sailboat-like-btn-liked");
-        chrome.runtime.sendMessage({
-            "type": "like-page",
-            "url": window.location.href
-        });
-
-        if ($(this).hasClass("sailboat-like-btn-liked")) {
-            //Store page content only after a page is liked.
-            storePageContent(window.location.href, document.documentElement.innerText);
-        } else {
-            deletePageContent(window.location.href);
-        }
+      archivePage();
     });
     $("#sailboat-dock").append(likeButton);
 }
