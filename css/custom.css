@@ -23,7 +23,6 @@
     line-height: 1.5 !important;
     /*min-height:20px;*/
     -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
@@ -135,4 +134,13 @@
 
 .search-result-card {
     padding: 2em;
+}
+
+.delete_icon {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    top: 5px;
+    position: relative;
+    float: right;
 }
