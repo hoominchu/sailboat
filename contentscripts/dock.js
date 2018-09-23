@@ -22,7 +22,7 @@ $(document).ready(function () {
             loadNewTaskBtn();
             loadTaskNames(CTASKID);
             markLikedStatus(window.location.href, CTASKID);
-            loadArchiveSearchBar();
+            // loadArchiveSearchBar();
             loadHoverBooster();
             loadClickLogger();
             loadKeyPressHandler();
