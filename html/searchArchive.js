@@ -1,3 +1,17 @@
+const domainsToExclude = ["www.google.co.in", "www.google.co.in"];
+
+function getDomainFromURL(url) {
+    let domain = "";
+    const arr = url.split('/');
+    if (url.search("http") != -1) {
+        domain = arr[2];
+    }
+    else {
+        domain = arr[0];
+    }
+    return domain;
+}
+
 $(document).ready(function () {
 
     // chrome.storage.local.get("Advanced Search Settings", function (advancedSearchSettings) {
@@ -20,6 +34,8 @@ $(document).ready(function () {
                         document.getElementById("searchArchiveInput").value = query;
                         const results = searchArchivedPages(query, tasks, pageContent);
                         showResults(results);
+                        getSearchResultsFromHistory(query);
+
                     }
                 }
 
@@ -27,6 +43,7 @@ $(document).ready(function () {
                     let query = document.getElementById("searchArchiveInput").value;
                     let results = searchArchivedPages(query, tasks, pageContent);
                     showResults(results);
+                    getSearchResultsFromHistory(query);
                 };
 
                 document.getElementById("searchArchiveInput").addEventListener("keyup", function (event) {
@@ -42,9 +59,14 @@ $(document).ready(function () {
     // });
 });
 
+
+
+
 function showResults(results) {
     const resultsElement = document.getElementById("archiveSearchResults");
     resultsElement.innerText = "";
+    const resultsFromArchive = $('<div style="margin-top:10px"><p style="color: #008cba;"><b>From your Archived Pages</b></p><hr></div>');
+    $("#archiveSearchResults").append(resultsFromArchive);
 
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
@@ -63,8 +85,10 @@ function showResults(results) {
             resultsElement.appendChild(resultElement);
         }
     } else {
-        resultsElement.innerText = "No matches found. Archive more pages!";
+      $("#archiveSearchResults").append($("<p>No matches found. Archive more pages!</p>"));
     }
+
+    $("#archiveSearchResults").append($("<hr>"));
 }
 
 function getUrlParameter(sParam) {
@@ -233,3 +257,30 @@ function searchArchivedPages(query, tasks, pageContent) {
         return results;
     }
 }
+
+function getSearchResultsFromHistory(query){
+  chrome.runtime.sendMessage({"type":"get-search-results-from-history", "query": query});
+}
+
+chrome.runtime.onMessage.addListener(function(message){
+  if(message.type == "set-search-results-from-history"){
+
+    const resultsFromHistory = $('<div style="margin-top:10px"><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
+    const resultsElement = $("#archiveSearchResults");
+    resultsElement.append(resultsFromHistory);
+    results = message.results;
+    let resultsMinusResultsFromGoogleSearch = 0;
+    for(var i = 0; i<results.length;i++){
+        if(domainsToExclude.indexOf(getDomainFromURL(results[i]["url"]))<0){
+          let urlString = $("<p><a href='" + results[i]["url"] + "'>" + results[i]["title"] + "</a>"+"</p>");
+          resultsElement.append(urlString);
+          resultsMinusResultsFromGoogleSearch++;
+        }
+    }
+    if(resultsMinusResultsFromGoogleSearch == 0){
+      var historyNoMatches = $("<p>No matches found in history.</p>");
+      resultsElement.append(historyNoMatches);
+    }
+    resultsElement.append("<div style='height:5px;'></div>");
+  }
+});
