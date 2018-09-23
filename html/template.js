@@ -18,7 +18,10 @@ const navbar = $('<nav class="navbar navbar-expand-lg navbar-dark bg-dark">' +
     '                <a class="nav-link" href="searchArchive.html">Search</a>' +
     '            </li>' +
     '            <li class="nav-item">' +
-    '                <a class="nav-link" href="dashboard.html">Task Dashboard</a>' +
+    '                <a class="nav-link" href="dashboard.html">Dashboard</a>' +
+    '            </li>' +
+    '            <li class="nav-item">' +
+    '                <a class="nav-link" href="collections.html">Collections</a>' +
     '            </li>' +
     '            <li class="nav-item">' +
     '                <a class="nav-link" href="settings.html">Settings</a>' +
@@ -37,8 +40,8 @@ $("body").append(navbar);
 
 const navItems = document.getElementsByClassName("nav-link");
 
-for(let i = 0; i<navItems.length; i++){
-  if(navItems[i].href == url){
-    navItems[i].parentElement.className += " active";
-  }
+for (let i = 0; i < navItems.length; i++) {
+    if (navItems[i].href == url) {
+        navItems[i].parentElement.className += " active";
+    }
 }

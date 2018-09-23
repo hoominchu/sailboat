@@ -170,7 +170,7 @@ function getSearchResultsFromHistory(query) {
 }
 
 chrome.runtime.onMessage.addListener(function (message) {
-    if (message.type == "set-search-results-from-history") {
+    if (message.type === "set-search-results-from-history") {
         const resultsFromHistory = $('<div><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
         const resultsElement = $("#sailboat-results-content");
         resultsElement.append(resultsFromHistory);
