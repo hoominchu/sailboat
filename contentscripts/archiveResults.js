@@ -172,7 +172,6 @@ chrome.runtime.onMessage.addListener(function(message){
     let resultsMinusResultsFromGoogleSearch = 0;
     for(var i = 0; i<results.length;i++){
         if(domainsToExclude.indexOf(getDomainFromURL(results[i]["url"]))<0){
-          console.log(getDomainFromURL(results[i]["url"]));
           let urlString = $("<p><a href='" + results[i]["url"] + "'>" + results[i]["title"] + "</a>"+"</p>");
           resultsElement.append(urlString);
           resultsMinusResultsFromGoogleSearch++;
