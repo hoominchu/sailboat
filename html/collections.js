@@ -44,8 +44,12 @@ function showCurrentCollections() {
                 let $iconGroup = $('<div class="collection-item-icon-group"></div>');
 
                 const wikiLink = 'http://en.wikipedia.org/wiki/' + item.replace(' ', '_');
-                const $wikiIcon = $('<a href="' + wikiLink + '" target="_blank"><div class="collection-item-icon wiki-icon"></div></a>');
+                const $wikiIcon = $('<div class="collection-item-icon wiki-icon"></div>');
                 $iconGroup.append($wikiIcon);
+                $wikiIcon.click(function () {
+                    $('iframe.iframe').attr('src', wikiLink);
+                    $('#magic_modal').modal('show');
+                });
 
                 if (collectionName.toLowerCase() === 'books') {
                     const goodreadsLink = 'https://www.goodreads.com/search?q=' + item.replace(' ', '+');
@@ -57,6 +61,12 @@ function showCurrentCollections() {
                     const amazonLink = 'https://www.amazon.in/s/?field-keywords=' + item.replace(' ', '+');
                     const $amazonIcon = $('<a href="' + amazonLink + '" target="_blank"><div class="collection-item-icon amazon-icon"></div></a>');
                     $iconGroup.append($amazonIcon);
+                }
+
+                if (collectionName.toLowerCase() === 'places') {
+                    const mapsLink = 'http://maps.google.com/?q=' + item.replace(' ', '+');
+                    const $mapsIcon = $('<a href="' + mapsLink + '" target="_blank"><div class="collection-item-icon gmaps-icon"></div></a>');
+                    $iconGroup.append($mapsIcon);
                 }
 
                 let $trashIconForItem = $('<div class="delete_icon"></div>');
@@ -79,12 +89,15 @@ function showCurrentCollections() {
                 $item.append($iconGroup);
 
                 $collectionObj.append($item);
-                // httpGet(item, $item);
             }
             collectionsElem.append('<hr>');
             collectionsElem.append($collectionObj);
         }
     });
+}
+
+function showWikiPictures() {
+
 }
 
 function httpGet(page, $elem) {

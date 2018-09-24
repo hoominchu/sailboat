@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Collections</title>
-    <script src="../lib/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/custom.css">
     <link rel="stylesheet" href="../css/history.css">
+    <script src="../lib/jquery-3.2.1.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
 </head>
 <body>
 <script src="template.js"></script>
 
-<div class="container-fluid" style="width: 40%; background-color: rgba(255,255,255,0.8)">
+<div class="container-fluid" style="width: 70%; background-color: rgba(255,255,255,0.8)">
     <div class="row" style="height: 1em;"></div>
     <div class="row">
         <div class="col-12">
@@ -23,6 +24,21 @@
         </div>
     </div>
     <div class="collections" id="collections"></div>
+</div>
+<div class="modal round-corner" id="magic_modal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content round-corner">
+            <div class="modal-header">
+                <h5 class="modal-title">MagicBox</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe class="iframe" width="100%" height="550px" src=""></iframe>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="../utils/web-util.js"></script>
 <script src="collections.js"></script>
