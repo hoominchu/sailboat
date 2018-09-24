@@ -35,32 +35,80 @@ function showCurrentCollections() {
                 chrome.storage.local.get("Collections", function (collections) {
                     collections = collections["Collections"];
                     delete collections[collectionName];
-                    chrome.storage.local.set({"Collections":collections});
+                    chrome.storage.local.set({"Collections": collections});
                 });
             });
             $collectionNames.append($trashIconForCollection);
             $collectionObj.append($collectionNames);
             for (let item in collection) {
+                let $iconGroup = $('<div class="collection-item-icon-group"></div>');
+
+                const wikiLink = 'http://en.wikipedia.org/wiki/' + item.replace(' ', '_');
+                const $wikiIcon = $('<a href="' + wikiLink + '" target="_blank"><div class="collection-item-icon wiki-icon"></div></a>');
+                $iconGroup.append($wikiIcon);
+
+                if (collectionName.toLowerCase() === 'books') {
+                    const goodreadsLink = 'https://www.goodreads.com/search?q=' + item.replace(' ', '+');
+                    const $goodreadsIcon = $('<a href="' + goodreadsLink + '" target="_blank"><div class="collection-item-icon goodreads-icon"></div></a>');
+                    $iconGroup.append($goodreadsIcon);
+                }
+
+                if (collectionName.toLowerCase() === 'books' || collectionName.toLowerCase() === 'movies') {
+                    const amazonLink = 'https://www.amazon.in/s/?field-keywords=' + item.replace(' ', '+');
+                    const $amazonIcon = $('<a href="' + amazonLink + '" target="_blank"><div class="collection-item-icon amazon-icon"></div></a>');
+                    $iconGroup.append($amazonIcon);
+                }
+
                 let $trashIconForItem = $('<div class="delete_icon"></div>');
                 $trashIconForItem.css('background-image', 'url(' + trashIconURL + ')');
                 $trashIconForItem.css('background-size', 'cover');
                 $trashIconForItem.click(function () {
-                   const itemName = $(this).parent().text().split('(')[0].trim();
-                   const collectionName = $(this).parent().parent().find('h6').text().trim();
-                   $(this).parent().remove();
-                   chrome.storage.local.get("Collections", function (collections) {
-                       collections = collections["Collections"];
-                       delete collections[collectionName][itemName];
-                       chrome.storage.local.set({"Collections":collections});
+                    const itemName = $(this).parent().text().split('(')[0].trim();
+                    const collectionName = $(this).parent().parent().find('h6').text().trim();
+                    $(this).parent().remove();
+                    chrome.storage.local.get("Collections", function (collections) {
+                        collections = collections["Collections"];
+                        delete collections[collectionName][itemName];
+                        chrome.storage.local.set({"Collections": collections});
 
-                   });
+                    });
                 });
                 const $item = $('<p>' + item + ' (' + collection[item] + ')' + '</p>');
+
                 $item.append($trashIconForItem);
+                $item.append($iconGroup);
+
                 $collectionObj.append($item);
+                // httpGet(item, $item);
             }
             collectionsElem.append('<hr>');
             collectionsElem.append($collectionObj);
         }
     });
+}
+
+function httpGet(page, $elem) {
+    if (!page)
+        return
+
+    page.replace(/\s/g, '_');
+    const wikipediaURL = 'http://en.wikipedia.org/wiki/' + page;
+    let xmlhttp;
+    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp = new XMLHttpRequest();
+    }
+    else {// code for IE6, IE5
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            const htmlContent = xmlhttp.responseText;
+            const $wikiPage = $(htmlContent);
+            const $infobox = $('.infobox', $wikiPage);
+            const $infoboxImage = $('.image', $infobox);
+            $elem.append($infoboxImage);
+        }
+    };
+    xmlhttp.open("GET", wikipediaURL, false);
+    xmlhttp.send();
 }
