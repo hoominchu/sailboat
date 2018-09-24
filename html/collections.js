@@ -63,6 +63,16 @@ function showCurrentCollections() {
                     $iconGroup.append($amazonIcon);
                 }
 
+                if (collectionName.toLowerCase() === 'movies') {
+                    const youtubeLink = 'https://www.youtube.com/embed/' + 'x9f6JaaX7Wg';
+                    const $youtubeIcon = $('<div class="collection-item-icon youtube-icon"></div>');
+                    $iconGroup.append($youtubeIcon);
+                    $youtubeIcon.click(function () {
+                        $('iframe.iframe').attr('src', youtubeLink);
+                        $('#magic_modal').modal('show');
+                    });
+                }
+
                 if (collectionName.toLowerCase() === 'places') {
                     const mapsLink = 'http://maps.google.com/?q=' + item.replace(' ', '+');
                     const $mapsIcon = $('<a href="' + mapsLink + '" target="_blank"><div class="collection-item-icon gmaps-icon"></div></a>');
@@ -83,10 +93,10 @@ function showCurrentCollections() {
 
                     });
                 });
-                let itemCleanedForId = item.replace(/\./g,'');
-                itemCleanedForId = itemCleanedForId.replace(/'/g,'');
-                itemCleanedForId = itemCleanedForId.replace(/,/g,'');
-                itemCleanedForId = itemCleanedForId.replace(/\s/g,'');
+                let itemCleanedForId = item.replace(/\./g, '');
+                itemCleanedForId = itemCleanedForId.replace(/'/g, '');
+                itemCleanedForId = itemCleanedForId.replace(/,/g, '');
+                itemCleanedForId = itemCleanedForId.replace(/\s/g, '');
                 const $item = $('<p class="collection-item item text-primary" id="' + itemCleanedForId + '">' + item + ' (' + collection[item] + ')' + '</p>');
 
                 $item.append($trashIconForItem);
@@ -123,14 +133,20 @@ function showMovieInfo() {
                 if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                     const jsonText = xmlhttp.responseText;
                     const jsonObj = JSON.parse(jsonText);
-                    let movieInfoString = jsonObj['Director'] + ' | ';
-                    movieInfoString += jsonObj['Genre'] + ' | ';
+                    const $director = $('<div class = "director text-success">' + jsonObj['Director'] + '</div>');
+                    $director.click(function () {
+                        const directorWikiLink = 'http://en.wikipedia.org/wiki/' + jsonObj['Director'].replace(/\s/g, '_').replace(/\.',/g,'');
+                        $('iframe.iframe').attr('src', directorWikiLink);
+                        $('#magic_modal').modal('show');
+                    });
+                    let movieInfoString = jsonObj['Genre'] + ' | ';
                     movieInfoString += jsonObj['Language'] + ' | ';
                     movieInfoString += 'Runtime : ' + jsonObj['Runtime'] + ' | <br>';
                     movieInfoString += 'Awards : ' + jsonObj['Awards'] + ' | <br>';
                     movieInfoString += 'IMDB : ' + jsonObj['imdbRating'] + ' | ';
                     movieInfoString += 'RT : ' + jsonObj['Ratings'][1]['Value'] + ' | ';
-                    let $movieInfo = $('<div class = "movie-info small">'+ movieInfoString + '</div>');
+                    let $movieInfo = $('<div class = "movie-info small">' + movieInfoString + '</div>');
+                    $movieInfo.prepend($director);
                     $('#' + movieNameForId).after($movieInfo);
                 }
             };
