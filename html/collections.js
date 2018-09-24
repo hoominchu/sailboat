@@ -83,7 +83,11 @@ function showCurrentCollections() {
 
                     });
                 });
-                const $item = $('<p>' + item + ' (' + collection[item] + ')' + '</p>');
+                let itemCleanedForId = item.replace(/\./g,'');
+                itemCleanedForId = itemCleanedForId.replace(/'/g,'');
+                itemCleanedForId = itemCleanedForId.replace(/,/g,'');
+                itemCleanedForId = itemCleanedForId.replace(/\s/g,'');
+                const $item = $('<p class="collection-item item text-primary" id="' + itemCleanedForId + '">' + item + ' (' + collection[item] + ')' + '</p>');
 
                 $item.append($trashIconForItem);
                 $item.append($iconGroup);
@@ -93,16 +97,52 @@ function showCurrentCollections() {
             collectionsElem.append('<hr>');
             collectionsElem.append($collectionObj);
         }
+        showMovieInfo();
     });
 }
 
-function showWikiPictures() {
-
+function showMovieInfo() {
+    //key 6938093c
+    chrome.storage.local.get("Collections", function (collections) {
+        collections = collections["Collections"];
+        const moviesCollection = collections['Movies'];
+        for (let movieName in moviesCollection) {
+            let movieNameCleaned = movieName.replace(/\./g, ' ');
+            movieNameCleaned = movieNameCleaned.replace(/'/g, ' ');
+            movieNameCleaned = movieNameCleaned.replace(/,/g, ' ');
+            let movieNameForId = movieNameCleaned.replace(/\s/g, '');
+            let omdbRequestURL = 'http://www.omdbapi.com/?apikey=6938093c&t=' + movieNameCleaned.toLowerCase().replace(/\s/g, '+');
+            let xmlhttp;
+            if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {// code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    const jsonText = xmlhttp.responseText;
+                    const jsonObj = JSON.parse(jsonText);
+                    let movieInfoString = jsonObj['Director'] + ' | ';
+                    movieInfoString += jsonObj['Genre'] + ' | ';
+                    movieInfoString += jsonObj['Language'] + ' | ';
+                    movieInfoString += 'Runtime : ' + jsonObj['Runtime'] + ' | <br>';
+                    movieInfoString += 'Awards : ' + jsonObj['Awards'] + ' | <br>';
+                    movieInfoString += 'IMDB : ' + jsonObj['imdbRating'] + ' | ';
+                    movieInfoString += 'RT : ' + jsonObj['Ratings'][1]['Value'] + ' | ';
+                    let $movieInfo = $('<div class = "movie-info small">'+ movieInfoString + '</div>');
+                    $('#' + movieNameForId).after($movieInfo);
+                }
+            };
+            xmlhttp.open("GET", omdbRequestURL, true);
+            xmlhttp.send();
+        }
+    });
 }
 
 function httpGet(page, $elem) {
     if (!page)
-        return
+        return;
 
     page.replace(/\s/g, '_');
     const wikipediaURL = 'http://en.wikipedia.org/wiki/' + page;

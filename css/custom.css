@@ -203,3 +203,8 @@
     -webkit-transition: opacity .15s linear;
     transition: opacity .15s linear;
 }
+
+.movie-info {
+    margin-bottom: 10px;
+    border-bottom: 1px solid darkgrey;
+}
