@@ -1,5 +1,8 @@
+let colours = ["rgb(118,196,174)", "rgb(202,189,128)", "rgb(216,108,112)", "rgb(0,31,63), rgb(133,20,75)", "rgb(0,116,217)", "rgb(170,170,170)", "rgb(46,204,64)", "rgb(0,31,63), rgb(133,20,75)", "rgb(255,133,27)", "rgb(17,17,17)"];
+
 function processHistoryStats(historyStats, historyDateArray) {
     let data = {};
+    let dates = [];
 
     chrome.storage.local.get("TASKS", function (tasksObject) {
         tasksObject = tasksObject["TASKS"];
@@ -21,34 +24,37 @@ function processHistoryStats(historyStats, historyDateArray) {
             historyStats = historyStatsWithTaskNames;
 
             let datasets = [];
-
+            let i = 0;
             for (let task in historyStats) {
                 let timeSpentOnTask = [];
                 let taskStats = historyStats[task];
 
                 for (let idx in historyDateArray) {
                     let date = historyDateArray[idx];
-                    timeSpentOnTask.push(taskStats[date]);
+                    let timeInSec = taskStats[date];
+                    timeSpentOnTask.push(timeInSec);
                 }
-                let round = Math.round, rand = Math.random, s = 255;
-                let r = round(rand() * s);
-                let g = round(rand() * s);
-                let b = round(rand() * s);
-                let bgColor = 'rgba(' + r + ',' + g + ',' + b + ',' + ' 0.5)';
-                let borderColor = 'rgba(' + r + ',' + g + ',' + b + ',' + ' 1)';
-                let
-                    taskData = {
-                        label: task.toString(),
-                        data: timeSpentOnTask,
-                        backgroundColor: bgColor,
-                        borderColor: borderColor,
-                        borderWidth: 1
-                    };
+                let bgColor = colours[i];
+                i++;
+
+                let taskData = {
+                    label: task.toString(),
+                    data: timeSpentOnTask,
+                    backgroundColor: bgColor,
+                    borderWidth: 1
+                };
                 datasets.push(taskData);
             }
 
+            for (let idx in historyDateArray) {
+                let date = historyDateArray[idx];
+                date = date.substr(8, date.length)
+                date = moment(date, 'DD-MM-YYYY').format('DD MMM');
+                dates.push(date);
+            }
+
             data = {
-                labels: historyDateArray,
+                labels: dates,
                 datasets: datasets
             };
 
@@ -133,6 +139,25 @@ function renderChart(data) {
         type: 'bar',
         data: data,
         options: {
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        let label = data.datasets[tooltipItem.datasetIndex].label;
+                        let timeLabel = tooltipItem.yLabel;
+                        let h = Math.floor(timeLabel / 3600);
+                        if (h.toString().length === 1) {
+                            h = '0' + h;
+                        }
+                        let m = Math.floor((timeLabel % 3600) / 60);
+                        if(m.toString().length === 1){
+                            m = '0' + m;
+                        }
+                        label += ": ";
+                        label += h + ":" + m;
+                        return label;
+                    }
+                }
+            },
             scales: {
                 yAxes: [{
                     ticks: {
