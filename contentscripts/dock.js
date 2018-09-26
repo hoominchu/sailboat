@@ -1,5 +1,4 @@
-"use strict"
-
+"use strict";
 
 // let TASKS = {};
 let CTASKID = 0;
@@ -23,15 +22,15 @@ $(document).ready(function () {
             loadTaskNames(CTASKID);
             markLikedStatus(window.location.href, CTASKID);
             // loadArchiveSearchBar();
-            loadHoverBooster();
-            loadClickLogger();
-            loadKeyPressHandler();
             setHighlightIdx();
             // sendDetectTaskMessage();
             // groupElementsByClass();
             checkAndUpdateCollections();
         }
     });
+    loadHoverBooster();
+    loadClickLogger();
+    loadKeyPressHandler();
 });
 
 $(window).focus(function () {
@@ -152,9 +151,9 @@ function checkAndUpdateCollections() {
                     const frequency = collection[item];
                     collection[item]++;
                     const interest = {
-                        "collectionName":collectionName,
-                        "itemName":item,
-                        "frequency":frequency
+                        "collectionName": collectionName,
+                        "itemName": item,
+                        "frequency": frequency
                     };
                     foundInterests.push(interest);
                 }
@@ -162,10 +161,10 @@ function checkAndUpdateCollections() {
         }
         if (foundInterests.length > 0) {
             chrome.runtime.sendMessage({
-                "type" : "interests found",
-                "interests" : foundInterests
+                "type": "interests found",
+                "interests": foundInterests
             });
-            chrome.storage.local.set({"Collections":collections});
+            chrome.storage.local.set({"Collections": collections});
         }
     })
 }
@@ -189,14 +188,14 @@ function cleanElemText(txt) {
     txt = txt.trim();
     txt = txt.replace(/(\r\n\t|\n|\r\t)/gm, "");
     txt = txt.replace(/\u21b5/g, "");
-    txt = txt.replace(/\s+/g,' ');
+    txt = txt.replace(/\s+/g, ' ');
     return txt;
 }
 
 function groupElementsByClass() {
     let groups = {};
     $('*').each(function () {
-        if ($(this).is(':visible'))  {
+        if ($(this).is(':visible')) {
             let text = $(this).text();
             text = cleanElemText(text);
             if ($(this).text() && text.length < 100 && stopwords.indexOf(text.toLowerCase()) < 0 && /[a-zA-Z]/.test(text)) {
@@ -258,7 +257,7 @@ function loadNewTaskBtn() {
     });
     $("#sailboat-dock").append(newTaskBtn);
 
-    const newTaskBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="new-task-input" placeholder="Enter task name">');
+    const newTaskBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="sailboat-float input-bar form-control round-corner" style="" id="new-task-input" placeholder="Enter task name">');
     $('body').append(newTaskBar);
     // newTaskBar.draggable();
     newTaskBar.hide();
@@ -386,7 +385,7 @@ function loadKeyPressHandler() {
         }
 
         if (keyEvent.ctrlKey && keyEvent.keyCode === 65) {
-          archivePage();
+            archivePage();
         }
 
         if (keyEvent.ctrlKey && keyEvent.keyCode === 80) {
@@ -452,7 +451,7 @@ function loadKeyPressHandler() {
 }
 
 function loadArchiveSearchBar() {
-    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
+    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="sailboat-float input-bar form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
     archiveSearchBar.hide();
     $('body').append(archiveSearchBar);
     archiveSearchBar.draggable();
@@ -469,15 +468,19 @@ function loadArchiveSearchBar() {
 }
 
 function loadDock() {
-    const dock = $('<div class="float dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
+
+    const $sailboatParts = $('<div class="sailboat-parts"></div>');
+    const shadowRoot = $sailboatParts[0].attachShadow({mode: 'open'});
+
+    const $dock = $('<div class="sailboat-float sailboat-dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
-    let collapseButton = $('<div id="collapse-dock-btn" class="float round-corner collapse-btn"><img src ="" id="collapse-img"></div>');
-    const body = $('body');
-    body.append(collapseButton);
+    const collapseArrowURL = chrome.runtime.getURL("images/left-arrow.svg");
+    let $collapseButton = $('<div id="collapse-dock-btn" class="sailboat-float round-corner collapse-btn"><img src ="' + collapseArrowURL + '" id="collapse-img"></div>');
+
     $('#collapse-dock-btn').draggable();
-    document.getElementById("collapse-img").src = chrome.runtime.getURL("images/left-arrow.svg");
-    collapseButton.click(function () {
+
+    $collapseButton.click(function () {
         $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
         $('#collapse-img').transition({rotate: '+=180'}, 'slow');
         chrome.storage.local.get("Settings", function (settings) {
@@ -502,24 +505,25 @@ function loadDock() {
     //         console.log(ui);
     //     }
     // });
-    dock.disableSelection();
-
-    body.append(dock);
+    $dock.disableSelection();
+    shadowRoot.appendChild($collapseButton[0]);
+    shadowRoot.append($dock[0]);
+    document.body.appendChild(shadowRoot);
 }
 
-function archivePage(){
-  $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
-  chrome.runtime.sendMessage({
-      "type": "like-page",
-      "url": window.location.href
-  });
+function archivePage() {
+    $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
+    chrome.runtime.sendMessage({
+        "type": "like-page",
+        "url": window.location.href
+    });
 
-  if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
-      //Store page content only after a page is liked.
-      storePageContent(window.location.href, document.documentElement.innerText);
-  } else {
-      deletePageContent(window.location.href);
-  }
+    if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
+        //Store page content only after a page is liked.
+        storePageContent(window.location.href, document.documentElement.innerText);
+    } else {
+        deletePageContent(window.location.href);
+    }
 }
 
 function loadArchiveButton() {
@@ -527,7 +531,7 @@ function loadArchiveButton() {
     const likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
     likeButton.css('background-image', 'url(' + archiveIconPath + ')');
     $(document).on('click', '#sailboat-like-btn', function () {
-      archivePage();
+        archivePage();
     });
     $("#sailboat-dock").append(likeButton);
 }
