@@ -139,12 +139,21 @@ function showMovieInfo() {
                         $('iframe.iframe').attr('src', directorWikiLink);
                         $('#magic_modal').modal('show');
                     });
-                    let movieInfoString = jsonObj['Genre'] + ' | ';
-                    movieInfoString += jsonObj['Language'] + ' | ';
-                    movieInfoString += 'Runtime : ' + jsonObj['Runtime'] + ' | <br>';
-                    movieInfoString += 'Awards : ' + jsonObj['Awards'] + ' | <br>';
-                    movieInfoString += 'IMDB : ' + jsonObj['imdbRating'] + ' | ';
-                    movieInfoString += 'RT : ' + jsonObj['Ratings'][1]['Value'] + ' | ';
+                    let movieInfoString = '';
+                    if (jsonObj.hasOwnProperty('Genre'))
+                        movieInfoString = jsonObj['Genre'] + ' | ';
+                    if (jsonObj.hasOwnProperty('Language'))
+                        movieInfoString += jsonObj['Language'] + ' | ';
+                    if (jsonObj.hasOwnProperty('Runtime'))
+                        movieInfoString += 'Runtime : ' + jsonObj['Runtime'] + ' | <br>';
+                    if (jsonObj.hasOwnProperty('Awards'))
+                        movieInfoString += 'Awards : ' + jsonObj['Awards'] + ' | <br>';
+                    if (jsonObj.hasOwnProperty('imdbRating'))
+                        movieInfoString += 'IMDB : ' + jsonObj['imdbRating'] + ' | ';
+                    if (jsonObj.hasOwnProperty('Ratings')){
+                        if (jsonObj['Ratings'][1])
+                            movieInfoString += 'RT : ' + jsonObj['Ratings'][1]['Value'] + ' | ';
+                    }
                     let $movieInfo = $('<div class = "movie-info small">' + movieInfoString + '</div>');
                     $movieInfo.prepend($director);
                     $('#' + movieNameForId).after($movieInfo);
