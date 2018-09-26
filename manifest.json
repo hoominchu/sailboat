@@ -73,9 +73,12 @@
     "webRequest",
     "contextMenu"
   ],
-  "icons": {
-    "16": "images/SailBoat.png"
-  },
+
+  "icons": { "16": "images/SailBoat16.png",
+           "48": "images/SailBoat48.png",
+          "128": "images/SailBoat128.png" },
+  
+  
   "chrome_url_overrides": {
     "newtab": "html/index.html"
   },
