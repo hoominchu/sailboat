@@ -1,5 +1,4 @@
-"use strict"
-
+"use strict";
 
 // let TASKS = {};
 let CTASKID = 0;
@@ -23,15 +22,15 @@ $(document).ready(function () {
             loadTaskNames(CTASKID);
             markLikedStatus(window.location.href, CTASKID);
             // loadArchiveSearchBar();
-            loadHoverBooster();
-            loadClickLogger();
-            loadKeyPressHandler();
             setHighlightIdx();
             // sendDetectTaskMessage();
             // groupElementsByClass();
             checkAndUpdateCollections();
         }
     });
+    loadHoverBooster();
+    loadClickLogger();
+    loadKeyPressHandler();
 });
 
 $(window).focus(function () {
@@ -264,7 +263,7 @@ function loadNewTaskBtn() {
     });
     $("#sailboat-dock").append(newTaskBtn);
 
-    const newTaskBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="new-task-input" placeholder="Enter task name">');
+    const newTaskBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="sailboat-float input-bar form-control round-corner" style="" id="new-task-input" placeholder="Enter task name">');
     $('body').append(newTaskBar);
     // newTaskBar.draggable();
     newTaskBar.hide();
@@ -458,7 +457,7 @@ function loadKeyPressHandler() {
 }
 
 function loadArchiveSearchBar() {
-    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="float input-bar form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
+    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="sailboat-float input-bar form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
     archiveSearchBar.hide();
     $('body').append(archiveSearchBar);
     archiveSearchBar.draggable();
@@ -475,15 +474,19 @@ function loadArchiveSearchBar() {
 }
 
 function loadDock() {
-    const dock = $('<div class="float dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
+
+    const $sailboatParts = $('<div class="sailboat-parts"></div>');
+    const shadowRoot = $sailboatParts[0].attachShadow({mode: 'open'});
+
+    const $dock = $('<div class="sailboat-float sailboat-dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
-    let collapseButton = $('<div id="collapse-dock-btn" class="float round-corner collapse-btn"><img src ="" id="collapse-img"></div>');
-    const body = $('body');
-    body.append(collapseButton);
+    const collapseArrowURL = chrome.runtime.getURL("images/left-arrow.svg");
+    let $collapseButton = $('<div id="collapse-dock-btn" class="sailboat-float round-corner collapse-btn"><img src ="' + collapseArrowURL + '" id="collapse-img"></div>');
+
     $('#collapse-dock-btn').draggable();
-    document.getElementById("collapse-img").src = chrome.runtime.getURL("images/left-arrow.svg");
-    collapseButton.click(function () {
+
+    $collapseButton.click(function () {
         $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
         $('#collapse-img').transition({rotate: '+=180'}, 'slow');
         chrome.storage.local.get("Settings", function (settings) {
@@ -508,9 +511,10 @@ function loadDock() {
     //         console.log(ui);
     //     }
     // });
-    dock.disableSelection();
-
-    body.append(dock);
+    $dock.disableSelection();
+    shadowRoot.appendChild($collapseButton[0]);
+    shadowRoot.appendChild($dock[0]);
+    document.body.appendChild(shadowRoot);
 }
 
 function archivePage() {
