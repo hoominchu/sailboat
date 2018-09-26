@@ -507,7 +507,7 @@ function loadDock() {
     // });
     $dock.disableSelection();
     shadowRoot.appendChild($collapseButton[0]);
-    shadowRoot.append($dock[0]);
+    shadowRoot.appendChild($dock[0]);
     document.body.appendChild(shadowRoot);
 }
 
