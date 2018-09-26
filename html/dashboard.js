@@ -1,68 +1,44 @@
 let colours = ["rgb(118,196,174)", "rgb(202,189,128)", "rgb(216,108,112)", "rgb(0,31,63), rgb(133,20,75)", "rgb(0,116,217)", "rgb(170,170,170)", "rgb(46,204,64)", "rgb(0,31,63), rgb(133,20,75)", "rgb(255,133,27)", "rgb(17,17,17)"];
 
 function processHistoryStats(historyStats, historyDateArray) {
-    let data = {};
-    let dates = [];
 
-    chrome.storage.local.get("TASKS", function (tasksObject) {
-        tasksObject = tasksObject["TASKS"];
-        if (tasksObject) {
+    let datasets = [];
+    let i = 0;
+    for (let task in historyStats) {
+        let timeSpentOnTask = [];
+        let taskStats = historyStats[task];
 
-            let historyStatsWithTaskNames = {};
-
-            for (let taskId in historyStats) {
-                let taskObject = tasksObject[taskId];
-                let taskName = "";
-                if (taskObject) {
-                    taskName = taskObject.name;
-                } else {
-                    taskName = "NULL-" + taskId.toString();
-                }
-                historyStatsWithTaskNames[taskName] = historyStats[taskId];
-            }
-
-            historyStats = historyStatsWithTaskNames;
-
-            let datasets = [];
-            let i = 0;
-            for (let task in historyStats) {
-                let timeSpentOnTask = [];
-                let taskStats = historyStats[task];
-
-                for (let idx in historyDateArray) {
-                    let date = historyDateArray[idx];
-                    let timeInSec = taskStats[date];
-                    timeSpentOnTask.push(timeInSec);
-                }
-                let bgColor = colours[i];
-                i++;
-
-                let taskData = {
-                    label: task.toString(),
-                    data: timeSpentOnTask,
-                    backgroundColor: bgColor,
-                    borderWidth: 1
-                };
-                datasets.push(taskData);
-            }
-
-            for (let idx in historyDateArray) {
-                let date = historyDateArray[idx];
-                date = date.substr(8, date.length)
-                date = moment(date, 'DD-MM-YYYY').format('DD MMM');
-                dates.push(date);
-            }
-
-            data = {
-                labels: dates,
-                datasets: datasets
-            };
-
-
+        for (let idx in historyDateArray) {
+            let date = historyDateArray[idx];
+            let timeInSec = taskStats[date];
+            timeSpentOnTask.push(timeInSec);
         }
-        renderChart(data);
-    });
+        let bgColor = colours[i];
+        i++;
 
+        let taskData = {
+            label: taskStats["taskName"],
+            data: timeSpentOnTask,
+            backgroundColor: bgColor,
+            borderWidth: 1
+        };
+        datasets.push(taskData);
+    }
+
+    let dates = [];
+    for (let idx in historyDateArray) {
+        let date = historyDateArray[idx];
+        date = date.substr(8, date.length)
+        date = moment(date, 'DD-MM-YYYY').format('DD MMM');
+        dates.push(date);
+    }
+
+    let data = {
+        labels: dates,
+        datasets: datasets
+    };
+
+    renderChart(data);
 }
 
 function getHistoryStats(historyDateArray) {
@@ -82,6 +58,9 @@ function getHistoryStats(historyDateArray) {
                 }
                 let taskHistory = history[task];
                 historyStats[task][historyDate] += taskHistory["totalTime"];
+                if (!historyStats[task]["taskName"]) {
+                    historyStats[task]["taskName"] = taskHistory["taskName"];
+                }
             }
         }
         processHistoryStats(historyStats, historyDateArray);
@@ -149,7 +128,7 @@ function renderChart(data) {
                             h = '0' + h;
                         }
                         let m = Math.floor((timeLabel % 3600) / 60);
-                        if(m.toString().length === 1){
+                        if (m.toString().length === 1) {
                             m = '0' + m;
                         }
                         label += ": ";

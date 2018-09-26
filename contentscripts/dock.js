@@ -52,7 +52,7 @@ $(window).blur(function () {
 
 });
 
-function addToHistory(url, task_id, startTime, endTime) {
+function addToHistory(url, taskId, startTime, endTime) {
 
     if (url !== "chrome://newtab/" && url !== "about:blank" && url) {
 
@@ -67,34 +67,39 @@ function addToHistory(url, task_id, startTime, endTime) {
             mm = '0' + mm
         }
         today = dd + '-' + mm + '-' + yyyy;
-        var historyToday = 'HISTORY-' + today;
+        let historyToday = 'HISTORY-' + today;
 
-        //initialise the history object for today if not present
-        chrome.storage.local.get(historyToday, function (e) {
-            if (isEmpty(e)) {
-                var o = {};
-                o[historyToday] = {};
-                chrome.storage.local.set(o);
-            }
-        });
 
         // add/update the entry in the history object
-        chrome.storage.local.get(historyToday, function (history) {
+        chrome.storage.local.get([historyToday, "TASKS"], function (results) {
 
-            history = history[historyToday];
+            let history;
+            let tasks = results["TASKS"];
 
-            if (!(task_id in history)) {
-                history[task_id] = {
-                    "urls": {},
-                    "totalTime": 0
-                };
+            //initialise the history object for today if not present
+            if (!results[historyToday]) {
+                history = {};
+            } else {
+                history = results[historyToday];
             }
 
-            var taskHistory = history[task_id];
-            var urls = taskHistory["urls"];
-            var totalTaskTime = taskHistory["totalTime"];
+            // get the task name
+            let taskObject = tasks[taskId];
+            let taskName = taskObject.name;
 
-            var timeDiff = (endTime - startTime) / 1000;
+            if (!(taskId in history)) {
+                history[taskId] = {
+                    "urls": {},
+                    "totalTime": 0,
+                    "taskName": taskName
+                }
+            }
+
+            let taskHistory = history[taskId];
+            let urls = taskHistory["urls"];
+            let totalTaskTime = taskHistory["totalTime"];
+
+            let timeDiff = (endTime - startTime) / 1000;
             totalTaskTime += timeDiff;
 
             if (!(url in urls)) {
@@ -103,9 +108,9 @@ function addToHistory(url, task_id, startTime, endTime) {
                     "timeSpent": 0
                 }
             }
-            var urlHistory = urls[url];
-            var timeIntervals = urlHistory["timeIntervals"];
-            var timeSpent = urlHistory["timeSpent"];
+            let urlHistory = urls[url];
+            let timeIntervals = urlHistory["timeIntervals"];
+            let timeSpent = urlHistory["timeSpent"];
             timeIntervals.push([startTime.toLocaleTimeString(), endTime.toLocaleTimeString()]);
             timeSpent += timeDiff;
             urls[url] = {
@@ -114,12 +119,13 @@ function addToHistory(url, task_id, startTime, endTime) {
             };
 
 
-            history[task_id] = {
+            history[taskId] = {
                 "urls": urls,
-                "totalTime": totalTaskTime
+                "totalTime": totalTaskTime,
+                "taskName": taskName
             };
 
-            var o = {};
+            let o = {};
             o[historyToday] = history;
             chrome.storage.local.set(o);
         });
@@ -152,9 +158,9 @@ function checkAndUpdateCollections() {
                     const frequency = collection[item];
                     collection[item]++;
                     const interest = {
-                        "collectionName":collectionName,
-                        "itemName":item,
-                        "frequency":frequency
+                        "collectionName": collectionName,
+                        "itemName": item,
+                        "frequency": frequency
                     };
                     foundInterests.push(interest);
                 }
@@ -162,10 +168,10 @@ function checkAndUpdateCollections() {
         }
         if (foundInterests.length > 0) {
             chrome.runtime.sendMessage({
-                "type" : "interests found",
-                "interests" : foundInterests
+                "type": "interests found",
+                "interests": foundInterests
             });
-            chrome.storage.local.set({"Collections":collections});
+            chrome.storage.local.set({"Collections": collections});
         }
     })
 }
@@ -189,14 +195,14 @@ function cleanElemText(txt) {
     txt = txt.trim();
     txt = txt.replace(/(\r\n\t|\n|\r\t)/gm, "");
     txt = txt.replace(/\u21b5/g, "");
-    txt = txt.replace(/\s+/g,' ');
+    txt = txt.replace(/\s+/g, ' ');
     return txt;
 }
 
 function groupElementsByClass() {
     let groups = {};
     $('*').each(function () {
-        if ($(this).is(':visible'))  {
+        if ($(this).is(':visible')) {
             let text = $(this).text();
             text = cleanElemText(text);
             if ($(this).text() && text.length < 100 && stopwords.indexOf(text.toLowerCase()) < 0 && /[a-zA-Z]/.test(text)) {
@@ -386,7 +392,7 @@ function loadKeyPressHandler() {
         }
 
         if (keyEvent.ctrlKey && keyEvent.keyCode === 65) {
-          archivePage();
+            archivePage();
         }
 
         if (keyEvent.ctrlKey && keyEvent.keyCode === 80) {
@@ -507,19 +513,19 @@ function loadDock() {
     body.append(dock);
 }
 
-function archivePage(){
-  $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
-  chrome.runtime.sendMessage({
-      "type": "like-page",
-      "url": window.location.href
-  });
+function archivePage() {
+    $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
+    chrome.runtime.sendMessage({
+        "type": "like-page",
+        "url": window.location.href
+    });
 
-  if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
-      //Store page content only after a page is liked.
-      storePageContent(window.location.href, document.documentElement.innerText);
-  } else {
-      deletePageContent(window.location.href);
-  }
+    if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
+        //Store page content only after a page is liked.
+        storePageContent(window.location.href, document.documentElement.innerText);
+    } else {
+        deletePageContent(window.location.href);
+    }
 }
 
 function loadArchiveButton() {
@@ -527,7 +533,7 @@ function loadArchiveButton() {
     const likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
     likeButton.css('background-image', 'url(' + archiveIconPath + ')');
     $(document).on('click', '#sailboat-like-btn', function () {
-      archivePage();
+        archivePage();
     });
     $("#sailboat-dock").append(likeButton);
 }
