@@ -74,9 +74,9 @@
     "contextMenu"
   ],
 
-  "icons": { "16": "images/SailBoat16.png",
-           "48": "images/SailBoat48.png",
-          "128": "images/SailBoat128.png" },
+  "icons": { "16": "images/Sailboat16.png",
+           "48": "images/Sailboat48.png",
+          "128": "images/Sailboat128.png" },
   
   
   "chrome_url_overrides": {
