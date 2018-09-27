@@ -38,7 +38,6 @@ $(window).focus(function () {
     startTime = new Date();
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks["TASKS"];
-        $('.task-btn').remove();
         loadTaskNames(CTASKID, tasks);
     });
     setHighlightIdx();
@@ -584,6 +583,7 @@ function loadTaskNames(ctaskid) {
     const dock = $('#tasks-area');
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks['TASKS'];
+        $('.task-btn').remove();
         for (let taskid in tasks) {
             if (tasks[taskid].archived === false) {
                 let taskBtn = $('<div class="task-btn" id="' + taskid + '"></div>');
