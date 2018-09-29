@@ -57,7 +57,7 @@ function showCurrentCollections() {
                 const $wikiIcon = $('<div class="collection-item-icon wiki-icon"></div>');
                 $iconGroup.append($wikiIcon);
                 $wikiIcon.click(function () {
-                    $('iframe.iframe').attr('src', wikiLink);
+                    $('iframe.magicbox-iframe').attr('src', wikiLink);
                     $('#magic_modal').modal('show');
                 });
 
@@ -79,7 +79,7 @@ function showCurrentCollections() {
                     $iconGroup.append($youtubeIcon);
                     $youtubeIcon.click(function () {
                         // search(item);
-                        $('iframe.iframe').attr('src', youtubeLink);
+                        $('iframe.magicbox-iframe').attr('src', youtubeLink);
                         $('#magic_modal').modal('show');
                     });
                 }
@@ -159,7 +159,7 @@ function showMovieInfo() {
                     const $director = $('<div class = "director text-success">' + jsonObj['Director'] + '</div>');
                     $director.click(function () {
                         const directorWikiLink = 'http://en.wikipedia.org/wiki/' + jsonObj['Director'].replace(/\s/g, '_').replace(/\.',/g,'');
-                        $('iframe.iframe').attr('src', directorWikiLink);
+                        $('iframe.magicbox-iframe').attr('src', directorWikiLink);
                         $('#magic_modal').modal('show');
                     });
                     let movieInfoString = '';

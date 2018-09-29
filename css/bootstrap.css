@@ -3042,13 +3042,13 @@ input[type="button"].btn-block {
   width: 100%;
 }
 
-.fade {
+.sailboat-fade {
   opacity: 0;
   -webkit-transition: opacity 0.15s linear;
   transition: opacity 0.15s linear;
 }
 
-.fade.show {
+.sailboat-fade.show {
   opacity: 1;
 }
 
@@ -5333,7 +5333,7 @@ button.close {
   outline: 0;
 }
 
-.modal.fade .modal-dialog {
+.modal.sailboat-fade .modal-dialog {
   -webkit-transition: -webkit-transform 0.3s ease-out;
   transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
@@ -5386,7 +5386,7 @@ button.close {
   background-color: #000;
 }
 
-.modal-backdrop.fade {
+.modal-backdrop.sailboat-fade {
   opacity: 0;
 }
 
