@@ -233,9 +233,13 @@ input, select {
 .tasks-area {
     width: 94%;
     float: left;
-    overflow-x: scroll;
     overflow-y: hidden;
+    overflow-x: auto;
     white-space: nowrap;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 .sailboat-like-btn {

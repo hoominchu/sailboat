@@ -2,7 +2,7 @@ function showTasks(Tasks, ctaskid) {
   $("#tasks-container").empty();
   $("#archived-tasks").empty();
 
-  const createTaskDiv = $('<div class="col-lg-3"><div class="card text-white bg-dark mb-3 col-lg-3" style="max-width: 20rem; height:12em; border-radius:0.8em"><div class="card-header">Create Task</div><div class="card-body"><div class="form-group round-corner"><input type="text" class="form-control round-corner" id="taskName" placeholder="Task name" style="border-radius: 0.6em"></div><button id="createTask" class="btn btn-secondary round-corner btn-sm" style="border-radius:0.6em">CreateTask</button></div></div></div>');
+  const createTaskDiv = $('<div class="col-lg-3"><div class="card text-white bg-dark mb-3 col-lg-3" style="max-width: 20rem; height:12em; border-radius:0.8em"><div class="card-header round-corner-top">Create Task</div><div class="card-body"><div class="form-group round-corner"><input type="text" class="form-control round-corner" id="taskName" placeholder="Task name" style="border-radius: 0.6em"></div><button id="createTask" class="btn btn-secondary round-corner btn-sm" style="border-radius:0.6em">CreateTask</button></div></div></div>');
   $("#tasks-container").append(createTaskDiv);
 
     for (let task_id in Tasks) {
