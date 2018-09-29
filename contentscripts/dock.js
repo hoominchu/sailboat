@@ -26,11 +26,11 @@ $(document).ready(function () {
             // sendDetectTaskMessage();
             // groupElementsByClass();
             checkAndUpdateCollections();
+            loadHoverBooster();
+            loadClickLogger();
+            loadKeyPressHandler();
         }
     });
-    loadHoverBooster();
-    loadClickLogger();
-    loadKeyPressHandler();
 });
 
 $(window).focus(function () {
@@ -475,8 +475,8 @@ function loadArchiveSearchBar() {
 function loadDock() {
 
     const $sailboatParts = $('<div class="sailboat-parts"></div>');
-    const shadowRoot = $sailboatParts[0].attachShadow({mode: 'open'});
-
+    // const shadowRoot = $sailboatParts[0].attachShadow({mode: 'open'});
+    //
     const $dock = $('<div class="sailboat-float sailboat-dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
@@ -511,9 +511,12 @@ function loadDock() {
     //     }
     // });
     $dock.disableSelection();
-    shadowRoot.appendChild($collapseButton[0]);
-    shadowRoot.appendChild($dock[0]);
-    document.body.appendChild(shadowRoot);
+    // shadowRoot.appendChild($collapseButton[0]);
+    // shadowRoot.appendChild($dock[0]);
+    // document.body.appendChild(shadowRoot);
+    $sailboatParts.append($collapseButton);
+    $sailboatParts.append($dock);
+    $(document.body).append($sailboatParts);
 }
 
 function archivePage() {

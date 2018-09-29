@@ -174,7 +174,7 @@ chrome.runtime.onMessage.addListener(function (message) {
         const resultsFromHistory = $('<hr><div><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
         const resultsElement = $("#sailboat-results-content");
         resultsElement.append(resultsFromHistory);
-        results = message.results;
+        let results = message.results;
         let resultsMinusResultsFromGoogleSearch = 0;
         for (var i = 0; i < results.length; i++) {
             if (domainsToExclude.indexOf(getDomainFromURL(results[i]["url"])) < 0) {
@@ -184,7 +184,7 @@ chrome.runtime.onMessage.addListener(function (message) {
                 resultsMinusResultsFromGoogleSearch++;
             }
         }
-        if (resultsMinusResultsFromGoogleSearch == 0) {
+        if (resultsMinusResultsFromGoogleSearch === 0) {
             var historyNoMatches = $("<p>No matches found in history.</p>");
             resultsElement.append(historyNoMatches);
         }

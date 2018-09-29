@@ -1,4 +1,14 @@
 $(document).ready(function () {
+
+    // gapi.client.setApiKey('AIzaSyAuPajSr17inQQYo4hXnh6DiWCs84fJXpo');
+    // gapi.client.load('youtube', 'v3', function() {
+    //     console.log('gclient youtube loaded');
+    //     // data = jQuery.parseJSON( '{ "data": [{"name":"orsons"}] }' );
+    //     // $.each(data["data"], function(index, value) {
+    //     //     makeRequest(value["name"]);
+    //     // });
+    // });
+
     document.addEventListener("keypress", function (event) {
         if (event.keyCode === 13) {
             const newCollectionName = $('#collectionNameInput').val();
@@ -68,6 +78,7 @@ function showCurrentCollections() {
                     const $youtubeIcon = $('<div class="collection-item-icon youtube-icon"></div>');
                     $iconGroup.append($youtubeIcon);
                     $youtubeIcon.click(function () {
+                        // search(item);
                         $('iframe.iframe').attr('src', youtubeLink);
                         $('#magic_modal').modal('show');
                     });
@@ -108,6 +119,18 @@ function showCurrentCollections() {
             collectionsElem.append($collectionObj);
         }
         showMovieInfo();
+    });
+}
+
+function search(q) {
+    const request = gapi.client.youtube.search.list({
+        q: q,
+        part: 'snippet'
+    });
+
+    request.execute(function(response) {
+        const str = JSON.stringify(response.result);
+        console.log(str);
     });
 }
 

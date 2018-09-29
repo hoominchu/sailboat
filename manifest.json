@@ -57,7 +57,7 @@
     "images/logo_white_sails_no_text.png",
     "images/trash.svg"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe eval' object-src",
+  "content_security_policy": "script-src 'self' https://apis.google.com 'unsafe-inline' 'unsafe eval' object-src",
   "permissions": [
     "downloads",
     "tabs",
