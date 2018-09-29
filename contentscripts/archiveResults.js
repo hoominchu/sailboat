@@ -147,8 +147,8 @@ function showArchivedResults(results) {
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
             let resultElement = document.createElement("p");
-            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : " + results[i]["task"] + "</p>";
-            let matchedTermsString = "<p><small>Matched terms : ";
+            let urlString = "<p style='line-height: 1.8em'><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : " + results[i]["task"] + "</p>";
+            let matchedTermsString = "<p style='line-height: 1.8em'><small>Matched terms : ";
             let contextStrings = "<p><small>";
             let matchedTerms = results[i]["matched terms"];
             for (let j = 0; j < matchedTerms.length; j++) {
@@ -161,7 +161,7 @@ function showArchivedResults(results) {
             resultsElement.appendChild(resultElement);
         }
     } else {
-        $("#sailboat-results-content").append($("<p>No matches found. Archive more pages!</p>"));
+        $("#sailboat-results-content").append($("<p style='line-height: 1.8em;'>No matches found. Archive more pages!</p>"));
     }
 }
 
@@ -171,7 +171,7 @@ function getSearchResultsFromHistory(query) {
 
 chrome.runtime.onMessage.addListener(function (message) {
     if (message.type === "set-search-results-from-history") {
-        const resultsFromHistory = $('<div><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
+        const resultsFromHistory = $('<hr><div><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
         const resultsElement = $("#sailboat-results-content");
         resultsElement.append(resultsFromHistory);
         results = message.results;
