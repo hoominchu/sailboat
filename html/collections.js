@@ -80,6 +80,7 @@ function showCurrentCollections() {
                     $iconGroup.append($youtubeIcon);
                     $youtubeIcon.click(function () {
                         searchYoutubeAndSetVideoTarget(item, cleanItemForId(item));
+                        setDarkTheme();
                     });
                 }
 
@@ -106,7 +107,7 @@ function showCurrentCollections() {
                 let itemCleanedForId = cleanItemForId(item);
                 const $itemDiv = $('<div class="row collection-div" id="' + itemCleanedForId + '"></div>');
                 $($itemDiv).after('<hr>');
-                const $item = $('<p class="collection-item item text-primary col-lg-9">' + item + ' (' + collection[item] + ')' + '</p>');
+                const $item = $('<p class="collection-item item col-lg-9"><strong>' + item + '</strong></p>');
 
                 const $itemTitleRow = $('<div class="row col-lg-12 collection-title"></div>');
                 $itemTitleRow.append($item);
@@ -125,7 +126,24 @@ function showCurrentCollections() {
 
 $('#magic_modal').on('hidden.bs.modal', function () {
     $('iframe.magicbox-iframe').attr('src', '');
+    setRegularTheme();
 });
+
+function setDarkTheme() {
+    // $('body').css('background', 'url("../images/background/chalkboard.jpg") repeat;');
+    // $('body').css('color', 'white');
+    $('#magic_modal').css('background', 'black');
+    $('.modal-header').css({'background': 'black', 'color': 'white', 'border-bottom': '1px solid #000'});
+    $('.modal-body').css('background', 'black');
+}
+
+function setRegularTheme() {
+    // $('body').css('background', 'white');
+    // $('body').css('color', 'black');
+    $('#magic_modal').css('background', 'none');
+    $('.modal-header').css({'background': 'none', 'color': 'black', 'border-bottom': '1px solid #eee'});
+    $('.modal-body').css('background', 'none');
+}
 
 function cleanItemForId(item) {
     let itemCleanedForId = item.replace(/\./g, '');
@@ -196,7 +214,7 @@ function showMovieInfo() {
                     if (jsonObj.hasOwnProperty('Awards'))
                         movieInfoString += 'Awards : ' + jsonObj['Awards'] + '<br>';
                     if (jsonObj.hasOwnProperty('imdbRating'))
-                        movieInfoString += 'IMDB : ' + jsonObj['imdbRating'] + '<br>';
+                        movieInfoString += 'IMDb : ' + jsonObj['imdbRating'] + '<br>';
                     if (jsonObj.hasOwnProperty('Ratings')) {
                         if (jsonObj['Ratings'][1])
                             movieInfoString += 'RT : ' + jsonObj['Ratings'][1]['Value'] + '<br>';
