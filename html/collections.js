@@ -33,11 +33,12 @@ function showCurrentCollections() {
         let $trashIconForCollection = $('<div class="delete_icon"></div>');
         $trashIconForCollection.css('background-image', 'url(' + trashIconURL + ')');
         $trashIconForCollection.css('background-size', 'cover');
+        $trashIconForCollection.css('float', 'right');
         const collectionsElem = $('#collections');
         for (let collectionName in collections) {
             let collection = collections[collectionName];
             const $collectionObj = $('<div></div>');
-            const $collectionName = $('<h6 class="text-primary">' + collectionName + '</h6><hr>');
+            const $collectionName = $('<h6 class="text-primary col-lg-12">' + collectionName + '</h6><hr>');
             $trashIconForCollection.click(function () {
                 const collectionName = $(this).parent().text().trim();
                 $(this).parent().parent().remove();
@@ -94,9 +95,9 @@ function showCurrentCollections() {
                 $trashIconForItem.css('background-image', 'url(' + trashIconURL + ')');
                 $trashIconForItem.css('background-size', 'cover');
                 $trashIconForItem.click(function () {
-                    const itemName = $(this).parent().text().split('(')[0].trim();
-                    const collectionName = $(this).parent().parent().find('h6').text().trim();
-                    $(this).parent().remove();
+                    const itemName = $(this).parent().find('.collection-item').text().trim(); //.split('(')[0].trim();
+                    const collectionName = $(this).parent().parent().parent().find('h6').text().trim();
+                    $(this).parent().parent().remove();
                     chrome.storage.local.get("Collections", function (collections) {
                         collections = collections["Collections"];
                         delete collections[collectionName][itemName];
