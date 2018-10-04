@@ -61,6 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         saveTaskInWindow(CTASKID);
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
+        fireTaskNameNotification();
       }
     }
     else if (request.type === "close-task") {
@@ -278,6 +279,27 @@ function fireInterestNotification(interests) {
     }, function (notificationID) {
         console.log("Last error:", chrome.runtime.lastError);
     });
+}
+
+chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+
+chrome.alarms.onAlarm.addListener(function(alarm){
+  if(alarm.name == "taskName notification"){
+    fireTaskNameNotification();
+  }
+});
+
+function fireTaskNameNotification(){
+  let taskNAME = " Default"
+  if(TASKS[CTASKID]){
+    taskNAME = " " + TASKS[CTASKID].name
+  }
+  chrome.notifications.create({
+    "type": "basic",
+    "iconUrl": "images/logo_white_sails_no_text.png",
+    "title": "Task Name : " + taskNAME,
+    "message": "You have been working on" + taskNAME
+  });
 }
 
 function fireTaskSuggestion(response) {
