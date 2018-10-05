@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         saveTaskInWindow(CTASKID);
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
-        fireTaskNameNotification();
+        fireTaskNameNotification(request.nextTaskId, "switchNotification");
       }
     }
     else if (request.type === "close-task") {
@@ -285,21 +285,32 @@ chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMin
 
 chrome.alarms.onAlarm.addListener(function(alarm){
   if(alarm.name == "taskName notification"){
-    fireTaskNameNotification();
+    fireTaskNameNotification(CTASKID, "timeSpentNotification");
   }
 });
 
-function fireTaskNameNotification(){
+function fireTaskNameNotification(taskId, notifType){
   let taskNAME = " Default"
-  if(TASKS[CTASKID]){
-    taskNAME = " " + TASKS[CTASKID].name
+  if(TASKS[taskId]){
+    taskNAME = " " + TASKS[taskId].name
   }
-  chrome.notifications.create({
-    "type": "basic",
-    "iconUrl": "images/logo_white_sails_no_text.png",
-    "title": "Task Name : " + taskNAME,
-    "message": "You have been working on" + taskNAME
-  });
+  if(notifType == "timeSpentNotification"){
+    chrome.notifications.create({
+      "type": "basic",
+      "iconUrl": "images/logo_white_sails_no_text.png",
+      "title": "Task Name : " + taskNAME,
+      "message": "You have been working on" + taskNAME
+    });
+  }
+  else if(notifType == "switchNotification"){
+    chrome.notifications.create({
+      "type": "basic",
+      "iconUrl": "images/logo_white_sails_no_text.png",
+      "title": "Task Switched to:" + taskNAME,
+      "message": "You have switched to" + taskNAME
+    });
+  }
+
 }
 
 function fireTaskSuggestion(response) {
