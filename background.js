@@ -281,7 +281,15 @@ function fireInterestNotification(interests) {
     });
 }
 
-chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+chrome.storage.local.get("Task Notification Time Period", function(result){
+  if(!result["Task Notification Time Period"]){
+    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+
+  }
+  else{
+    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(result["Task Notification Time Period"])})
+  }
+})
 
 chrome.alarms.onAlarm.addListener(function(alarm){
   if(alarm.name == "taskName notification"){
