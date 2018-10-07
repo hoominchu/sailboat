@@ -44,7 +44,12 @@ function restoreTasksFromString(string) {
     $("#fileUploadMessage").append(successIcon);
 }
 
+function changeTaskNotifPeriod(periodInMins){
+  chrome.storage.local.set({"Task Notification Time Period": periodInMins.srcElement.value});
+}
 document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+
+document.getElementById('time-period-for-task-notif').addEventListener('change', changeTaskNotifPeriod, false);
 
 //STUFF RELATED TO TASK SUGGESTIONS
 

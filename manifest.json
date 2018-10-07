@@ -71,14 +71,15 @@
     "https://*/*",
     "http://*/*",
     "webRequest",
-    "contextMenu"
+    "contextMenu",
+    "alarms"
   ],
 
   "icons": { "16": "images/Sailboat16.png",
            "48": "images/Sailboat48.png",
           "128": "images/Sailboat128.png" },
-  
-  
+
+
   "chrome_url_overrides": {
     "newtab": "html/index.html"
   },

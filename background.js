@@ -61,6 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         saveTaskInWindow(CTASKID);
         deactivateTaskInWindow(CTASKID);
         activateTaskInWindow(request.nextTaskId);
+        fireTaskNameNotification(request.nextTaskId, "switchNotification");
       }
     }
     else if (request.type === "close-task") {
@@ -278,6 +279,81 @@ function fireInterestNotification(interests) {
     }, function (notificationID) {
         console.log("Last error:", chrome.runtime.lastError);
     });
+}
+
+chrome.storage.local.get("Task Notification Time Period", function(result){
+  if(!result["Task Notification Time Period"]){
+    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+
+  }
+  else{
+    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(result["Task Notification Time Period"])})
+  }
+})
+
+chrome.alarms.onAlarm.addListener(function(alarm){
+  if(alarm.name == "taskName notification"){
+    fireTaskNameNotification(CTASKID, "timeSpentNotification");
+  }
+});
+
+function fireTaskNameNotification(taskId, notifType){
+  let taskNAME = " Default"
+  if(TASKS[taskId]){
+    taskNAME = " " + TASKS[taskId].name
+  }
+  if(notifType == "timeSpentNotification"){
+    const date = new Date();
+    let dd = date.getDate();
+    let mm = date.getMonth() + 1; //January is 0!
+    let yyyy = date.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    var dateString = dd + '-' + mm + '-' + yyyy;
+    var historyDate = 'HISTORY-' + dateString;
+    chrome.storage.local.get(historyDate, function(historyObject){
+      historyObject = historyObject[historyDate];
+      const hrsSpent = Math.floor(historyObject[taskId].totalTime/3600)
+      const minsSpent =  Math.floor((historyObject[taskId].totalTime/3600 - hrsSpent)*60)
+      let message = ""
+      if(hrsSpent > 0){
+        if(minsSpent>0){
+          message = "Total Time Spent on the task: " + hrsSpent + " hour and " + minsSpent + " minutes"
+        }
+        else{
+          message = "Total Time Spent on the task: " + hrsSpent + " hour"
+        }
+      }
+      else{
+        if(minsSpent>0){
+          message = "Total Time Spent on the task: " + minsSpent + " minutes"
+        }
+        else{
+          message = "Total Time Spent on the task: Less than a minute"
+        }
+      }
+      chrome.notifications.create({
+        "type": "basic",
+        "iconUrl": "images/logo_white_sails_no_text.png",
+        "title": "You are on : " + taskNAME,
+        "message": message
+      });
+    });
+
+  }
+  else if(notifType == "switchNotification"){
+    chrome.notifications.create({
+      "type": "basic",
+      "iconUrl": "images/logo_white_sails_no_text.png",
+      "title": "Task Switched to:" + taskNAME,
+      "message": "You have switched to" + taskNAME
+    });
+  }
+
 }
 
 function fireTaskSuggestion(response) {
