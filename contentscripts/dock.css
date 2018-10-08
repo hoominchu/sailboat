@@ -330,6 +330,10 @@ textarea:focus, input:focus{
     /*box-shadow:1px 0 5px #07B94F;*/
 }
 
+.red-highlighted-task {
+    background-color: rgba(206, 27, 27, 0.75);
+}
+
 .current-task {
     color: white; !important;
     background-color: rgba(7, 185, 79, 0.37);

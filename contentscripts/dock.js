@@ -672,16 +672,24 @@ function loadTaskNames(ctaskid) {
                 taskBtn.on('dragleave', function (ev) {
                     ev.preventDefault();
                     ev.stopPropagation();
-                    $(this).toggleClass("highlighted-task", 1000);
+                    $(this).removeClass("highlighted-task");
                 });
 
                 taskBtn.on('drop', function (ev) {
                     const droppedHTML = ev.originalEvent.dataTransfer.getData("text/html");
                     const dropContext = $('<div>').append(droppedHTML);
                     const href = $(dropContext).find("a").attr('href');
-                    const targetTaskID = ev.currentTarget.id;
-                    addURLToTaskMessage(href, targetTaskID);
-                    $(this).toggleClass("highlighted-task", 1000);
+                    if (href) {
+                        const targetTaskID = ev.currentTarget.id;
+                        addURLToTaskMessage(href, targetTaskID);
+                    } else {
+                        $(this).removeClass("highlighted-task");
+                        $(this).addClass('red-highlighted-task');
+                        setTimeout(function () {
+                            taskBtn.removeClass('red-highlighted-task');
+                        }, 150);
+                    }
+                    taskBtn.removeClass("highlighted-task");
                 });
 
                 dock.append(taskBtn);
