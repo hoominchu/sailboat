@@ -97,6 +97,12 @@ chrome.storage.local.get("Click Log", function (e) {
     }
 });
 
+chrome.storage.local.get("Report", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report": {}});
+    }
+});
+
 
 chrome.storage.local.get("Settings", function (e) {
     if (isEmpty(e)) {
