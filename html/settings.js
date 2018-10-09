@@ -2,18 +2,11 @@
 //STUFF RELATED TO IMPORTING AND EXPORTING OF TASKS
 
 $("#downloadTasks").click(function () {
-    chrome.runtime.sendMessage({"type": "download-tasks"}, function () {
-    });
+    chrome.runtime.sendMessage({"type": "download-tasks"});
 });
 
 $("#restoreTasks").click(function () {
-    chrome.runtime.sendMessage({"type": "restore-task-from-file"}, function () {
-        // jQuery.get('file.txt', function(data) {
-        //    alert(data);
-        //    //process text file line by line
-        //    $('#div').html(data.replace('n',''));
-        // });
-    })
+    chrome.runtime.sendMessage({"type": "restore-task-from-file"});
 });
 
 // function restoreTaskObjectFromFile()
@@ -44,12 +37,89 @@ function restoreTasksFromString(string) {
     $("#fileUploadMessage").append(successIcon);
 }
 
-function changeTaskNotifPeriod(periodInMins){
-  chrome.storage.local.set({"Task Notification Time Period": periodInMins.srcElement.value});
-}
 document.getElementById('file-input').addEventListener('change', readSingleFile, false);
 
-document.getElementById('time-period-for-task-notif').addEventListener('change', changeTaskNotifPeriod, false);
+
+
+//TASK NOTIFICATIONS
+
+//SWITCH NOTIFICATION
+
+chrome.storage.local.get("task-switch-notification", function(value){
+    if(value["task-switch-notification"]){
+        document.getElementById('task-switch-notification').checked = value["task-switch-notification"]
+    }
+    else{
+        document.getElementById('task-switch-notification').checked = false
+    }
+});
+
+function toggleSwitchNotification(){
+    chrome.storage.local.get("task-switch-notification", function(value){
+        let newValue = true
+        if(value["task-switch-notification"]){
+            newValue = false
+        }
+        chrome.storage.local.set({"task-switch-notification": newValue});
+    });
+}
+
+document.getElementById('task-switch-notification').addEventListener('change', toggleSwitchNotification, false);
+
+
+function changeTaskNotificationPeriod(periodInMins){
+    chrome.storage.local.set({"Task Notification Time Period": periodInMins.srcElement.checked});
+}
+
+//TIME SPENT NOTIFICATION
+
+chrome.storage.local.get("time-spent-notification", function(value){
+    if(typeof value["time-spent-notification"] != "undefined"){
+        if(value["time-spent-notification"]){
+            document.getElementById('time-spent-notification').checked = value["time-spent-notification"]
+        }
+        else{
+            document.getElementById('time-spent-notification').checked = false
+        }
+    }
+    else{
+        document.getElementById('time-spent-notification').checked = true
+    }
+
+});
+
+function toggleTimeSpentNotification(){
+    chrome.storage.local.get("time-spent-notification", function(value){
+        let newValue = true
+        if(value["time-spent-notification"]){
+            newValue = false
+        }
+        chrome.storage.local.set({"time-spent-notification": newValue});
+    });
+}
+
+document.getElementById('time-spent-notification').addEventListener('change', toggleTimeSpentNotification, false);
+
+//TIME SPENT PERIOD
+
+chrome.storage.local.get("time-period-for-task-notification", function(value){
+    if(value["time-period-for-task-notification"]){
+        document.getElementById('time-period-for-task-notification').value = value["time-period-for-task-notification"]
+    }
+    else{
+        document.getElementById('time-period-for-task-notification').value = 10
+    }
+});
+
+
+function changeTaskNotificationPeriod(periodInMins){
+    chrome.storage.local.set({"time-period-for-task-notification": periodInMins.srcElement.value});
+}
+
+
+document.getElementById('time-period-for-task-notification').addEventListener('change', changeTaskNotificationPeriod, false);
+
+
 
 //STUFF RELATED TO TASK SUGGESTIONS
 

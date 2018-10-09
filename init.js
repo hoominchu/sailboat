@@ -69,7 +69,7 @@ chrome.storage.local.get("Page Content", function (e) {
 
 chrome.storage.local.get("Collections", function (e) {
     if (isEmpty(e)) {
-        chrome.storage.local.set({"Collections": {}});
+        chrome.storage.local.set({"Collections": {'Books':{}, 'Movies': {}, 'People': {}, 'Places': {}}});
     }
 });
 
@@ -94,6 +94,28 @@ chrome.storage.local.get("Tags", function (e) {
 chrome.storage.local.get("Click Log", function (e) {
     if (isEmpty(e)) {
         chrome.storage.local.set({"Click Log": {}});
+    }
+});
+
+chrome.storage.local.get("Report Snapshots", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report Snapshots": {}});
+    }
+});
+
+chrome.storage.local.get("Report Switches", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report Switches": {}});
+    }
+});
+
+chrome.storage.local.get("Report Clicks", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report Clicks": {'SB results clicks' : 0,
+                'Open Archived Pages' : 0,
+                'Export JSON': 0,
+                'Restore JSON': 0
+        }});
     }
 });
 

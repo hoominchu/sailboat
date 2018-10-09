@@ -175,6 +175,11 @@
     background-color: #07b94f; !important;
 }
 
+.sailboat-like-btn-liked:hover {
+    color: white; !important;
+    background-color: #07b94f; !important;
+}
+
 .open-task {
     border: 0.8px solid #158ae2; !important;
     box-sizing: border-box;
@@ -330,6 +335,10 @@ textarea:focus, input:focus{
     /*box-shadow:1px 0 5px #07B94F;*/
 }
 
+.red-highlighted-task {
+    background-color: rgba(206, 27, 27, 0.75);
+}
+
 .current-task {
     color: white; !important;
     background-color: rgba(7, 185, 79, 0.37);
@@ -353,5 +362,17 @@ textarea:focus, input:focus{
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+}
+
+.sailboat-result-element {
+    margin-bottom: 10px;
+    border-bottom: 1px solid darkgrey;
+    padding-bottom: 10px;
+}
+
+.sailboat-result-url {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
