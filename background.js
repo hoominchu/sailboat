@@ -281,28 +281,32 @@ function fireInterestNotification(interests) {
     });
 }
 
-chrome.storage.local.get("Task Notification Time Period", function(result){
-  if(!result["Task Notification Time Period"]){
+chrome.storage.local.get("time-period-for-task-notification", function(result){
+  if(!result["time-period-for-task-notification"]){
     chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
 
   }
   else{
-    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(result["Task Notification Time Period"])})
+    chrome.alarms.create("taskName-notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(result["time-period-for-task-notification"])})
   }
 })
 
 chrome.alarms.onAlarm.addListener(function(alarm){
-  if(alarm.name == "taskName notification"){
-    fireTaskNameNotification(CTASKID, "timeSpentNotification");
+  if(alarm.name == "taskName-notification") {
+      chrome.storage.local.get("time-spent-notification", function (value) {
+          if (value["time-spent-notification"]) {
+              fireTaskNameNotification(CTASKID, "timeSpentNotification");
+          }
+      });
   }
 });
 
-function fireTaskNameNotification(taskId, notifType){
+function fireTaskNameNotification(taskId, notificationType){
   let taskNAME = " Default"
   if(TASKS[taskId]){
     taskNAME = " " + TASKS[taskId].name
   }
-  if(notifType == "timeSpentNotification"){
+  if(notificationType == "timeSpentNotification"){
     const date = new Date();
     let dd = date.getDate();
     let mm = date.getMonth() + 1; //January is 0!
@@ -345,15 +349,18 @@ function fireTaskNameNotification(taskId, notifType){
     });
 
   }
-  else if(notifType == "switchNotification"){
-    chrome.notifications.create({
-      "type": "basic",
-      "iconUrl": "images/logo_white_sails_no_text.png",
-      "title": "Task Switched to:" + taskNAME,
-      "message": "You have switched to" + taskNAME
-    });
+  else if(notificationType == "switchNotification"){
+      chrome.storage.local.get("task-switch-notification", function(value){
+          if(value["task-switch-notification"]){
+              chrome.notifications.create({
+                  "type": "basic",
+                  "iconUrl": "images/logo_white_sails_no_text.png",
+                  "title": "Task Switched to:" + taskNAME,
+                  "message": "You have switched to" + taskNAME
+              });
+          }
+      })
   }
-
 }
 
 function fireTaskSuggestion(response) {
