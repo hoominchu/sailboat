@@ -180,10 +180,10 @@ function showArchivedResults(results) {
             $resultElement.append($urlString).append($task).append($matchedTerms).append($contextStrings);//innerHTML = urlString + $matchedTerms + '<br>';
             $resultsElement.append($resultElement);
             $resultElement.click(function (ev) {
-                chrome.storage.local.get('Report Sailboat Result Clicks', function (report) {
-                    report = report['Report Sailboat Result Clicks'];
-                    report['nClicks']++;
-                    chrome.storage.local.set({'Report Sailboat Result Clicks': report});
+                chrome.storage.local.get('Report Clicks', function (report) {
+                    report = report['Report Clicks'];
+                    report['SB results clicks']++;
+                    chrome.storage.local.set({'Report Clicks': report});
                 })
             });
         }

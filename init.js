@@ -103,9 +103,19 @@ chrome.storage.local.get("Report Snapshots", function (e) {
     }
 });
 
-chrome.storage.local.get("Report Sailboat Result Clicks", function (e) {
+chrome.storage.local.get("Report Switches", function (e) {
     if (isEmpty(e)) {
-        chrome.storage.local.set({"Report Sailboat Result Clicks": {'nClicks' : 0}});
+        chrome.storage.local.set({"Report Switches": {}});
+    }
+});
+
+chrome.storage.local.get("Report Clicks", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report Clicks": {'SB results clicks' : 0,
+                'Open Archived Pages' : 0,
+                'Export JSON': 0,
+                'Restore JSON': 0
+        }});
     }
 });
 

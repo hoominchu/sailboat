@@ -65,6 +65,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             activateTaskInWindow(request.nextTaskId);
             fireTaskNameNotification(request.nextTaskId, "switchNotification");
         }
+        recordInReport();
     }
     else if (request.type === "close-task") {
         closeTask(request.taskId);
@@ -298,16 +299,16 @@ chrome.storage.local.get("time-period-for-task-notification", function (result) 
 // Alarm for taking snapshot of Sailboat
 chrome.alarms.create('reportSnapshot', {'delayInMinutes': 0, 'periodInMinutes': reportSnapshotPeriod});
 
-chrome.alarms.onAlarm.addListener(function(alarm){
-  if(alarm.name == "taskName-notification") {
-      chrome.storage.local.get("time-spent-notification", function (value) {
-          if (value["time-spent-notification"]) {
-              fireTaskNameNotification(CTASKID, "timeSpentNotification");
-          }
-      });
-  } else if (alarm.name === "reportSnapshot") {
-      takeReportSnapshot();
-  }
+chrome.alarms.onAlarm.addListener(function (alarm) {
+    if (alarm.name == "taskName-notification") {
+        chrome.storage.local.get("time-spent-notification", function (value) {
+            if (value["time-spent-notification"]) {
+                fireTaskNameNotification(CTASKID, "timeSpentNotification");
+            }
+        });
+    } else if (alarm.name === "reportSnapshot") {
+        takeReportSnapshot();
+    }
 });
 
 
@@ -319,7 +320,7 @@ function getNArchivedTasks(tasks) {
 
     for (const taskid in tasks) {
         if (taskid !== 'lastAssignedId') {
-            if (tasks[taskid]['archived']){
+            if (tasks[taskid]['archived']) {
                 nArchivedTasks++;
             }
         }
@@ -327,12 +328,26 @@ function getNArchivedTasks(tasks) {
     return nArchivedTasks;
 }
 
+function recordInReport() {
+    var todayte = new Date().toJSON().slice(0, 10);
+    chrome.storage.local.get('Report Switches', function (report) {
+        report = report['Report Switches'];
+        if (report.hasOwnProperty(todayte)) {
+            report[todayte]['nSwitches']++;
+        } else {
+            report[todayte] = {};
+            report[todayte]['nSwitches'] = 1;
+        }
+        chrome.storage.local.set({'Report Switches': report});
+    })
+}
+
 function takeReportSnapshot() {
 
     const now = new Date().getTime();
 
     chrome.storage.local.get(['Report Snapshots', 'TASKS'], function (response) {
-        chrome.windows.getAll({populate:true},function(windows){
+        chrome.windows.getAll({populate: true}, function (windows) {
 
             let reportSnapshots = response['Report Snapshots'];
             let tasks = response['TASKS'];
@@ -357,7 +372,7 @@ function takeReportSnapshot() {
             }
             reportSnapshots[now]['windowState'] = windowsState;
 
-            chrome.storage.local.set({'Report Snapshots' : reportSnapshots});
+            chrome.storage.local.set({'Report Snapshots': reportSnapshots});
         });
     });
 }
@@ -410,17 +425,18 @@ function fireTaskNameNotification(taskId, notificationType) {
         });
 
     }
-    else if (notificationType === "switchNotification") {chrome.storage.local.get("task-switch-notification", function(value){
-          if(value["task-switch-notification"]){
-        chrome.notifications.create({
-            "type": "basic",
-            "iconUrl": "images/logo_white_sails_no_text.png",
-            "title": "Task Switched to:" + taskNAME,
-            "message": "You have switched to" + taskNAME
-        });
+    else if (notificationType === "switchNotification") {
+        chrome.storage.local.get("task-switch-notification", function (value) {
+            if (value["task-switch-notification"]) {
+                chrome.notifications.create({
+                    "type": "basic",
+                    "iconUrl": "images/logo_white_sails_no_text.png",
+                    "title": "Task Switched to:" + taskNAME,
+                    "message": "You have switched to" + taskNAME
+                });
+            }
+        })
     }
-})
-  }
 }
 
 function fireTaskSuggestion(response) {
