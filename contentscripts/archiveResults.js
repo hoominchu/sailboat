@@ -1,28 +1,46 @@
-const commonwords = ["the", "of", "and", "a", "to", "in", "is", "you", "that", "it", "he", "was", "for", "on", "are", "as", "with", "his", "they", "i", "at", "be", "this", "have", "from", "or", "one", "had", "by", "word", "but", "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see", "number", "no", "way", "could", "people", "my", "than", "first", "been", "call", "who", "its", "now", "find", "long", "down", "day", "did", "get", "come", "made", "may", "part"];
+const commonwords = ["the", "man", "good", "of", "and", "a", "to", "in", "is", "you", "that", "it", "he", "was", "for", "on", "are", "as", "with", "his", "they", "i", "at", "be", "this", "have", "from", "or", "one", "had", "by", "word", "but", "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see", "number", "no", "way", "could", "people", "my", "than", "first", "been", "call", "who", "its", "now", "find", "long", "down", "day", "did", "get", "come", "made", "may", "part"];
 
 const domainsToExclude = ["www.google.co.in", "www.google.co.in"];
 const sailboatLogo = chrome.extension.getURL("images/logo_white_sails_no_text.png");
 
 $(document).ready(function () {
-    if (getDomainFromURL(window.location.href).indexOf('.google.') > -1) {
-        const $resultsBox = $('<div id="sailboat-results" style="border: 1px solid lightblue;">');
-        $resultsBox.css({'max-height': '330px', 'width': '454px', 'overflow': 'scroll'});
-        $('#rhs').prepend($resultsBox);
+    if (getDomainFromURL(window.location.href).indexOf('.google.') > -1 && pageIsGood()) {
+        const query = getUrlParameter('q', window.location.href);
+        try {
+          if(removeWordsFromString(commonwords, query)){ //Show results only if the query contains something except stopwords.
+            const $resultsBox = $('<div id="sailboat-results" style="border: 1px solid lightblue;">');
+            $resultsBox.css({'max-height': '330px', 'width': '454px', 'overflow': 'scroll'});
+            $('#rhs').prepend($resultsBox);
 
-        const $sailboatHeader = $("<div id ='sailboat-header' style='height:40px; display:inline-block; width:100%'><img src='" + sailboatLogo + "' style='height:40px; display:block; margin:auto;'/></div>");
-        $sailboatHeader.css({'margin-bottom': '5px'});
-        $resultsBox.append($sailboatHeader);
+            const $sailboatHeader = $("<div id ='sailboat-header' style='height:40px; display:inline-block; width:100%'><img src='" + sailboatLogo + "' style='height:40px; display:block; margin:auto;'/></div>");
+            $sailboatHeader.css({'margin-bottom': '5px'});
+            $resultsBox.append($sailboatHeader);
 
-        const $resultsContentDiv = $('<div style="padding: 10px;" id="sailboat-results-content">');
-        $resultsBox.append($resultsContentDiv);
+            const $resultsContentDiv = $('<div style="padding: 10px;" id="sailboat-results-content">');
+            $resultsBox.append($resultsContentDiv);
 
-        var query = getUrlParameter('q', window.location.href);
-        if (query) {
             searchArchivedPages(query);
             getSearchResultsFromHistory(query);
+          }
+        }
+        catch(e){
+          console.log(e);
         }
     }
 });
+
+
+function pageIsGood(){ //check if the page is an actual search results page
+  if(getUrlParameter('tbm', window.location.href)){
+    const $urlIsGoogleMapPage = Boolean(getUrlParameter('tbm', window.location.href) == 'lcl')
+    if($urlIsGoogleMapPage){ //when tbm=lcl google search results goes into maps mode.
+      return false;
+    }
+  }
+  else{
+    return true;
+  }
+}
 
 function searchArchivedPages(query) {
     chrome.storage.local.get("TASKS", function (tasks) {
@@ -43,9 +61,12 @@ function searchArchivedPages(query) {
                 queryTerms = query.split("+");
             }
 
-            for (let i = 0; i < queryTerms.length; i++) {
+            const queryLength = queryTerms.length
+
+            for (let i = 0; i < queryLength; i++) {
                 if (commonwords.indexOf(queryTerms[i]) > -1) {
                     queryTerms.splice(i, 1);
+                    i = i - 1 //reset the counter to the previous position.
                 }
             }
 
@@ -54,7 +75,7 @@ function searchArchivedPages(query) {
                     const task = tasks[taskid];
                     let searchThroughPages = task["likedPages"];
 
-                    if (searchThroughPages.length === 0) {
+                    if (searchThroughPages.length == 0) {
                     }
                     else {
                         for (let i = 0; i < searchThroughPages.length; i++) {
@@ -157,7 +178,8 @@ function showArchivedResults(results) {
             }
             matchedTermsString = matchedTermsString + "</p></small>";
             contextStrings = contextStrings + "</p></small>";
-            resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
+            // resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
+            resultElement.innerHTML = urlString + matchedTermsString + "<br>";
             resultsElement.appendChild(resultElement);
         }
     } else {
@@ -168,6 +190,7 @@ function showArchivedResults(results) {
 function getSearchResultsFromHistory(query) {
     chrome.runtime.sendMessage({"type": "get-search-results-from-history", "query": query});
 }
+
 
 chrome.runtime.onMessage.addListener(function (message) {
     if (message.type === "set-search-results-from-history") {
@@ -191,3 +214,21 @@ chrome.runtime.onMessage.addListener(function (message) {
         resultsElement.append("<div style='height:5px;'></div>");
     }
 });
+
+
+
+function removeWordsFromString(wordsToRemove, string){
+  //wordsToRemove is an array of words that should be removed.
+  //this function returns a string with the specific words removed.
+
+  let words = string.split(" ");
+  const stringLength = words.length;
+  for (let i = 0; i < stringLength; i++) {
+      if (wordsToRemove.indexOf(words[i]) > -1) {
+          words.splice(i, 1);
+          i = i - 1; //reset the counter to the previous position.
+      }
+  }
+  const newString = words.join(" ");
+  return newString;
+}

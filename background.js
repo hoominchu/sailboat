@@ -282,15 +282,15 @@ function fireInterestNotification(interests) {
     });
 }
 
-chrome.storage.local.get("Task Notification Time Period", function (result) {
-    if (!result["Task Notification Time Period"]) {
+chrome.storage.local.get("time-period-for-task-notification", function (result) {
+    if (!result["time-period-for-task-notification"]) {
         chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
 
     }
     else {
-        chrome.alarms.create("taskName notification", {
+        chrome.alarms.create("taskName-notification", {
             "delayInMinutes": 0,
-            "periodInMinutes": parseInt(result["Task Notification Time Period"])
+            "periodInMinutes": parseInt(result["time-period-for-task-notification"])
         })
     }
 });
@@ -298,13 +298,18 @@ chrome.storage.local.get("Task Notification Time Period", function (result) {
 // Alarm for taking snapshot of Sailboat
 chrome.alarms.create('reportSnapshot', {'delayInMinutes': 0, 'periodInMinutes': reportSnapshotPeriod});
 
-chrome.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name === "taskName notification") {
-        fireTaskNameNotification(CTASKID, "timeSpentNotification");
-    } else if (alarm.name === "reportSnapshot") {
-        takeReportSnapshot();
-    }
+chrome.alarms.onAlarm.addListener(function(alarm){
+  if(alarm.name == "taskName-notification") {
+      chrome.storage.local.get("time-spent-notification", function (value) {
+          if (value["time-spent-notification"]) {
+              fireTaskNameNotification(CTASKID, "timeSpentNotification");
+          }
+      });
+  } else if (alarm.name === "reportSnapshot") {
+      takeReportSnapshot();
+  }
 });
+
 
 function getNArchivedTasks(tasks) {
     let nArchivedTasks = 0;
@@ -357,12 +362,12 @@ function takeReportSnapshot() {
     });
 }
 
-function fireTaskNameNotification(taskId, notifType) {
+function fireTaskNameNotification(taskId, notificationType) {
     let taskNAME = " Default";
     if (TASKS[taskId]) {
         taskNAME = " " + TASKS[taskId].name
     }
-    if (notifType === "timeSpentNotification") {
+    if (notificationType === "timeSpentNotification") {
         const date = new Date();
         let dd = date.getDate();
         let mm = date.getMonth() + 1; //January is 0!
@@ -405,7 +410,8 @@ function fireTaskNameNotification(taskId, notifType) {
         });
 
     }
-    else if (notifType === "switchNotification") {
+    else if (notificationType === "switchNotification") {chrome.storage.local.get("task-switch-notification", function(value){
+          if(value["task-switch-notification"]){
         chrome.notifications.create({
             "type": "basic",
             "iconUrl": "images/logo_white_sails_no_text.png",
@@ -413,7 +419,8 @@ function fireTaskNameNotification(taskId, notifType) {
             "message": "You have switched to" + taskNAME
         });
     }
-
+})
+  }
 }
 
 function fireTaskSuggestion(response) {

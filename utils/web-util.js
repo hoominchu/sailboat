@@ -352,3 +352,19 @@ function reloadSailboatTabs(){
     }
   });
 }
+
+function removeWordsFromString(wordsToRemove, string){
+  //wordsToRemove is an array of words that should be removed.
+  //this function returns a string with the specific words removed.
+
+  let words = string.split(" ");
+  const stringLength = words.length;
+  for (let i = 0; i < stringLength; i++) {
+      if (wordsToRemove.indexOf(words[i]) > -1) {
+          words.splice(i, 1);
+          i = i - 1; //reset the counter to the previous position.
+      }
+  }
+  const newString = words.join(" ");
+  return newString;
+}

@@ -8,12 +8,76 @@
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/custom.css">
     <link rel="stylesheet" href="../css/history.css">
+    <link rel="stylesheet" href="../css/settings.css">
 </head>
 <body>
 <script src="template.js"></script>
+<div class="container">
+  <div class="row" style="margin-top:20px">
+    <div class="col-md-12">
+      <h1 class="text-center">Settings</h1>
+      <div class="row setting-section">
+        <div class="col-md-12">
+          <h5 class="text-left font-weight-bold section-title">BackUp and Restore</h5>
+          <div class="row setting">
+            <div class="col-md-3">
+              BackUp Sailboat into a JSON:
+            </div>
+            <div class="col-md-9">
+              <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Back Up</button>
+            </div>
+          </div>
+          <div class="row setting">
+            <div class="col-md-3">
+              Restore Sailboat from a JSON:
+            </div>
+            <div class="col-md-9">
+              <label for="file-input" class="btn btn-primary round-corner">Restore from JSON</label>
+              <input type="file" id="file-input"/><span id="fileUploadMessage"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row setting-section">
+        <div class="col-md-12">
+          <h5 class="text-left font-weight-bold section-title">Notifications</h5>
+          <div class="row setting">
+            <div class="col-md-3">
+              Task Switch Notification
+            </div>
+            <div class="col-md-9">
+              <label class="switch">
+              <input type="checkbox" id="task-switch-notification">
+              <span class="slider round"></span>
+            </label>
+            </div>
+          </div>
+          <div class="row setting">
+            <div class="col-md-3">
+              Time Spent Notification
+            </div>
+            <div class="col-md-9">
+              <label class="switch">
+              <input type="checkbox" id="time-spent-notification">
+              <span class="slider round"></span>
+            </label>
+            </div>
+          </div>
+          <div class="row setting">
+            <div class="col-md-3">
+              Show me time spent on a task in:
+            </div>
+            <div class="col-md-9">
+              Every &nbsp <input type="number" style="width:50px" id="time-period-for-task-notification"/> &nbsp minutes.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- <div class="row" style="height: 1em;"></div>
 
-<div class="container-fluid" style="background-color: rgba(255,255,255,0.8)">
-    <div class="row" style="height: 1em;"></div>
     <div class="row">
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
@@ -93,14 +157,13 @@
                 <!--<div class="col-lg-3">-->
                     <!--<button type="button" id="reset_index" style="margin-left: 3.5em" class="btn btn-secondary round-corner">Reset index</button>-->
                 <!--</div>-->
-                <div class="row">
+              <!--  <div class="row">
                   <p>Show me task notification after &nbsp </p><input type="number" id="time-period-for-task-notif" value="10"/><p>&nbsp minutes.</p>
                   <p><i>&nbsp (This will take effect after restarting the browser.)</i></p>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </div> -->
 <script src="../utils/web-util.js"></script>
 <script src="settings.js"></script>
 
