@@ -158,24 +158,28 @@ chrome.storage.local.get(historyDate, function (result) {
     for (let task in history) {
         let taskHistory = history[task];
         let timeSpentOnTask = taskHistory["totalTime"];
-        let h = Math.floor(timeSpentOnTask / 3600);
-        if (h === 0) {
-            h = '';
-        }
-        if (h.toString() !== '') {
-            h += " hrs ";
-        }
-        let m = Math.floor((timeSpentOnTask % 3600) / 60);
-        if (m === 0) {
-            m = '';
-        }
-        if (m.toString() !== '') {
-            if (m.toString().length === 1) {
-                m = '0' + m;
+        if (timeSpentOnTask < 60) {
+            timeSpentOnTasks[task] = "Less than a minute";
+        } else {
+            let h = Math.floor(timeSpentOnTask / 3600);
+            if (h === 0) {
+                h = '';
             }
-            m += " mins";
-        }
+            if (h.toString() !== '') {
+                h += " hrs ";
+            }
+            let m = Math.floor((timeSpentOnTask % 3600) / 60);
+            if (m === 0) {
+                m = '';
+            }
+            if (m.toString() !== '') {
+                if (m.toString().length === 1) {
+                    m = '0' + m;
+                }
+                m += " mins";
+            }
 
-        timeSpentOnTasks[task] = h + m;
+            timeSpentOnTasks[task] = h + m;
+        }
     }
 });
