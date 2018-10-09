@@ -46,11 +46,11 @@ $(window).focus(function () {
 $(window).blur(function () {
     //end time on page
     var endTime = new Date();
-    addToHistory(window.location.href, CTASKID, startTime, endTime);
+    addToHistory(window.location.href, document.title, CTASKID, startTime, endTime);
 
 });
 
-function addToHistory(url, taskId, startTime, endTime) {
+function addToHistory(url, title, taskId, startTime, endTime) {
 
     if (url !== "chrome://newtab/" && url !== "about:blank" && url) {
 
@@ -103,7 +103,9 @@ function addToHistory(url, taskId, startTime, endTime) {
             if (!(url in urls)) {
                 urls[url] = {
                     "timeIntervals": [],
-                    "timeSpent": 0
+                    "timeSpent": 0,
+                    "title": title,
+                    "lastVisited": startTime.getTime()
                 }
             }
             let urlHistory = urls[url];
@@ -113,9 +115,10 @@ function addToHistory(url, taskId, startTime, endTime) {
             timeSpent += timeDiff;
             urls[url] = {
                 "timeIntervals": timeIntervals,
-                "timeSpent": timeSpent
+                "timeSpent": timeSpent,
+                "title": title,
+                "lastVisited": startTime.getTime()
             };
-
 
             history[taskId] = {
                 "urls": urls,
