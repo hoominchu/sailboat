@@ -103,6 +103,12 @@ chrome.storage.local.get("Report Snapshots", function (e) {
     }
 });
 
+chrome.storage.local.get("Report Sailboat Result Clicks", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report Sailboat Result Clicks": {'nClicks' : 0}});
+    }
+});
+
 
 chrome.storage.local.get("Settings", function (e) {
     if (isEmpty(e)) {

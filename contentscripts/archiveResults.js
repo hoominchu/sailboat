@@ -7,39 +7,39 @@ $(document).ready(function () {
     if (getDomainFromURL(window.location.href).indexOf('.google.') > -1 && pageIsGood()) {
         const query = getUrlParameter('q', window.location.href);
         try {
-          if(removeWordsFromString(commonwords, query)){ //Show results only if the query contains something except stopwords.
-            const $resultsBox = $('<div id="sailboat-results" style="border: 1px solid lightblue;">');
-            $resultsBox.css({'max-height': '330px', 'width': '454px', 'overflow': 'scroll'});
-            $('#rhs').prepend($resultsBox);
+            if (removeWordsFromString(commonwords, query)) { //Show results only if the query contains something except stopwords.
+                const $resultsBox = $('<div id="sailboat-results" style="border: 1px solid lightblue;">');
+                $resultsBox.css({'max-height': '330px', 'width': '454px', 'overflow': 'scroll'});
+                $('#rhs').prepend($resultsBox);
 
-            const $sailboatHeader = $("<div id ='sailboat-header' style='height:40px; display:inline-block; width:100%'><img src='" + sailboatLogo + "' style='height:40px; display:block; margin:auto;'/></div>");
-            $sailboatHeader.css({'margin-bottom': '5px'});
-            $resultsBox.append($sailboatHeader);
+                const $sailboatHeader = $("<div id ='sailboat-header' style='height:40px; display:inline-block; width:100%'><img src='" + sailboatLogo + "' style='height:40px; display:block; margin:auto;'/></div>");
+                $sailboatHeader.css({'margin-bottom': '5px'});
+                $resultsBox.append($sailboatHeader);
 
-            const $resultsContentDiv = $('<div style="padding: 10px;" id="sailboat-results-content">');
-            $resultsBox.append($resultsContentDiv);
+                const $resultsContentDiv = $('<div style="padding: 10px;" id="sailboat-results-content">');
+                $resultsBox.append($resultsContentDiv);
 
-            searchArchivedPages(query);
-            getSearchResultsFromHistory(query);
-          }
+                searchArchivedPages(query);
+                getSearchResultsFromHistory(query);
+            }
         }
-        catch(e){
-          console.log(e);
+        catch (e) {
+            console.log(e);
         }
     }
 });
 
 
-function pageIsGood(){ //check if the page is an actual search results page
-  if(getUrlParameter('tbm', window.location.href)){
-    const $urlIsGoogleMapPage = Boolean(getUrlParameter('tbm', window.location.href) == 'lcl')
-    if($urlIsGoogleMapPage){ //when tbm=lcl google search results goes into maps mode.
-      return false;
+function pageIsGood() { //check if the page is an actual search results page
+    if (getUrlParameter('tbm', window.location.href)) {
+        const $urlIsGoogleMapPage = Boolean(getUrlParameter('tbm', window.location.href) == 'lcl')
+        if ($urlIsGoogleMapPage) { //when tbm=lcl google search results goes into maps mode.
+            return false;
+        }
     }
-  }
-  else{
-    return true;
-  }
+    else {
+        return true;
+    }
 }
 
 function searchArchivedPages(query) {
@@ -159,28 +159,33 @@ function showArchivedResults(results) {
     // $archiveResults.css({'max-height':'330px','width':'435px', 'overflow':'scroll', 'margin-bottom':'10px'});
     // $('#rhs').prepend($archiveResults);
 
-    const fromYourArchive = $('<p style="color: #008cba;"><b>From your archive</b></p><hr></div>')
+    const fromYourArchive = $('<p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
     $("#sailboat-results-content").append(fromYourArchive);
 
-    const resultsElement = document.getElementById("sailboat-results-content");
+    const $resultsElement = $('#sailboat-results-content');
     // resultsElement.innerText = "";
 
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
-            let resultElement = document.createElement("p");
-            let urlString = "<p style='line-height: 1.8em'><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : " + results[i]["task"] + "</p>";
-            let matchedTermsString = "<p style='line-height: 1.8em'><small>Matched terms : ";
-            let contextStrings = "<p><small>";
+            let $resultElement = $('<div class="sailboat-result-element"></div>');
+            let $urlString = $('<div class = "sailboat-result-url"><a href="' + results[i]["url"] + '">' + results[i]['url'] + '</a></div>');
+            let $task = $('<p><small>Task : ' + results[i]['task'] + '</small></p>');
+            let $matchedTerms = $('<small></small>');
+            let $contextStrings = $('<small class="st"></small>');
             let matchedTerms = results[i]["matched terms"];
             for (let j = 0; j < matchedTerms.length; j++) {
-                matchedTermsString = matchedTermsString + "<strong>" + matchedTerms[j] + "</strong>" + " | ";
-                contextStrings = contextStrings + results[i]["context"][j] + "<br>";
+                $matchedTerms.append($('<strong>' + matchedTerms[j] + ' | </strong>'));
+                $contextStrings.append($('<p>' + results[i]["context"][j] + '</p>'));
             }
-            matchedTermsString = matchedTermsString + "</p></small>";
-            contextStrings = contextStrings + "</p></small>";
-            // resultElement.innerHTML = urlString + matchedTermsString + contextStrings + "<br>";
-            resultElement.innerHTML = urlString + matchedTermsString + "<br>";
-            resultsElement.appendChild(resultElement);
+            $resultElement.append($urlString).append($task).append($matchedTerms).append($contextStrings);//innerHTML = urlString + $matchedTerms + '<br>';
+            $resultsElement.append($resultElement);
+            $resultElement.click(function (ev) {
+                chrome.storage.local.get('Report Sailboat Result Clicks', function (report) {
+                    report = report['Report Sailboat Result Clicks'];
+                    report['nClicks']++;
+                    chrome.storage.local.set({'Report Sailboat Result Clicks': report});
+                })
+            });
         }
     } else {
         $("#sailboat-results-content").append($("<p style='line-height: 1.8em;'>No matches found. Archive more pages!</p>"));
@@ -216,19 +221,18 @@ chrome.runtime.onMessage.addListener(function (message) {
 });
 
 
+function removeWordsFromString(wordsToRemove, string) {
+    //wordsToRemove is an array of words that should be removed.
+    //this function returns a string with the specific words removed.
 
-function removeWordsFromString(wordsToRemove, string){
-  //wordsToRemove is an array of words that should be removed.
-  //this function returns a string with the specific words removed.
-
-  let words = string.split(" ");
-  const stringLength = words.length;
-  for (let i = 0; i < stringLength; i++) {
-      if (wordsToRemove.indexOf(words[i]) > -1) {
-          words.splice(i, 1);
-          i = i - 1; //reset the counter to the previous position.
-      }
-  }
-  const newString = words.join(" ");
-  return newString;
+    let words = string.split(" ");
+    const stringLength = words.length;
+    for (let i = 0; i < stringLength; i++) {
+        if (wordsToRemove.indexOf(words[i]) > -1) {
+            words.splice(i, 1);
+            i = i - 1; //reset the counter to the previous position.
+        }
+    }
+    const newString = words.join(" ");
+    return newString;
 }

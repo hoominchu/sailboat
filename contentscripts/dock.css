@@ -364,3 +364,15 @@ textarea:focus, input:focus{
     -webkit-box-sizing: border-box;
 }
 
+.sailboat-result-element {
+    margin-bottom: 10px;
+    border-bottom: 1px solid darkgrey;
+    padding-bottom: 10px;
+}
+
+.sailboat-result-url {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
