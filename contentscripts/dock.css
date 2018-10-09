@@ -175,6 +175,11 @@
     background-color: #07b94f; !important;
 }
 
+.sailboat-like-btn-liked:hover {
+    color: white; !important;
+    background-color: #07b94f; !important;
+}
+
 .open-task {
     border: 0.8px solid #158ae2; !important;
     box-sizing: border-box;

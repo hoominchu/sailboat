@@ -1,9 +1,11 @@
 "use strict";
 
-function searchHistory(query, tabId){
-  chrome.history.search(query, function(results){
-    chrome.tabs.sendMessage(tabId, {"type":"set-search-results-from-history", "results":results});
-  });
+const reportSnapshotPeriod = 1; // in minutes
+
+function searchHistory(query, tabId) {
+    chrome.history.search(query, function (results) {
+        chrome.tabs.sendMessage(tabId, {"type": "set-search-results-from-history", "results": results});
+    });
 }
 
 
@@ -57,12 +59,12 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         });
     }
     else if (request.type === "switch-task" && request.nextTaskId !== "") {
-       if(CTASKID != request.nextTaskId){
-        saveTaskInWindow(CTASKID);
-        deactivateTaskInWindow(CTASKID);
-        activateTaskInWindow(request.nextTaskId);
-        fireTaskNameNotification(request.nextTaskId, "switchNotification");
-      }
+        if (CTASKID != request.nextTaskId) {
+            saveTaskInWindow(CTASKID);
+            deactivateTaskInWindow(CTASKID);
+            activateTaskInWindow(request.nextTaskId);
+            fireTaskNameNotification(request.nextTaskId, "switchNotification");
+        }
     }
     else if (request.type === "close-task") {
         closeTask(request.taskId);
@@ -132,17 +134,17 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         likePages(request.urls, request.taskId);
     } else if (request.type === "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
-    } else if(request.type === "restore-tasks"){
-      TASKS = request.taskObject;
-      updateStorage("TASKS", TASKS);
-    } else if(request.type === "give unarchived tasks dict"){
-      let tasksDict = filterTasks({"archived": false});
-      chrome.runtime.sendMessage({
-        "type": "unarchived tasks dict",
-        "tasksDict":tasksDict
-      });
-    } else if(request.type === "time spent on page"){
-      addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
+    } else if (request.type === "restore-tasks") {
+        TASKS = request.taskObject;
+        updateStorage("TASKS", TASKS);
+    } else if (request.type === "give unarchived tasks dict") {
+        let tasksDict = filterTasks({"archived": false});
+        chrome.runtime.sendMessage({
+            "type": "unarchived tasks dict",
+            "tasksDict": tasksDict
+        });
+    } else if (request.type === "time spent on page") {
+        addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
     }
     else if (request.type === "detect-task") {
         detectTask(request.topics, request.url, request.title);
@@ -150,7 +152,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         fireInterestNotification(request.interests);
     }
     else if (request.type === "get-search-results-from-history") {
-      searchHistory({"text":request.query}, sender.tab.id);
+        searchHistory({"text": request.query}, sender.tab.id);
     }
 });
 
@@ -175,10 +177,10 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 // });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  //If another webpage is opened in the same tab then:
-  // 1. save the task
-  // 2. add the new url to history.
-  // 3. reload the like button (Do I need this anymore?)
+    //If another webpage is opened in the same tab then:
+    // 1. save the task
+    // 2. add the new url to history.
+    // 3. reload the like button (Do I need this anymore?)
 
     if (changeInfo.status === "complete") {
         if (tabIdToURL !== {}) {
@@ -193,16 +195,16 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-  //If a tab is closed check if the window is closing too.
-  //If the window is not closing, save the task.
+    //If a tab is closed check if the window is closing too.
+    //If the window is not closing, save the task.
     if (!removeInfo.isWindowClosing) {
         saveTaskInWindow(CTASKID);
     }
 });
 
 chrome.windows.onRemoved.addListener(function (windowId) {
-  //If window is removed deactivate the task and delete taskId from taskToWindow dict and
-  //Don't need to save it because already saved on each tab open/close/update;
+    //If window is removed deactivate the task and delete taskId from taskToWindow dict and
+    //Don't need to save it because already saved on each tab open/close/update;
     if (windowId !== backgroundPageId) {
         TASKS[getKeyByValue(taskToWindow, windowId)].isOpen = false; //Don't need to save the Tasks object because it is already saved.
         deactivateTaskInWindow(getKeyByValue(taskToWindow, windowId));
@@ -211,23 +213,23 @@ chrome.windows.onRemoved.addListener(function (windowId) {
 });
 
 chrome.windows.onFocusChanged.addListener(function (newWindowId) {
-  if(getKeyByValue(taskToWindow, newWindowId)){ //Check if the window that is switched to has an id associated with it.
-    if(CTASKID != getKeyByValue(taskToWindow, newWindowId)){ //If the window that is switched to is not already active do the following..
-      deactivateTaskInWindow(CTASKID); //Deactivate the current task.
-      if (newWindowId !== chrome.windows.WINDOW_ID_NONE) { //Check if the focus has changed to some new window.
-          chrome.windows.get(newWindowId, function (window) {
-              if (window.type === "normal") {
-                  activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
-              }
-          });
-      }
-      else{ //If there in no window to switch to, don't do anything.
-      }
+    if (getKeyByValue(taskToWindow, newWindowId)) { //Check if the window that is switched to has an id associated with it.
+        if (CTASKID != getKeyByValue(taskToWindow, newWindowId)) { //If the window that is switched to is not already active do the following..
+            deactivateTaskInWindow(CTASKID); //Deactivate the current task.
+            if (newWindowId !== chrome.windows.WINDOW_ID_NONE) { //Check if the focus has changed to some new window.
+                chrome.windows.get(newWindowId, function (window) {
+                    if (window.type === "normal") {
+                        activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
+                    }
+                });
+            }
+            else { //If there in no window to switch to, don't do anything.
+            }
 
+        }
     }
-  }
 
-  reloadSailboatTabs();
+    reloadSailboatTabs();
 });
 
 
@@ -241,8 +243,7 @@ chrome.commands.onCommand.addListener(function (command) {
 });
 
 
-
-chrome.omnibox.onInputEntered.addListener(function(query, disposition) {
+chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
     if (query != null) {
         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
     }
@@ -281,78 +282,137 @@ function fireInterestNotification(interests) {
     });
 }
 
-chrome.storage.local.get("Task Notification Time Period", function(result){
-  if(!result["Task Notification Time Period"]){
-    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+chrome.storage.local.get("Task Notification Time Period", function (result) {
+    if (!result["Task Notification Time Period"]) {
+        chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
 
-  }
-  else{
-    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(result["Task Notification Time Period"])})
-  }
-})
-
-chrome.alarms.onAlarm.addListener(function(alarm){
-  if(alarm.name == "taskName notification"){
-    fireTaskNameNotification(CTASKID, "timeSpentNotification");
-  }
+    }
+    else {
+        chrome.alarms.create("taskName notification", {
+            "delayInMinutes": 0,
+            "periodInMinutes": parseInt(result["Task Notification Time Period"])
+        })
+    }
 });
 
-function fireTaskNameNotification(taskId, notifType){
-  let taskNAME = " Default"
-  if(TASKS[taskId]){
-    taskNAME = " " + TASKS[taskId].name
-  }
-  if(notifType == "timeSpentNotification"){
-    const date = new Date();
-    let dd = date.getDate();
-    let mm = date.getMonth() + 1; //January is 0!
-    let yyyy = date.getFullYear();
-    if (dd < 10) {
-        dd = '0' + dd
-    }
-    if (mm < 10) {
-        mm = '0' + mm
-    }
-    var dateString = dd + '-' + mm + '-' + yyyy;
-    var historyDate = 'HISTORY-' + dateString;
-    chrome.storage.local.get(historyDate, function(historyObject){
-      historyObject = historyObject[historyDate];
-      const hrsSpent = Math.floor(historyObject[taskId].totalTime/3600)
-      const minsSpent =  Math.floor((historyObject[taskId].totalTime/3600 - hrsSpent)*60)
-      let message = ""
-      if(hrsSpent > 0){
-        if(minsSpent>0){
-          message = "Total Time Spent on the task: " + hrsSpent + " hour and " + minsSpent + " minutes"
-        }
-        else{
-          message = "Total Time Spent on the task: " + hrsSpent + " hour"
-        }
-      }
-      else{
-        if(minsSpent>0){
-          message = "Total Time Spent on the task: " + minsSpent + " minutes"
-        }
-        else{
-          message = "Total Time Spent on the task: Less than a minute"
-        }
-      }
-      chrome.notifications.create({
-        "type": "basic",
-        "iconUrl": "images/logo_white_sails_no_text.png",
-        "title": "You are on : " + taskNAME,
-        "message": message
-      });
-    });
+// Alarm for taking snapshot of Sailboat
+chrome.alarms.create('reportSnapshot', {'delayInMinutes': 0, 'periodInMinutes': reportSnapshotPeriod});
 
-  }
-  else if(notifType == "switchNotification"){
-    chrome.notifications.create({
-      "type": "basic",
-      "iconUrl": "images/logo_white_sails_no_text.png",
-      "title": "Task Switched to:" + taskNAME,
-      "message": "You have switched to" + taskNAME
+chrome.alarms.onAlarm.addListener(function (alarm) {
+    if (alarm.name === "taskName notification") {
+        fireTaskNameNotification(CTASKID, "timeSpentNotification");
+    } else if (alarm.name === "reportSnapshot") {
+        takeReportSnapshot();
+    }
+});
+
+function getNArchivedTasks(tasks) {
+    let nArchivedTasks = 0;
+
+    if (!tasks)
+        return nArchivedTasks;
+
+    for (const taskid in tasks) {
+        if (taskid !== 'lastAssignedId') {
+            if (tasks[taskid]['archived']){
+                nArchivedTasks++;
+            }
+        }
+    }
+    return nArchivedTasks;
+}
+
+function takeReportSnapshot() {
+
+    const now = new Date().getTime();
+
+    chrome.storage.local.get(['Report Snapshots', 'TASKS'], function (response) {
+        chrome.windows.getAll({populate:true},function(windows){
+
+            let reportSnapshots = response['Report Snapshots'];
+            let tasks = response['TASKS'];
+
+            reportSnapshots[now] = {};
+
+            const nTasks = Object.keys(tasks).length - 1;
+            const nArchivedTasks = getNArchivedTasks(tasks);
+            reportSnapshots[now]['nTasks'] = nTasks;
+            reportSnapshots[now]['nArchivedTasks'] = nArchivedTasks;
+
+            // Windows part
+            let windowsState = {};
+
+            for (const k in windows) {
+                const windowID = windows[k]['id'];
+                const nTabs = windows[k]['tabs'].length;
+                const isIncognito = windows[k]['incognito'];
+                windowsState[windowID] = {};
+                windowsState[windowID]['nTabs'] = nTabs;
+                windowsState[windowID]['isIncognito'] = isIncognito;
+            }
+            reportSnapshots[now]['windowState'] = windowsState;
+
+            chrome.storage.local.set({'Report Snapshots' : reportSnapshots});
+        });
     });
-  }
+}
+
+function fireTaskNameNotification(taskId, notifType) {
+    let taskNAME = " Default";
+    if (TASKS[taskId]) {
+        taskNAME = " " + TASKS[taskId].name
+    }
+    if (notifType === "timeSpentNotification") {
+        const date = new Date();
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1; //January is 0!
+        let yyyy = date.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        var dateString = dd + '-' + mm + '-' + yyyy;
+        var historyDate = 'HISTORY-' + dateString;
+        chrome.storage.local.get(historyDate, function (historyObject) {
+            historyObject = historyObject[historyDate];
+            const hrsSpent = Math.floor(historyObject[taskId].totalTime / 3600);
+            const minsSpent = Math.floor((historyObject[taskId].totalTime / 3600 - hrsSpent) * 60);
+            let message = "";
+            if (hrsSpent > 0) {
+                if (minsSpent > 0) {
+                    message = "Total Time Spent on the task: " + hrsSpent + " hour and " + minsSpent + " minutes"
+                }
+                else {
+                    message = "Total Time Spent on the task: " + hrsSpent + " hour"
+                }
+            }
+            else {
+                if (minsSpent > 0) {
+                    message = "Total Time Spent on the task: " + minsSpent + " minutes"
+                }
+                else {
+                    message = "Total Time Spent on the task: Less than a minute"
+                }
+            }
+            chrome.notifications.create({
+                "type": "basic",
+                "iconUrl": "images/logo_white_sails_no_text.png",
+                "title": "You are on : " + taskNAME,
+                "message": message
+            });
+        });
+
+    }
+    else if (notifType === "switchNotification") {
+        chrome.notifications.create({
+            "type": "basic",
+            "iconUrl": "images/logo_white_sails_no_text.png",
+            "title": "Task Switched to:" + taskNAME,
+            "message": "You have switched to" + taskNAME
+        });
+    }
 
 }
 

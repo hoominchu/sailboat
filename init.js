@@ -69,7 +69,7 @@ chrome.storage.local.get("Page Content", function (e) {
 
 chrome.storage.local.get("Collections", function (e) {
     if (isEmpty(e)) {
-        chrome.storage.local.set({"Collections": {}});
+        chrome.storage.local.set({"Collections": {'Books':{}, 'Movies': {}, 'People': {}, 'Places': {}}});
     }
 });
 
@@ -97,9 +97,9 @@ chrome.storage.local.get("Click Log", function (e) {
     }
 });
 
-chrome.storage.local.get("Report", function (e) {
+chrome.storage.local.get("Report Snapshots", function (e) {
     if (isEmpty(e)) {
-        chrome.storage.local.set({"Report": {}});
+        chrome.storage.local.set({"Report Snapshots": {}});
     }
 });
 
