@@ -123,16 +123,28 @@ function renderChart(data) {
                     label: function (tooltipItem, data) {
                         let label = data.datasets[tooltipItem.datasetIndex].label;
                         let timeLabel = tooltipItem.yLabel;
+                        if (timeLabel < 60) {
+                            return "Less than a minute"
+                        }
+
                         let h = Math.floor(timeLabel / 3600);
-                        if (h.toString().length === 1) {
-                            h = '0' + h;
+                        if (h === 0) {
+                            h = '';
+                        }
+                        if (h.toString() !== '') {
+                            h += " hrs ";
                         }
                         let m = Math.floor((timeLabel % 3600) / 60);
-                        if (m.toString().length === 1) {
-                            m = '0' + m;
+                        if (m === 0) {
+                            m = '';
                         }
-                        label += ": ";
-                        label += h + ":" + m;
+                        if (m.toString() !== '') {
+                            if (m.toString().length === 1) {
+                                m = '0' + m;
+                            }
+                            m += " mins";
+                        }
+                        label = h + m;
                         return label;
                     }
                 }

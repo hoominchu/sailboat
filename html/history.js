@@ -1,223 +1,156 @@
-let idOfSelectedTask = 0;
-
-const domainsToExclude = ["mail.google.com", "chrome:", "chrome-extension:"];
-
-
-chrome.storage.local.get("TASKS", function (taskObject) {
-    if (taskObject["TASKS"]) {
-        const Tasks = taskObject["TASKS"];
-        // console.log(Tasks);
-        for (let task_id in Tasks) {
-            if (task_id != "lastAssignedId") {
-                if(Tasks[task_id].name.length<21){
-                  $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name + '</button>');
-                }
-                else{
-                  $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name.slice(0,18) + ".." + '</button>');
-                }
-            }
+function displayHistory(fullTaskHistory, timeSpentOnUrl) {
+    let data = [];
+    for (let idx in fullTaskHistory) {
+        let historyEntry = fullTaskHistory[idx];
+        let url = historyEntry[0];
+        let title = historyEntry[1];
+        if (title === "") {
+            title = url
         }
-        $(".tasks").click(function () {
-            idOfSelectedTask = Tasks[$(this).attr('id')].id;
-            $("#historyTable").empty();
-            const selectedTask = Tasks[$(this).attr('id')];
-            for (let i = selectedTask.history.length - 1; i > -1; i--) {
-                createRow(selectedTask.history[i])
+        let titleWithLink = "<a href='" + url + "'>" + title + "</a>";
+
+        // get date and time from visit time
+        let visitTime = historyEntry[2];
+        let date = new Date(visitTime);
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1;
+        let yyyy = date.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        let h = date.getHours();
+        let m = date.getMinutes();
+        let s = date.getSeconds();
+        if (h < 10) {
+            h = '0' + h;
+        }
+        if (m < 10) {
+            m = '0' + m;
+        }
+        if (s < 10) {
+            s = '0' + s;
+        }
+        let time = "<span class='hide'>" + visitTime + "</span>" + h + ":" + m + ":" + s;
+        date = "<span class='hide'>" + visitTime + "</span>" + dd + '-' + mm + '-' + yyyy;
+
+        let totalTimeSpent = timeSpentOnUrl[url];
+        if (totalTimeSpent < 60) {
+            totalTimeSpent = "Less than a minute";
+        } else {
+            let hours = Math.floor(totalTimeSpent / 3600);
+            if (hours === 0) {
+                hours = '';
             }
-            $("#taskNameBanner").text("History for " + Tasks[$(this).attr('id')].name + " Task");
-        });
+            if (hours.toString() !== '') {
+                hours += " hrs ";
+            }
+            let min = Math.floor((totalTimeSpent % 3600) / 60);
+            if (min === 0) {
+                min = '';
+            }
+            if (min.toString() !== '') {
+                if (min.toString().length === 1) {
+                    min = '0' + min;
+                }
+                min += " mins";
+            }
+            totalTimeSpent = hours + min;
+        }
 
-        //By Default show history of current task
-        chrome.storage.local.get("CTASKID", function(cTaskIdObject){
-          if(cTaskIdObject["CTASKID"]){
-            const ctaskid = cTaskIdObject["CTASKID"];
-            $("#"+ctaskid).click();
-          }
-        })
-
-    }
-});
-
-function createRow(page) {
-
-  if(domainsToExclude.indexOf(getDomainFromURL(page.url))<0){ //Show only if domain is not in domainsToExclude
-      const tableRow = $('<tr class="historyRow"></tr>');
-
-      tableRow.append('<td><input type="checkbox" class="selectBox" value="'+page.url+'"></td>');
-    tableRow.append('<td><a href="' + page.url + '">' + page.title.slice(0,100) + '</a></td>');
-
-    //Check if page is archived
-    if (page.isLiked) {
-        tableRow.append('<td>Yes</td>');
-    }
-    else {
-        tableRow.append('<td></td>')
+        data.push([titleWithLink, totalTimeSpent, date, time])
     }
 
-    let timeSpent = Math.round(page.timeSpent/60000);
-    if(timeSpent == 0){
-      tableRow.append('<td> Less than a minute</td>');
-    }
-    else{
-      tableRow.append('<td>'+ timeSpent + ' minutes</td>');
-    }
-
-
-    tableRow.append('<td>' + page.timeVisited[page.timeVisited.length - 1].slice(0, 25) + '</td>');
-    $("#historyTable").append(tableRow)
-  }
-
+    $('#historyTable').DataTable({
+        data: data,
+        columns: [
+            {title: "Title", width: "60%"},
+            {title: "Time Spent", width: "20%"},
+            {title: "Date", width: "10%"},
+            {title: "Time", width: "10%"}
+        ],
+        order: [[3, "desc"]]
+    });
 }
 
+function getAllHistory(historyDates, taskId) {
+    let timeSpentOnUrl = {};
+    let fullTaskHistory = [];
+    chrome.storage.local.get(historyDates, function (results) {
+        for (let historyDate in results) {
+            let history = results[historyDate];
+            if (history[taskId]) {
+                let taskHistory = history[taskId];
+                for (let url in taskHistory.urls) {
+                    let urlVisited = taskHistory.urls[url];
+                    if (!timeSpentOnUrl[url]) {
+                        timeSpentOnUrl[url] = urlVisited.timeSpent;
+                    } else {
+                        timeSpentOnUrl[url] += urlVisited.timeSpent;
+                    }
+                    let historyEntry = [url, urlVisited.title, urlVisited.lastVisited];
+                    fullTaskHistory.push(historyEntry);
+                }
+            }
+        }
+        displayHistory(fullTaskHistory, timeSpentOnUrl);
+    })
+}
 
-//Sorting Methods
+function getTaskHistory(taskId) {
+    chrome.storage.local.get(null, function (result) {
+        let historyDates = [];
+        for (let key in result) {
+            if (key.includes("HISTORY", 0)) {
+                historyDates.push(key);
+            }
+        }
+        getAllHistory(historyDates, taskId);
+    });
+    chrome.storage.local.get("TASKS", function (tasks) {
+        tasks = tasks["TASKS"];
+        $("#taskNameBanner").text("History for " + tasks[taskId].name + " Task");
+    });
+}
 
-const table = $("#table");
+function resetTable() {
+    $('#historyTable').remove();
+    $('#historyTable_wrapper').remove();
+    $('#historyTableDiv').append('<table id="historyTable" class="display" width="100%"></table>');
+}
 
-$('#title, #liked, #lastVisit')
-    .wrapInner('<span title="sort this column"/>')
-    .each(function () {
+$(document).ready(function () {
 
-        const th = $(this),
-            thIndex = th.index();
-        let inverse = false;
-
-        th.click(function () {
-
-            table.find('td').filter(function () {
-
-                return $(this).index() === thIndex;
-
-            }).sortElements(function (a, b) {
-
-                return $.text([a]) > $.text([b]) ?
-                    inverse ? -1 : 1
-                    : inverse ? 1 : -1;
-
-            }, function () {
-
-                // parentNode is the element we want to move
-                return this.parentNode;
-
-            });
-
-            inverse = !inverse;
-
+    chrome.storage.local.get("TASKS", function (taskObject) {
+        if (taskObject["TASKS"]) {
+            const Tasks = taskObject["TASKS"];
+            // console.log(Tasks);
+            for (let task_id in Tasks) {
+                if (task_id != "lastAssignedId") {
+                    if (Tasks[task_id].name.length < 21) {
+                        $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name + '</button>');
+                    }
+                    else {
+                        $("#tasks-list").append('<button type="button" class="tasks btn btn-outline-primary" id="' + Tasks[task_id].id + '"> ' + Tasks[task_id].name.slice(0, 18) + ".." + '</button>');
+                    }
+                }
+            }
+        }
+        $('.tasks').click(function () {
+            resetTable();
+            let idOfSelectedTask = $(this).attr('id');
+            getTaskHistory(idOfSelectedTask);
         });
-
     });
 
-$("#openLikedPages").click(function () {
-    chrome.runtime.sendMessage({
-        "type": "open-liked-pages",
-        "taskId": idOfSelectedTask
-    });
-});
-
-$('#time')
-    .wrapInner('<span title="sort this column"/>')
-    .each(function () {
-
-        const th = $(this),
-            thIndex = th.index();
-        let inverse = false;
-
-        th.click(function () {
-
-            table.find('td').filter(function () {
-
-                return $(this).index() === thIndex;
-
-            }).sortElements(function (a, b) {
-                console.log(a);
-                console.log(b);
-
-                return $.text([a]) > $.text([b]) ?
-                    inverse ? -1 : 1
-                    : inverse ? 1 : -1;
-
-            }, function () {
-
-                // parentNode is the element we want to move
-                return this.parentNode;
-
-            });
-
-            inverse = !inverse;
-
-        });
-
-    });
-
-
-
-// var options = {
-//     valueNames: [ 'name', 'born' ]
-// };
-//
-//
-// var userList = new List('table', options);
-
-
-$("#selectAll").click(function(){
-    const checkBoxes = $(".selectBox");
-    checkBoxes.prop("checked", !checkBoxes.prop("checked"));
-});
-
-
-$(document).bind("contextmenu", function (event) {
-
-    // Avoid the real one
-    event.preventDefault();
-
-    // Show contextmenu
-    $(".custom-menu").finish().toggle(100).
-
-    // In the right position (the mouse)
-    css({
-        top: event.pageY + "px",
-        left: event.pageX + "px"
-    });
-});
-
-
-// If the document is clicked somewhere
-$(document).bind("mousedown", function (e) {
-
-    // If the clicked element is not the menu
-    if (!$(e.target).parents(".custom-menu").length > 0) {
-
-        // Hide it
-        $(".custom-menu").hide(100);
-    }
-});
-
-// $('input[type=checkbox]').each(function () {
-//     var sThisVal = (this.checked ? $(this).val() : "");
-// });
-
-
-// If the menu element is clicked
-$(".custom-menu li").click(function(){
-    const type = $(this).attr("data-action");
-    const urls = [];
-    $('input[type=checkbox]').each(function () {
-        const x = (this.checked ? $(this).val() : "");
-        if(x != ""){
-            urls.push(x);
+    chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
+        if (cTaskIdObject["CTASKID"]) {
+            const ctaskid = cTaskIdObject["CTASKID"];
+            getTaskHistory(ctaskid);
+        } else {
+            getTaskHistory(0);
         }
     });
-
-    const temp = {
-        "urls": urls,
-        "type": type,
-        "taskId": idOfSelectedTask
-    };
-
-    chrome.runtime.sendMessage(temp);
-
-    // Hide it AFTER the action was triggered
-    $(".custom-menu").hide(100);
-
-    location.reload();
 });

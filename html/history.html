@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/custom.css">
     <link rel="stylesheet" href="../css/history.css">
+    <link rel="stylesheet" href="../css/datatables.css">
 </head>
 <body>
+<style>
+    .hide {
+        display: none;
+    }
+</style>
 <script src="template.js"></script>
 
 <div class="container-fluid">
@@ -27,24 +33,8 @@
 
         <div class="col-lg-10">
             <h2 id="taskNameBanner" class="text-center font-weight-bold"></h2>
-            <!-- empty div -->
-            <div class="row" style="height: 1em"></div>
-            <table class="table table-hover history-table" id="table" style="overflow:hidden;">
-                <thead style="text-align: center">
-                <tr>
-                    <th scope="col" style="width:1px;"><input type="checkbox" id="selectAll"></th>
-                    <th scope="col" id="title" style="width: 60%">Title</th>
-                    <th scope="col" id="liked" style="width: 6%">Archived</th>
-                    <th scope="col" id="time" style="width: 24%">Time Spent <span style="font-weight:lighter;">(Experimental)</span></th>
-                    <th scope="col" id="lastVisit" style="width: 10%">Last Visited</th>
-                </tr>
-                </thead>
-                <tbody id="historyTable">
-                </tbody>
-            </table>
-            <div id="task-urls" style="overflow:scroll; height:600px;">
-                <ol id="urls-list">
-                </ol>
+            <div id="historyTableDiv" style="padding-bottom: 50px;">
+                <table id="historyTable" class="display" width="100%"></table>
             </div>
         </div>
     </div>
@@ -56,6 +46,8 @@
 </ul>
 <script src="../utils/web-util.js"></script>
 <script src="sortElements.js"></script>
+<script src="../lib/datatables.js"></script>
 <script src="history.js"></script>
+
 </body>
 </html>
