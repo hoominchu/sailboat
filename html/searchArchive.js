@@ -13,7 +13,7 @@ function getDomainFromURL(url) {
 }
 
 $(document).ready(function () {
-
+    logView(window.location.pathname);
     // chrome.storage.local.get("Advanced Search Settings", function (advancedSearchSettings) {
     //     advancedSearchSettings = advancedSearchSettings["Advanced Search Settings"];
     chrome.storage.local.get("TASKS", function (tasks) {

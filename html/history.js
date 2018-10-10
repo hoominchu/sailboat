@@ -122,7 +122,7 @@ function resetTable() {
 }
 
 $(document).ready(function () {
-
+    logView(window.location.pathname);
     chrome.storage.local.get("TASKS", function (taskObject) {
         if (taskObject["TASKS"]) {
             const Tasks = taskObject["TASKS"];
