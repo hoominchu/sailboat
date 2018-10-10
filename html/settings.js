@@ -1,7 +1,7 @@
-
 //STUFF RELATED TO IMPORTING AND EXPORTING OF TASKS
 
 $("#downloadTasks").click(function () {
+    updateClickReport('Export JSON');
     chrome.runtime.sendMessage({"type": "download-tasks"});
 });
 
@@ -15,16 +15,16 @@ function readSingleFile(fileInput) {
     if (!file) {
         return;
     }
-    if (file.type == "application/json"){
-      const reader = new FileReader();
-      reader.onload = function (e) {
-          const contents = e.target.result;
-          restoreTasksFromString(contents);
-      };
-      reader.readAsText(file);
+    if (file.type == "application/json") {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const contents = e.target.result;
+            restoreTasksFromString(contents);
+        };
+        reader.readAsText(file);
     }
-    else{
-      alert("Please upload a JSON file.")
+    else {
+        alert("Please upload a JSON file.")
     }
 
 }
@@ -40,24 +40,23 @@ function restoreTasksFromString(string) {
 document.getElementById('file-input').addEventListener('change', readSingleFile, false);
 
 
-
 //TASK NOTIFICATIONS
 
 //SWITCH NOTIFICATION
 
-chrome.storage.local.get("task-switch-notification", function(value){
-    if(value["task-switch-notification"]){
+chrome.storage.local.get("task-switch-notification", function (value) {
+    if (value["task-switch-notification"]) {
         document.getElementById('task-switch-notification').checked = value["task-switch-notification"]
     }
-    else{
+    else {
         document.getElementById('task-switch-notification').checked = false
     }
 });
 
-function toggleSwitchNotification(){
-    chrome.storage.local.get("task-switch-notification", function(value){
+function toggleSwitchNotification() {
+    chrome.storage.local.get("task-switch-notification", function (value) {
         let newValue = true
-        if(value["task-switch-notification"]){
+        if (value["task-switch-notification"]) {
             newValue = false
         }
         chrome.storage.local.set({"task-switch-notification": newValue});
@@ -67,31 +66,31 @@ function toggleSwitchNotification(){
 document.getElementById('task-switch-notification').addEventListener('change', toggleSwitchNotification, false);
 
 
-function changeTaskNotificationPeriod(periodInMins){
+function changeTaskNotificationPeriod(periodInMins) {
     chrome.storage.local.set({"Task Notification Time Period": periodInMins.srcElement.checked});
 }
 
 //TIME SPENT NOTIFICATION
 
-chrome.storage.local.get("time-spent-notification", function(value){
-    if(typeof value["time-spent-notification"] != "undefined"){
-        if(value["time-spent-notification"]){
+chrome.storage.local.get("time-spent-notification", function (value) {
+    if (typeof value["time-spent-notification"] != "undefined") {
+        if (value["time-spent-notification"]) {
             document.getElementById('time-spent-notification').checked = value["time-spent-notification"]
         }
-        else{
+        else {
             document.getElementById('time-spent-notification').checked = false
         }
     }
-    else{
+    else {
         document.getElementById('time-spent-notification').checked = true
     }
 
 });
 
-function toggleTimeSpentNotification(){
-    chrome.storage.local.get("time-spent-notification", function(value){
+function toggleTimeSpentNotification() {
+    chrome.storage.local.get("time-spent-notification", function (value) {
         let newValue = true
-        if(value["time-spent-notification"]){
+        if (value["time-spent-notification"]) {
             newValue = false
         }
         chrome.storage.local.set({"time-spent-notification": newValue});
@@ -102,23 +101,22 @@ document.getElementById('time-spent-notification').addEventListener('change', to
 
 //TIME SPENT PERIOD
 
-chrome.storage.local.get("time-period-for-task-notification", function(value){
-    if(value["time-period-for-task-notification"]){
+chrome.storage.local.get("time-period-for-task-notification", function (value) {
+    if (value["time-period-for-task-notification"]) {
         document.getElementById('time-period-for-task-notification').value = value["time-period-for-task-notification"]
     }
-    else{
+    else {
         document.getElementById('time-period-for-task-notification').value = 10
     }
 });
 
 
-function changeTaskNotificationPeriod(periodInMins){
+function changeTaskNotificationPeriod(periodInMins) {
     chrome.storage.local.set({"time-period-for-task-notification": periodInMins.srcElement.value});
 }
 
 
 document.getElementById('time-period-for-task-notification').addEventListener('change', changeTaskNotificationPeriod, false);
-
 
 
 //STUFF RELATED TO TASK SUGGESTIONS

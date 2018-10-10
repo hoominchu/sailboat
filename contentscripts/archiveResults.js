@@ -4,7 +4,7 @@ const domainsToExclude = ["www.google.co.in", "www.google.co.in"];
 const sailboatLogo = chrome.extension.getURL("images/logo_white_sails_no_text.png");
 
 $(document).ready(function () {
-    if (getDomainFromURL(window.location.href).indexOf('.google.') > -1 && pageIsGood()) {
+    if (getDomainFromURL(window.location.href).indexOf('.google.') > -1 && isGoogleResultsPage()) {
         const query = getUrlParameter('q', window.location.href);
         try {
             if (removeWordsFromString(commonwords, query)) { //Show results only if the query contains something except stopwords.
@@ -30,9 +30,9 @@ $(document).ready(function () {
 });
 
 
-function pageIsGood() { //check if the page is an actual search results page
+function isGoogleResultsPage() { //check if the page is an actual search results page
     if (getUrlParameter('tbm', window.location.href)) {
-        const $urlIsGoogleMapPage = Boolean(getUrlParameter('tbm', window.location.href) == 'lcl')
+        const $urlIsGoogleMapPage = Boolean(getUrlParameter('tbm', window.location.href) === 'lcl');
         if ($urlIsGoogleMapPage) { //when tbm=lcl google search results goes into maps mode.
             return false;
         }
@@ -225,6 +225,9 @@ function removeWordsFromString(wordsToRemove, string) {
     //wordsToRemove is an array of words that should be removed.
     //this function returns a string with the specific words removed.
 
+    if (!string)
+        return '';
+
     let words = string.split(" ");
     const stringLength = words.length;
     for (let i = 0; i < stringLength; i++) {
@@ -233,6 +236,5 @@ function removeWordsFromString(wordsToRemove, string) {
             i = i - 1; //reset the counter to the previous position.
         }
     }
-    const newString = words.join(" ");
-    return newString;
+    return words.join(" ");
 }
