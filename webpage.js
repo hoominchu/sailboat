@@ -39,15 +39,13 @@ function returnPage(page, url) {
 // }
 
 function likePage(url, method) {
-    var page = TASKS[CTASKID].history[indexOfElementWithProperty(TASKS[CTASKID].history, "url", url)];
     if (TASKS[CTASKID].likedPages.indexOf(url) > -1) {
         TASKS[CTASKID].likedPages.splice([TASKS[CTASKID].likedPages.indexOf(url)],1);
     } else {
         TASKS[CTASKID].likedPages.push(url);
     }
 
-    page.isLiked = !(page.isLiked);
-    if (method == "shortcut") {
+    if (method === "shortcut") {
         chrome.tabs.sendMessage(activeTabId, {
             "type": "page-liked-with-shortcut"
         });
