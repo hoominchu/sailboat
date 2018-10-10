@@ -77,6 +77,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         deleteTask(request.taskToRemove);
     }
     else if (request.type === "download-tasks") {
+        updateClickReport('Export JSON');
         downloadTasks();
     }
     else if (request.type === "like-page") {
@@ -136,6 +137,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "deletePages") {
         deleteFromHistory(request.urls, request.taskId);
     } else if (request.type === "restore-tasks") {
+        updateClickReport('Restore JSON');
         TASKS = request.taskObject;
         updateStorage("TASKS", TASKS);
     } else if (request.type === "give unarchived tasks dict") {
@@ -340,6 +342,14 @@ function recordInReport() {
         }
         chrome.storage.local.set({'Report Switches': report});
     })
+}
+
+function updateClickReport(key) {
+    chrome.storage.local.get('Report Clicks', function (report) {
+        report = report['Report Clicks'];
+        report[key]++;
+        chrome.storage.local.set({'Report Clicks': report});
+    });
 }
 
 function takeReportSnapshot() {
