@@ -539,12 +539,12 @@ function archivePage() {
 
 function loadArchiveButton() {
     const archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
-    const likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
-    likeButton.css('background-image', 'url(' + archiveIconPath + ')');
+    const $likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
+    $likeButton.css('background-image', 'url(' + archiveIconPath + ')');
     $(document).on('click', '#sailboat-like-btn', function () {
         archivePage();
     });
-    $("#sailboat-dock").append(likeButton);
+    $("#sailboat-dock").append($likeButton);
 }
 
 function deletePageContent(url) {

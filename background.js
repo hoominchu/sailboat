@@ -330,15 +330,29 @@ function getNArchivedTasks(tasks) {
     return nArchivedTasks;
 }
 
+function getNArchivedPages(tasks) {
+    let nArchivedPages = {};
+
+    if (!tasks)
+        return nArchivedPages;
+
+    for (const taskid in tasks) {
+        if (taskid !== 'lastAssignedId') {
+
+        }
+    }
+    return nArchivedPages;
+}
+
 function recordInReport() {
-    var todayte = new Date().toJSON().slice(0, 10);
+    var todayDate = new Date().toJSON().slice(0, 10);
     chrome.storage.local.get('Report Switches', function (report) {
         report = report['Report Switches'];
-        if (report.hasOwnProperty(todayte)) {
-            report[todayte]['nSwitches']++;
+        if (report.hasOwnProperty(todayDate)) {
+            report[todayDate]['nSwitches']++;
         } else {
-            report[todayte] = {};
-            report[todayte]['nSwitches'] = 1;
+            report[todayDate] = {};
+            report[todayDate]['nSwitches'] = 1;
         }
         chrome.storage.local.set({'Report Switches': report});
     })
