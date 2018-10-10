@@ -23,6 +23,8 @@ table.dataTable td,
 table.dataTable th {
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 table.dataTable td.dataTables_empty,
