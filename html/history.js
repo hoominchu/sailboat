@@ -38,7 +38,7 @@ function displayHistory(fullTaskHistory, timeSpentOnUrl) {
 
         let totalTimeSpent = timeSpentOnUrl[url];
         if (totalTimeSpent < 60) {
-            totalTimeSpent = "Less than a minute";
+            totalTimeSpent = "<span class='hide'>" + totalTimeSpent + "</span>" + "Less than a minute";
         } else {
             let hours = Math.floor(totalTimeSpent / 3600);
             if (hours === 0) {
@@ -57,7 +57,7 @@ function displayHistory(fullTaskHistory, timeSpentOnUrl) {
                 }
                 min += " mins";
             }
-            totalTimeSpent = hours + min;
+            totalTimeSpent = "<span class='hide'>" + totalTimeSpent + "</span>" + hours + min;
         }
 
         data.push([titleWithLink, totalTimeSpent, date, time])
@@ -71,7 +71,10 @@ function displayHistory(fullTaskHistory, timeSpentOnUrl) {
             {title: "Date", width: "10%"},
             {title: "Time", width: "10%"}
         ],
-        order: [[3, "desc"]]
+        order: [[3, "desc"]],
+        columnDefs: [
+            {type: 'any-number', targets: [1, 2, 3]}
+        ]
     });
 }
 
