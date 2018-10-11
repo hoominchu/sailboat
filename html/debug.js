@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    logView(window.location.pathname);
+
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks["TASKS"];
         chrome.storage.local.get("CTASKID", function (ctaskid) {

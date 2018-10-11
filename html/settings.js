@@ -118,6 +118,10 @@ function changeTaskNotificationPeriod(periodInMins) {
 
 document.getElementById('time-period-for-task-notification').addEventListener('change', changeTaskNotificationPeriod, false);
 
+$(document).ready(function () {
+    logView(window.location.pathname);
+});
+
 
 //STUFF RELATED TO TASK SUGGESTIONS
 

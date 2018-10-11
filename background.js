@@ -330,15 +330,29 @@ function getNArchivedTasks(tasks) {
     return nArchivedTasks;
 }
 
+function getNArchivedPages(tasks) {
+    let nArchivedPages = {};
+
+    if (!tasks)
+        return nArchivedPages;
+
+    for (const taskid in tasks) {
+        if (taskid !== 'lastAssignedId') {
+            nArchivedPages[taskid] = tasks[taskid]['likedPages'].length;
+        }
+    }
+    return nArchivedPages;
+}
+
 function recordInReport() {
-    var todayte = new Date().toJSON().slice(0, 10);
+    var todayDate = new Date().toJSON().slice(0, 10);
     chrome.storage.local.get('Report Switches', function (report) {
         report = report['Report Switches'];
-        if (report.hasOwnProperty(todayte)) {
-            report[todayte]['nSwitches']++;
+        if (report.hasOwnProperty(todayDate)) {
+            report[todayDate]['nSwitches']++;
         } else {
-            report[todayte] = {};
-            report[todayte]['nSwitches'] = 1;
+            report[todayDate] = {};
+            report[todayDate]['nSwitches'] = 1;
         }
         chrome.storage.local.set({'Report Switches': report});
     })
@@ -366,8 +380,10 @@ function takeReportSnapshot() {
 
             const nTasks = Object.keys(tasks).length - 1;
             const nArchivedTasks = getNArchivedTasks(tasks);
+            const nArchivedPages = getNArchivedPages(tasks);
             reportSnapshots[now]['nTasks'] = nTasks;
             reportSnapshots[now]['nArchivedTasks'] = nArchivedTasks;
+            reportSnapshots[now]['nArchivedPages'] = nArchivedPages;
 
             // Windows part
             let windowsState = {};

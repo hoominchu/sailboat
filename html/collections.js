@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    logView(window.location.pathname);
+
     setTimeout(function () {
         gapi.client.setApiKey('AIzaSyAuPajSr17inQQYo4hXnh6DiWCs84fJXpo');
         gapi.client.load('youtube', 'v3', function () {

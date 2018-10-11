@@ -109,6 +109,12 @@ chrome.storage.local.get("Report Switches", function (e) {
     }
 });
 
+chrome.storage.local.get("Report Views", function (e) {
+    if (isEmpty(e)) {
+        chrome.storage.local.set({"Report Views": {}});
+    }
+});
+
 chrome.storage.local.get("Report Clicks", function (e) {
     if (isEmpty(e)) {
         chrome.storage.local.set({"Report Clicks": {'SB results clicks' : 0,

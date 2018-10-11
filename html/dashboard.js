@@ -161,5 +161,6 @@ function renderChart(data) {
 }
 
 $(document).ready(function () {
+    logView(window.location.pathname);
     getHistory(1);
 });
