@@ -1,11 +1,11 @@
-function downloadObjectAsJson(exportObj, exportName){
-  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-  var downloadAnchorNode = document.createElement('a');
-  downloadAnchorNode.setAttribute("href",     dataStr);
-  downloadAnchorNode.setAttribute("download", exportName + ".json");
-  document.body.appendChild(downloadAnchorNode); // required for firefox
-  downloadAnchorNode.click();
-  downloadAnchorNode.remove();
+function downloadObjectAsJson(exportObj, exportName) {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 }
 
 function closeAllTabs(shouldPinnedClose, windowID) {
@@ -47,151 +47,87 @@ function closeAllTabs(shouldPinnedClose, windowID) {
     }
 }
 
-// function removeBookmarks() {
-//     chrome.bookmarks.getChildren("1", function (children) {
-//         for (var i = 0; i < children.length; i++) {
-//             chrome.bookmarks.removeTree(children[i].id)
-//         }
-//     });
-//
-//     chrome.bookmarks.getChildren("2", function (children) {
-//         for (var i = 0; i < children.length; i++) {
-//             chrome.bookmarks.removeTree(children[i].id)
-//         }
-//     });
-// }
+function removeBookmarks(taskId) {
 
-// function createBookmarks(bookmarksNode, parentId) {
-//     for (var i = 0; i < bookmarksNode.length; i++) {
-//         var bookmark = bookmarksNode[i];
-//         var isRootFolder = !(bookmark.id > 2);
-//         var isFolder = (bookmark.url == null);
-//         var isParentRoot = !(bookmark.parentId > 2);
-//
-//         if (!isRootFolder && !isFolder && isParentRoot) {
-//             chrome.bookmarks.create({
-//                 "parentId": bookmark.parentId,
-//                 "index": bookmark.index,
-//                 "title": bookmark.title,
-//                 "url": bookmark.url
-//             });
-//         }
-//
-//         else if ((!isRootFolder && !isFolder && !isParentRoot)) {
-//             chrome.bookmarks.create({
-//                 "parentId": parentId,
-//                 "index": bookmark.index,
-//                 "title": bookmark.title,
-//                 "url": bookmark.url
-//             });
-//         }
-//
-//         else if (!isRootFolder && isFolder) {
-//             if (bookmark.children.length > 0) {
-//                 var children = bookmark.children;
-//                 chrome.bookmarks.create({
-//                     "parentId": bookmark.parentId,
-//                     "index": bookmark.index,
-//                     "title": bookmark.title
-//                 }, function (result) {
-//                     createBookmarks(children, result.id)
-//                 });
-//             }
-//             else {
-//                 chrome.bookmarks.create({
-//                     "parentId": bookmark.parentId,
-//                     "index": bookmark.index,
-//                     "title": bookmark.title
-//                 });
-//             }
-//         }
-//
-//         else if (isRootFolder) {
-//             if (bookmark.children.length > 0) {
-//                 createBookmarks(bookmark.children);
-//             }
-//         }
-//     }
-// }
+    function saveBookmarksInTask(bookmarks) {
+        chrome.storage.local.get("TASKS", function (tasks) {
+            tasks = tasks["TASKS"];
+            tasks[taskId].bookmarks = bookmarks;
+            updateStorage("TASKS", tasks);
+        })
+    }
 
-// function createBookmarks(bookmarks, parentId){
-//
-//     var isRootFolder = !(bookmarks.id);
-//     var isParentRoot = (bookmarks.id<3)
-//
-//     if(isRootFolder){
-//         if(bookmarks[0]) { // check if bookmarks is empty
-//             for (var i = 0; i < bookmarks[0].children.length; i++) {
-//                 createBookmarks(bookmarks[0].children[i], bookmarks[0].id);
-//             }
-//         }
-//
-//     }
-//
-//     else if(isParentRoot){
-//         for(var i = 0; i<bookmarks.children.length; i++){
-//             createBookmarks(bookmarks.children[i], bookmarks.id)
-//         }
-//     }
-//
-//     else if(!isRootFolder && !isParentRoot){
-//         if(bookmarks.url == null){
-//             chrome.bookmarks.create({
-//                 "parentId": parentId,
-//                 "index": bookmarks.index,
-//                 "title": bookmarks.title
-//             }, function(newNode){
-//                 for(var i =0; i<bookmarks.children.length; i++){
-//                     createBookmarks(bookmarks.children[i], newNode.id)
-//                 }
-//             });
-//         }
-//         else{
-//             chrome.bookmarks.create({
-//                 "parentId": parentId,
-//                 "index": bookmarks.index,
-//                 "title": bookmarks.title,
-//                 "url": bookmarks.url
-//             });
-//         }
-//     }
-// }
+    function removeBookmarksFromOthers(bookmarks) {
+        chrome.bookmarks.getChildren("2", function (children) {
+            for (var i = 0; i < children.length; i++) {
+                chrome.bookmarks.removeTree(children[i].id)
+            }
+            saveBookmarksInTask(bookmarks);
+        });
+    }
 
-// function createBookmarks(bookmarksNode, parentId) {
-//     for (var i = 0; i < bookmarksNode.length; i++) {
-//         var bookmark = bookmarksNode[i];
-//         var isFolder = (bookmark.url == null);
-//         var isRootFolder = !(bookmark.id > 2);
-//         if (isRootFolder) {
-//             createBookmarks(bookmark.children, bookmark.id);
-//         }
-//         else {
-//             if (isFolder) {
-//                 var children = bookmark.children;
-//                 if (children.length > 0) {
-//                     chrome.bookmarks.create({
-//                         "parentId": parentId,
-//                         "index": bookmark.index,
-//                         "title": bookmark.title
-//                     }, function (result) {
-//                         createBookmarks(children, result.id)
-//                     });
-//                 }
-//                 else {
-//                     chrome.bookmarks.create({"parentId": parentId, "index": bookmark.index, "title": bookmark.title});
-//                 }
-//             }
-//             else {
-//                 chrome.bookmarks.create({
-//                     "parentId": parentId,
-//                     "index": bookmark.index,
-//                     "title": bookmark.title,
-//                     "url": bookmark.url
-//                 });
-//             }
-//         }
-//     }
-// }
+    function removeBookmarksFromBar(bookmarks) {
+        chrome.bookmarks.getChildren("1", function (children) {
+            for (var i = 0; i < children.length; i++) {
+                chrome.bookmarks.removeTree(children[i].id)
+            }
+            removeBookmarksFromOthers(bookmarks);
+        });
+
+    }
+
+    chrome.bookmarks.getTree(function (bookmarks) {
+        removeBookmarksFromBar(bookmarks);
+    });
+}
+
+function createBookmarks(taskId) {
+
+    function addBookmarks(parentNode) {
+        let childrenNode = parentNode.children;
+        for (let idx in childrenNode) {
+            let bookmarkNode = childrenNode[idx];
+            if (bookmarkNode.hasOwnProperty("url")) {
+                chrome.bookmarks.create({
+                    'index': bookmarkNode.index,
+                    'parentId': parentNode.id,
+                    'title': bookmarkNode.title,
+                    'url': bookmarkNode.url
+                });
+            } else {
+                chrome.bookmarks.create({
+                    'index': bookmarkNode.index,
+                    'parentId': parentNode.id,
+                    'title': bookmarkNode.title
+                }, function (newFolder) {
+                    bookmarkNode.id = newFolder.id;
+                    addBookmarks(bookmarkNode);
+                })
+            }
+        }
+    }
+
+    chrome.storage.local.get("TASKS", function (tasks) {
+
+        tasks = tasks["TASKS"];
+        if (!isEmpty(tasks[taskId].bookmarks)) {
+            let bookmarks = tasks[taskId].bookmarks[0].children;
+            let bookmarksInBookmarksBar;
+            let bookMarksInOtherBookmarks;
+            for (let idx in bookmarks) {
+                if (bookmarks[idx].id === "1") {
+                    bookmarksInBookmarksBar = bookmarks[idx];
+                } else if (bookmarks[idx].id === "2") {
+                    bookMarksInOtherBookmarks = bookmarks[idx];
+                }
+            }
+
+            addBookmarks(bookmarksInBookmarksBar);
+
+        }
+
+    });
+}
 
 function returnQuery(selectorDict) {
     let query = "";
@@ -269,35 +205,35 @@ function getDomainFromURL(url) {
     return domain;
 }
 
-function openTabs(arrayOfUrls){
-  for(let i = 0; i<arrayOfUrls.length; i++){
-    chrome.tabs.create({"url": arrayOfUrls[i]});
-  }
+function openTabs(arrayOfUrls) {
+    for (let i = 0; i < arrayOfUrls.length; i++) {
+        chrome.tabs.create({"url": arrayOfUrls[i]});
+    }
 }
 
-function getIdsOfCurrentlyOpenTabs(windowId, callback){
+function getIdsOfCurrentlyOpenTabs(windowId, callback) {
     const ids = [];
-    if(windowId){
-     chrome.tabs.query({"windowId": windowId}, function(tabs){
-       for(let i = 0; i < tabs.length; i++){
-         ids.push(tabs[i].id);
-       }
-       if(callback){
-           callback(ids);
-       }
-     });
-   }
-   else{
-     chrome.tabs.query({}, function(tabs){
-       console.log(tabs);
-       for(let i = 0; i < tabs.length; i++){
-         ids.push(tabs[i].id);
-       }
-       if(callback){
-           callback(ids);
-       }
-     });
-   }
+    if (windowId) {
+        chrome.tabs.query({"windowId": windowId}, function (tabs) {
+            for (let i = 0; i < tabs.length; i++) {
+                ids.push(tabs[i].id);
+            }
+            if (callback) {
+                callback(ids);
+            }
+        });
+    }
+    else {
+        chrome.tabs.query({}, function (tabs) {
+            console.log(tabs);
+            for (let i = 0; i < tabs.length; i++) {
+                ids.push(tabs[i].id);
+            }
+            if (callback) {
+                callback(ids);
+            }
+        });
+    }
 
 }
 
@@ -308,6 +244,7 @@ function setTaskBadge(windowId, task_id) {
         }
     });
 }
+
 //
 // function removeFromPageContentAndTextLog(url){
 //     var isLiked = false;
@@ -345,26 +282,26 @@ function setTaskBadge(windowId, task_id) {
 //     }
 // }
 
-function reloadSailboatTabs(){
-  chrome.tabs.query({"title": "Sail Boat"}, function(tabs){ //Reload the Sail Boat page when window is switched.
-    for(var i = 0; i<tabs.length;i++){
-        chrome.tabs.reload(tabs[i].id);
-    }
-  });
+function reloadSailboatTabs() {
+    chrome.tabs.query({"title": "Sail Boat"}, function (tabs) { //Reload the Sail Boat page when window is switched.
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.reload(tabs[i].id);
+        }
+    });
 }
 
-function removeWordsFromString(wordsToRemove, string){
-  //wordsToRemove is an array of words that should be removed.
-  //this function returns a string with the specific words removed.
+function removeWordsFromString(wordsToRemove, string) {
+    //wordsToRemove is an array of words that should be removed.
+    //this function returns a string with the specific words removed.
 
-  let words = string.split(" ");
-  const stringLength = words.length;
-  for (let i = 0; i < stringLength; i++) {
-      if (wordsToRemove.indexOf(words[i]) > -1) {
-          words.splice(i, 1);
-          i = i - 1; //reset the counter to the previous position.
-      }
-  }
-  const newString = words.join(" ");
-  return newString;
+    let words = string.split(" ");
+    const stringLength = words.length;
+    for (let i = 0; i < stringLength; i++) {
+        if (wordsToRemove.indexOf(words[i]) > -1) {
+            words.splice(i, 1);
+            i = i - 1; //reset the counter to the previous position.
+        }
+    }
+    const newString = words.join(" ");
+    return newString;
 }
