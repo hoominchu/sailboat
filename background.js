@@ -159,25 +159,25 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 });
 
-// chrome.bookmarks.onCreated.addListener(function (e){
-//   saveTaskInWindow(CTASKID);
-// });
-//
-// chrome.bookmarks.onRemoved.addListener(function (e){
-//   saveTaskInWindow(CTASKID);
-// });
-//
-// chrome.bookmarks.onChanged.addListener(function (e){
-//   saveTaskInWindow(CTASKID);
-// });
-//
-// chrome.bookmarks.onMoved.addListener(function (e){
-//   saveTaskInWindow(CTASKID);
-// });
-//
-// chrome.bookmarks.onChildrenReordered.addListener(function (e){
-//   saveTaskInWindow(CTASKID);
-// });
+chrome.bookmarks.onCreated.addListener(function (e){
+  saveTaskInWindow(CTASKID);
+});
+
+chrome.bookmarks.onRemoved.addListener(function (e){
+  saveTaskInWindow(CTASKID);
+});
+
+chrome.bookmarks.onChanged.addListener(function (e){
+  saveTaskInWindow(CTASKID);
+});
+
+chrome.bookmarks.onMoved.addListener(function (e){
+  saveTaskInWindow(CTASKID);
+});
+
+chrome.bookmarks.onChildrenReordered.addListener(function (e){
+  saveTaskInWindow(CTASKID);
+});
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     //If another webpage is opened in the same tab then:

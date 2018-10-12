@@ -44,10 +44,10 @@ chrome.storage.local.get("TASKS", function (taskObject) {
     if (taskObject["TASKS"]) {
         TASKS = taskObject["TASKS"];//On retreiving TASKS from chrome storage, one gets an object {TASKS: balhah}, to retreive the actual array call taskObject["TASKS"]
 
-        for(taskId in TASKS){ //Mark all tasks as inactive, this needs to be done here because there is no way of marking tasks as inactive when the browser closes.
-          if(taskId != "lastAssignedId" && taskId != 0){
-            TASKS[taskId].isOpen = false;
-          }
+        for (taskId in TASKS) { //Mark all tasks as inactive, this needs to be done here because there is no way of marking tasks as inactive when the browser closes.
+            if (taskId != "lastAssignedId" && taskId != 0) {
+                TASKS[taskId].isOpen = false;
+            }
         }
 
         chrome.storage.local.set({"TASKS": TASKS});
@@ -70,7 +70,7 @@ chrome.storage.local.get("Page Content", function (e) {
 
 chrome.storage.local.get("Collections", function (e) {
     if (isEmpty(e)) {
-        chrome.storage.local.set({"Collections": {'Books':{}, 'Movies': {}, 'People': {}, 'Places': {}}});
+        chrome.storage.local.set({"Collections": {'Books': {}, 'Movies': {}, 'People': {}, 'Places': {}}});
     }
 });
 
@@ -118,11 +118,14 @@ chrome.storage.local.get("Report Views", function (e) {
 
 chrome.storage.local.get("Report Clicks", function (e) {
     if (isEmpty(e)) {
-        chrome.storage.local.set({"Report Clicks": {'SB results clicks' : 0,
-                'Open Archived Pages' : 0,
+        chrome.storage.local.set({
+            "Report Clicks": {
+                'SB results clicks': 0,
+                'Open Archived Pages': 0,
                 'Export JSON': 0,
                 'Restore JSON': 0
-        }});
+            }
+        });
     }
 });
 
@@ -164,7 +167,7 @@ chrome.storage.local.get("Debug Stopwords", function (e) {
 });
 
 chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
-    if (cTaskIdObject["CTASKID"]>0) {
+    if (cTaskIdObject["CTASKID"] > 0) {
         CTASKID = cTaskIdObject["CTASKID"];
     }
 });
@@ -198,10 +201,15 @@ chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
 // });
 
 function isEmpty(obj) {
-    for(let prop in obj) {
-        if(obj.hasOwnProperty(prop))
+    for (let prop in obj) {
+        if (obj.hasOwnProperty(prop))
             return false;
     }
 
     return JSON.stringify(obj) === JSON.stringify({});
 }
+
+chrome.bookmarks.getTree(function (bookmarks) {
+    TASKS[CTASKID].bookmarks = bookmarks;
+    updateStorage("TASKS", TASKS);
+});

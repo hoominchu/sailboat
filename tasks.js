@@ -172,7 +172,7 @@ function activateTaskInWindow(task_id) {
             CTASKID = task_id; //Set the CTASKID as the id of the task/
 
             //Add the bookmarks for the current task;
-            //createBookmarks(TASKS[task_id].bookmarks);
+            createBookmarks(task_id);
 
             TASKS = tasks;
 
@@ -222,7 +222,7 @@ function deactivateTaskInWindow(task_id) {
 
       chrome.browserAction.setBadgeText({"text": "Default"});  //Set the badge text to Default
 
-      //removeBookmarks();
+      removeBookmarks(task_id);
       // CTASKID = 0;
 
       updateStorage("TASKS", TASKS);
