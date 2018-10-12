@@ -21,6 +21,7 @@ const authorURL = "URL"; // Not being used yet
 let TASKS = {lastAssignedId: 0};
 // var HISTORY = {};
 let CTASKID = 0;
+chrome.storage.local.set({"CTASKID": 0});
 
 const taskToWindow = {};
 
