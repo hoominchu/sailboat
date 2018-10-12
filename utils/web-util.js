@@ -49,6 +49,8 @@ function closeAllTabs(shouldPinnedClose, windowID) {
 
 function removeBookmarks(taskId) {
 
+    // removing the bookmarks will aslo update the TASKS object as the bookmarks events are triggered
+    // save the bookmarks as they were after removing the bookmarks
     function saveBookmarksInTask(bookmarks) {
         chrome.storage.local.get("TASKS", function (tasks) {
             tasks = tasks["TASKS"];
@@ -87,7 +89,9 @@ function createBookmarks(taskId) {
         let childrenNode = parentNode.children;
         for (let idx in childrenNode) {
             let bookmarkNode = childrenNode[idx];
+            // if it has url property, then it is not a folder
             if (bookmarkNode.hasOwnProperty("url")) {
+                // add the url under the parent
                 chrome.bookmarks.create({
                     'index': bookmarkNode.index,
                     'parentId': parentNode.id,
@@ -95,6 +99,7 @@ function createBookmarks(taskId) {
                     'url': bookmarkNode.url
                 });
             } else {
+                // if it is a folder, create it, call addBookmarks on the node
                 chrome.bookmarks.create({
                     'index': bookmarkNode.index,
                     'parentId': parentNode.id,
@@ -115,14 +120,15 @@ function createBookmarks(taskId) {
             let bookmarksInBookmarksBar;
             let bookMarksInOtherBookmarks;
             for (let idx in bookmarks) {
-                if (bookmarks[idx].id === "1") {
+                if (bookmarks[idx].id === "1") { // id = 1 is always bookmarks bar
                     bookmarksInBookmarksBar = bookmarks[idx];
-                } else if (bookmarks[idx].id === "2") {
+                } else if (bookmarks[idx].id === "2") { // id = 2 is always other bookmarks
                     bookMarksInOtherBookmarks = bookmarks[idx];
                 }
             }
 
             addBookmarks(bookmarksInBookmarksBar);
+            addBookmarks(bookMarksInOtherBookmarks);
 
         }
 
