@@ -229,6 +229,12 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
 
         }
     }
+    else{
+        if(isEmpty(taskToWindow)){ //If there isn't any window open activate the default task in the new window.
+            taskToWindow[0] = newWindowId;
+            activateTaskInWindow(0);
+        }
+    }
 
     reloadSailboatTabs();
 });
