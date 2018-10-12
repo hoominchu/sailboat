@@ -146,8 +146,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             "type": "unarchived tasks dict",
             "tasksDict": tasksDict
         });
-    } else if (request.type === "time spent on page") {
-        addTotalTimeToPageInTask(CTASKID, request.url, request.timeSpent);
     }
     else if (request.type === "detect-task") {
         detectTask(request.topics, request.url, request.title);

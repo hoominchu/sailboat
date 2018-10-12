@@ -12,24 +12,14 @@ function Task(task_id, task_name, tabs, bookmarks, isOpen) {
 }
 
 function createAndActivateDefaultTask() {
-  chrome.bookmarks.getTree(function(bookmarks){ //Get the bookmarks and add them to the default task.
-    var task = new Task(0, "Default", {}, bookmarks, true); //The default task is active when created.
+    var task = new Task(0, "Default", {}, {}, true); //The default task is active when created.
     TASKS[task.id] = task;
     chrome.windows.getCurrent(function (window) {
         taskToWindow[0] = window.id; //Assigned to the current window.
     });
     chrome.browserAction.setBadgeText({"text": "Default"}); //Badge set to Default
-  });
 }
 
-function addTotalTimeToPageInTask(task_id, url, timeSpent) {
-  try{
-    TASKS[task_id].history.find((page) => page.url === url).timeSpent += timeSpent;
-  }
-  catch(err){
-    console.log("Could not log time for " + " " + url + " because of " + err );
-  }
-}
 
 //filterTasks takes a dictionary of type {"archived": false}, and returns dict of type {0: "Default", 1: "Shopping"} that fit the filters
 function filterTasks(filter) {
