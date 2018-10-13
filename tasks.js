@@ -130,7 +130,6 @@ function activateTaskInWindow(task_id) {
             var now = new Date();
             tasks[task_id].activationTime.push(now.toString());
             tasks[task_id].isOpen = true;
-            console.log(tasks[task_id].name + " marked as active.");
 
             if (taskToWindow.hasOwnProperty(task_id)) { //Task is already open in some window, so just switch to that window.
                 chrome.windows.update(taskToWindow[task_id], {"focused": true});
@@ -183,40 +182,28 @@ function saveTaskInWindow(task_id) {
     //Saving involves the following:
     //1.Replacing the task's tabs with the tabs in the current window.
     //2.Replacing the task's bookmarks with the current bookmarks.
-    if (TASKS[task_id]) {
-        chrome.tabs.query({"windowId": chrome.windows.WINDOW_ID_CURRENT}, function (tabs) {
-            TASKS[task_id].tabs = tabs;
-            updateStorage("TASKS", TASKS);
-        });
-        chrome.bookmarks.getTree(function (bookmarks) {
-            TASKS[task_id].bookmarks = bookmarks;
-            updateStorage("TASKS", TASKS);
-        });
+    if(window){
+        if (TASKS[task_id]) {
+            chrome.windows.getCurrent({"populate": true}, function(window){
+                TASKS[task_id].tabs = window.tabs;
+                updateStorage("TASKS", TASKS);
+            });
+            chrome.bookmarks.getTree(function (bookmarks) {
+                TASKS[task_id].bookmarks = bookmarks;
+                updateStorage("TASKS", TASKS);
+            });
+        }
     }
 }
 
 //Run this when a task is deactivated.
 function deactivateTaskInWindow(task_id) {
-  //Deativating a task involves the following:
-  //1. Set the CTASKID to the default id. This is done last so that everything else is done considering the current task as active.
-  //2. Mark its task object as inactive and add the current time to its deactivation time.
-  //3. Set the badge to default task.
-  //4. Note there is no analogue of Switch/Create to the task's window.
-  //5. Remove the task's bookmarks
-  //6. Update storage for changes.
-
     if(CTASKID == task_id){
       //Mark task object as inactive and add the current time to its deactivation time.
-      var now = new Date();
+      const now = new Date();
       TASKS[task_id].deactivationTime.push(now.toString());
-
-      chrome.browserAction.setBadgeText({"text": "Default"});  //Set the badge text to Default
-
       removeBookmarks(task_id);
-      // CTASKID = 0;
-
       updateStorage("TASKS", TASKS);
-      updateStorage("CTASKID", task_id);
     }
 
 }

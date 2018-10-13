@@ -20,6 +20,11 @@
       "contentanalyser.js",
       "webpage.js",
       "contextmenu.js",
+      "tabsListener.js",
+      "windowListener.js",
+      "bookmarksListener.js",
+      "notifications.js",
+      "tracker.js",
       "background.js"
     ]
   },

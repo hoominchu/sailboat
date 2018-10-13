@@ -311,3 +311,10 @@ function removeWordsFromString(wordsToRemove, string) {
     const newString = words.join(" ");
     return newString;
 }
+
+
+function searchHistory(query, tabId) {
+    chrome.history.search(query, function (results) {
+        chrome.tabs.sendMessage(tabId, {"type": "set-search-results-from-history", "results": results});
+    });
+}
