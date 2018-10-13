@@ -456,23 +456,6 @@ function loadKeyPressHandler() {
 
 }
 
-function loadArchiveSearchBar() {
-    const archiveSearchBar = $('<input type="search" autofocus="autofocus" autocomplete="on" class="sailboat-float input-bar form-control round-corner" style="" id="searchArchiveInput" placeholder="Search through the content of your archived pages">');
-    archiveSearchBar.hide();
-    $('body').append(archiveSearchBar);
-    archiveSearchBar.draggable();
-
-    $("#searchArchiveInput").keyup(function (event) {
-        if (event.keyCode === 13) {
-            const searchArchiveInput = $('#searchArchiveInput');
-            searchArchiveInput.siblings().css({"filter": ""});
-            searchArchiveInput.hide();
-            const query = searchArchiveInput.val();
-            chrome.runtime.sendMessage({"type": "search-archive", "query": query});
-        }
-    });
-}
-
 function loadDock() {
 
     const $sailboatParts = $('<div class="sailboat-parts"></div>');
