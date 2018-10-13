@@ -159,8 +159,59 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     else if (request.type === "get-search-results-from-history") {
         searchHistory({"text": request.query}, sender.tab.id);
     }
+
+    else if (request.type === "toggle-time-spent-notification"){
+        toggleTimeSpentNotification();
+    }
+
+    else if (request.type === "time-period-for-task-notification"){
+        changeTaskNotificationPeriod();
+    }
 });
 
+function toggleTimeSpentNotification(){
+    chrome.storage.local.get("time-spent-notification", function (value) {
+        if(typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]){
+            chrome.storage.local.get("time-period-for-task-notification", function (result) {
+                if (!result["time-period-for-task-notification"]) {
+                    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+                }
+                else {
+                    chrome.alarms.create("time-spent-notification", {
+                        "delayInMinutes": 0,
+                        "periodInMinutes": parseInt(result["time-period-for-task-notification"])
+                    });
+                }
+            });
+        }
+        else {
+            chrome.alarms.clear("time-spent-notification")
+        }
+    });
+}
+
+function changeTaskNotificationPeriod(){
+    chrome.storage.local.get("time-period-for-task-notification", function (value) {
+        chrome.alarms.clear("time-spent-notification");
+        chrome.alarms.create("time-spent-notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(value["time-period-for-task-notification"])});
+    });
+}
+
+chrome.storage.local.get("time-spent-notification", function (value) {
+    if(typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]){
+        chrome.storage.local.get("time-period-for-task-notification", function (result) {
+            if (!result["time-period-for-task-notification"]) {
+                chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+            }
+            else {
+                chrome.alarms.create("time-spent-notification", {
+                    "delayInMinutes": 0,
+                    "periodInMinutes": parseInt(result["time-period-for-task-notification"])
+                });
+            }
+        });
+    }
+});
 
 
 
@@ -171,14 +222,9 @@ chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
 });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name == "taskName-notification") {
-        chrome.storage.local.get("time-spent-notification", function (value) {
-            if (value["time-spent-notification"]) {
-                fireTaskNameNotification(CTASKID, "timeSpentNotification");
-            }
-        });
+    if (alarm.name == "time-spent-notification") {
+        fireTaskNameNotification(CTASKID, "timeSpentNotification");
     }
-
     else if (alarm.name === "reportSnapshot") {
         takeReportSnapshot();
     }
@@ -189,7 +235,6 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     const currentTaskName = TASKS[CTASKID].name;
     suggest({filename: currentTaskName + "/" + item.filename});
 });
-
 
 
 

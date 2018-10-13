@@ -42,34 +42,6 @@ document.getElementById('file-input').addEventListener('change', readSingleFile,
 
 //TASK NOTIFICATIONS
 
-//SWITCH NOTIFICATION
-
-chrome.storage.local.get("task-switch-notification", function (value) {
-    if (value["task-switch-notification"]) {
-        document.getElementById('task-switch-notification').checked = value["task-switch-notification"]
-    }
-    else {
-        document.getElementById('task-switch-notification').checked = false
-    }
-});
-
-function toggleSwitchNotification() {
-    chrome.storage.local.get("task-switch-notification", function (value) {
-        let newValue = true
-        if (value["task-switch-notification"]) {
-            newValue = false
-        }
-        chrome.storage.local.set({"task-switch-notification": newValue});
-    });
-}
-
-document.getElementById('task-switch-notification').addEventListener('change', toggleSwitchNotification, false);
-
-
-function changeTaskNotificationPeriod(periodInMins) {
-    chrome.storage.local.set({"Task Notification Time Period": periodInMins.srcElement.checked});
-}
-
 //TIME SPENT NOTIFICATION
 
 chrome.storage.local.get("time-spent-notification", function (value) {
@@ -88,13 +60,12 @@ chrome.storage.local.get("time-spent-notification", function (value) {
 });
 
 function toggleTimeSpentNotification() {
-    chrome.storage.local.get("time-spent-notification", function (value) {
-        let newValue = true
-        if (value["time-spent-notification"]) {
-            newValue = false
-        }
-        chrome.storage.local.set({"time-spent-notification": newValue});
-    });
+    if(document.getElementById('time-spent-notification').checked){
+        chrome.storage.local.set({"time-spent-notification": true},  function(){chrome.runtime.sendMessage({"type":"toggle-time-spent-notification"})});
+    }
+    else{
+        chrome.storage.local.set({"time-spent-notification": false},  function(){chrome.runtime.sendMessage({"type":"toggle-time-spent-notification"})});
+    }
 }
 
 document.getElementById('time-spent-notification').addEventListener('change', toggleTimeSpentNotification, false);
@@ -112,7 +83,9 @@ chrome.storage.local.get("time-period-for-task-notification", function (value) {
 
 
 function changeTaskNotificationPeriod(periodInMins) {
-    chrome.storage.local.set({"time-period-for-task-notification": periodInMins.srcElement.value});
+    chrome.storage.local.set({"time-period-for-task-notification": periodInMins.srcElement.value}, function(){
+        chrome.runtime.sendMessage({"type": "time-period-for-task-notification"});
+    });
 }
 
 
