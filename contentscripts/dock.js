@@ -21,10 +21,8 @@ $(document).ready(function () {
             loadNewTaskBtn();
             loadTaskNames(CTASKID);
             markLikedStatus(window.location.href, CTASKID);
-            // loadArchiveSearchBar();
             setHighlightIdx();
             // sendDetectTaskMessage();
-            // groupElementsByClass();
             checkAndUpdateCollections();
             loadHoverBooster();
             loadClickLogger();
@@ -635,7 +633,7 @@ function loadTaskNames(ctaskid) {
                 taskBtn.append(openTaskBtn);
 
                 if (taskid !== ctaskid) {
-                    let addToTaskBtn = $('<div class="add-to-task-btn" data-toggle="tooltip" title="Add selected tabs to this task"></div>');
+                    let addToTaskBtn = $('<div class="add-to-task-btn" data-toggle="tooltip" title="Add current tab to this task"></div>');
                     addToTaskBtn.css('background-image', 'url(' + plusIconPath + ')');
                     addToTaskBtn.click(function (task) {
                         return function (task) {

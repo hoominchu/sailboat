@@ -115,7 +115,6 @@ function changeTaskNotificationPeriod(periodInMins) {
     chrome.storage.local.set({"time-period-for-task-notification": periodInMins.srcElement.value});
 }
 
-
 document.getElementById('time-period-for-task-notification').addEventListener('change', changeTaskNotificationPeriod, false);
 
 $(document).ready(function () {

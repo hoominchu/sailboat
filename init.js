@@ -1,22 +1,3 @@
-// Local storage fields
-const preferredDomainsFieldName = "Preferred domains";
-const totalFrequencyFieldName = "Total frequency";
-const domainsMetadataFieldName = "metadata";
-preferredAuthorsFieldName = "Preferred authors";
-
-// Setting fields of author object
-const domainFrequencyFieldName = "frequency";
-const activeTasksFieldName = "Active tasks";
-const archivedTasksFieldName = "Archived tasks";
-
-// Local storage fields
-var preferredAuthorsFieldName = "Preferred authors";
-const authorsMetadataFieldName = "metadata";
-
-// Setting fields of author object
-const authorFrequencyFieldName = "frequency";
-const authorURL = "URL"; // Not being used yet
-
 // Getting current task id
 let TASKS = {lastAssignedId: 0};
 // var HISTORY = {};
@@ -30,7 +11,6 @@ const activeTabId = 0;
 
 //
 const backgroundPageId = -1;
-const defaultTaskId = 0;
 
 // //Suggestion log dictionary
 // chrome.storage.local.get("Suggestions Log", function (e) {
@@ -165,40 +145,6 @@ chrome.storage.local.get("Debug Stopwords", function (e) {
         })
     }
 });
-
-// chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
-//     if (cTaskIdObject["CTASKID"] > 0) {
-//         CTASKID = cTaskIdObject["CTASKID"];
-//     }
-// });
-
-// chrome.storage.local.get(preferredAuthorsFieldName, function (prefAuthObj) {
-//     if (JSON.stringify(prefAuthObj) == "{}") {
-//         // Adding to the local storage if the field doesn't exist already.
-//         var o = {};
-//         o[preferredAuthorsFieldName] = {};
-//         o[preferredAuthorsFieldName]["metadata"] = {};
-//         o[preferredAuthorsFieldName]["metadata"][totalFrequencyFieldName] = 0;
-//         console.log(o);
-//         chrome.storage.local.set(o, function () {
-//             "init"
-//         });
-//     }
-// });
-
-// chrome.storage.local.get(preferredDomainsFieldName, function (prefDomainsObj) {
-//     if (JSON.stringify(prefDomainsObj) == "{}") {
-//         // Adding to the local storage if the field doesn't exist already.
-//         var o = {};
-//         o[preferredDomainsFieldName] = {};
-//         o[preferredDomainsFieldName]["metadata"] = {};
-//         o[preferredDomainsFieldName]["metadata"][totalFrequencyFieldName] = 0;
-//         console.log(o);
-//         chrome.storage.local.set(o, function () {
-//             "init"
-//         });
-//     }
-// });
 
 function isEmpty(obj) {
     for (let prop in obj) {
