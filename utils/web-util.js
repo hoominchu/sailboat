@@ -251,10 +251,70 @@ function setTaskBadge(windowId, task_id) {
     });
 }
 
+//
+// function removeFromPageContentAndTextLog(url){
+//     var isLiked = false;
+//     var isOpen = false;
+//
+//     if(TASKS){
+//         for(var task in TASKS){
+//           if(task != "lastAssignedId"){
+//             if(TASKS[task]["likedPages"].indexOf(url)>-1){
+//               isLiked = true;
+//             }
+//             for(var i = 0; i<TASKS[task]["tabs"].length; i++){
+//               if(TASKS[task]["tabs"][i].url == url){
+//                 isOpen = true;
+//               }
+//             }
+//           }
+//         }
+//     }
+//
+//     if(!isLiked && !isOpen){
+//       chrome.storage.local.get("Text Log", function(textlog){
+//         var textlog = textlog["Text Log"];
+//         delete textlog[url];
+//         //console.log("Deleted %s from Text Log", url);
+//         updateStorage("Text Log", textlog);
+//       });
+//
+//       chrome.storage.local.get("Page Content", function(pageContent){
+//         var pageContent = pageContent["Page Content"];
+//         delete pageContent[url];
+//         //console.log("Deleted %s from Page Content.", url);
+//         updateStorage("Page Content", pageContent);
+//       });
+//     }
+// }
+
 function reloadSailboatTabs() {
     chrome.tabs.query({"title": "Sail Boat"}, function (tabs) { //Reload the Sail Boat page when window is switched.
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.reload(tabs[i].id);
         }
+    });
+}
+
+function removeWordsFromString(wordsToRemove, string) {
+    //wordsToRemove is an array of words that should be removed.
+    //this function returns a string with the specific words removed.
+
+    let words = string.split(" ");
+    const stringLength = words.length;
+    for (let i = 0; i < stringLength; i++) {
+        if (wordsToRemove.indexOf(words[i]) > -1) {
+            words.splice(i, 1);
+            i = i - 1; //reset the counter to the previous position.
+        }
+    }
+    const newString = words.join(" ");
+    return newString;
+}
+
+
+function searchHistory(query, tabId) {
+    chrome.history.search(query, function (results) {
+        chrome.tabs.sendMessage(tabId, {"type": "set-search-results-from-history", "results": results});
     });
 }

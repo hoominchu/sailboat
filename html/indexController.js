@@ -65,7 +65,21 @@ window.onload = function () {
                   }(e);
 
               });
-          })
+          });
+            funcOnClick("closeTask", "class", function (element) {
+                const Tasks = taskObject["TASKS"];
+                return function (element) {
+                    chrome.runtime.sendMessage(
+                        {
+                            "type": "close-task",
+                            "taskId": $(element.srcElement).closest(".card").attr("id")
+                        }
+                    );
+                    location.reload();
+                }(element);
+
+
+            });
         });
       }
     });
