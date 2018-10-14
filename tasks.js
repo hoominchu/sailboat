@@ -132,7 +132,11 @@ function activateTaskInWindow(task_id) {
             tasks[task_id].isOpen = true;
 
             if (taskToWindow.hasOwnProperty(task_id)) { //Task is already open in some window, so just switch to that window.
+                // chrome.windows.update(taskToWindow[task_id], {"state": "maximised"}, function(window){
+                //     chrome.windows.update(window.id, {"focused": true});
+                // });
                 chrome.windows.update(taskToWindow[task_id], {"focused": true});
+
             }
 
             else { //Task is not open, so we create a new window with its tabs.
@@ -202,6 +206,11 @@ function deactivateTaskInWindow(task_id) {
       //Mark task object as inactive and add the current time to its deactivation time.
       const now = new Date();
       TASKS[task_id].deactivationTime.push(now.toString());
+      // if(taskToWindow[task_id]){
+      //     chrome.windows.update(taskToWindow[task_id], {"focused": false}, function(window){
+      //         chrome.windows.update(window.id, {"state": "minimized"});
+      //     });
+      // }
       removeBookmarks(task_id);
       updateStorage("TASKS", TASKS);
     }
@@ -265,6 +274,7 @@ function openLikedPages(task_id) {
 function closeTask(taskId) {
     chrome.windows.remove(taskToWindow[taskId]);
     TASKS[taskId].isOpen = false;
+    reloadSailboatTabs();
 }
 
 function downloadTasks(){
