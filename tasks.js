@@ -165,7 +165,7 @@ function activateTaskInWindow(task_id) {
             CTASKID = task_id; //Set the CTASKID as the id of the task/
 
             //Add the bookmarks for the current task;
-            createBookmarks(task_id);
+            // createBookmarks(task_id);
 
             TASKS = tasks;
 
@@ -211,7 +211,7 @@ function deactivateTaskInWindow(task_id) {
       //         chrome.windows.update(window.id, {"state": "minimized"});
       //     });
       // }
-      removeBookmarks(task_id);
+      // removeBookmarks(task_id);
       updateStorage("TASKS", TASKS);
     }
 
