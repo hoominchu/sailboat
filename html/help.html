@@ -4,117 +4,133 @@
     <title>Help</title>
     <meta charset="UTF-8">
     <script src="../lib/jquery-3.2.1.min.js"></script>
-    <link rel="stylesheet" href="../css/bootstrap.css">
+
     <link rel="stylesheet" href="../css/static.css">
     <link rel="stylesheet" href="../css/custom.css">
     <link rel="stylesheet" href="../css/history.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+
+    <link rel="stylesheet" href="../css/reset.css"> <!-- CSS reset -->
+    <link rel="stylesheet" href="../css/style.css"> <!-- Resource style -->
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <script src="../js/modernizr.js"></script> <!-- Modernizr -->
 </head>
 <body>
 <script src="template.js"></script>
-<div class="container-fluid chalkboard-bg">
-    <div class="row separator"></div>
-    <div class="row separator"></div>
-    <div class="row">
-        <h2 class="offset-1 col-lg-12 align-items-center">Quick Guide</h2>
-    </div>
-    <div class="row">
-        <!--<p class="offset-1"><small>We are sorry you are having to come to this page. We are working on improving our design so that this page is not required!</small></p>-->
-    </div>
+<section class="cd-faq">
+	<ul class="cd-faq-categories">
+		<li><a class="selected" href="#basics">Basics</a></li>
+		<li><a href="#dock">Dock</a></li>
+		<li><a href="#archived">Archived Pages</a></li>
+		<li><a href="#privacy">Privacy</a></li>
+	</ul> <!-- cd-faq-categories -->
 
-    <div class="row" id="tasks-section">
-        <div class="col-lg-10 offset-1">
-            <hr>
-            <h2>Tasks</h2>
-            <hr>
-            <div class="row">
-                <div class="col-lg-5">
-                </div>
-                <div class="col-lg-7">
-                    <p>
-                        Sandbox your browsing tasks— tabs, bookmarks, archived pages, history, downloads folder.<br><br>
-                        This helps in reducing tab clutter as you can have a lot more tabs open at a time as they are
-                        segregated into different tasks. You don’t have to close and lose tabs.<br><br>
-                        Provides a completely different contexts for different Tasks with different bookmarks and
-                        archived pages etc.<br><br>
-                        A new folder is created for every Task in the Downloads folder and all your downloads are saved
-                        there making it much easier to manage your Downloads folder. Goodbye messy Downloads folder!<br><br>
-                        If you are not working on any particular task and want to do some general browsing switch to 'Default' task.<br><br>
-                        Task based analytics on history are coming soon!<br><br>
+	<div class="cd-faq-items">
+		<ul id="basics" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Basics</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How does SailBoat help me?</a>
+				<div class="cd-faq-content">
+					<p>This helps in reducing tab clutter as you can have a lot more tabs open at a time as they are segregated into different tasks. You don’t have to close and lose tabs.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
 
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How does SailBoat manage Downloads folder?</a>
+				<div class="cd-faq-content">
+					<p>A new folder is created for every Task in the Downloads folder and all your downloads are saved there making it much easier to manage your Downloads folder. Goodbye messy Downloads folder!</p>
+				</div> <!-- cd-faq-content -->
+			</li>
 
-    <div class="row" id="dock-section">
-        <div class="col-lg-10 offset-1">
-            <hr>
-            <h2>Dock</h2>
-            <hr>
-            <div class="row">
-                <div class="col-lg-7" style="text-align: right">
-                    <p>
-                        The Sailboat dock helps you work with Tasks in an easy and quick way. <br><br>
-                        There will be some common Tasks in your dock right when you install it. You can continue to use them or delete them.<br><br>
-                    </p>
-                    <hr>
-                    <p>
-                        Click on any Task button in the Dock to switch to that Task. Alternatively you can use shortcut ‘Control+~’ to switch between Tasks.<br><br>
-                        Create a new task — Click on the  ‘+’  button at the extreme right on the dock. Press ‘enter’ after entering the name of Task.<br><br>
-                        Press  ‘+’  beside the Task button to add the current tab to that Task.<br><br>
-                        Click on ‘X’ to close that Task.<br><br>
-                        Hover on a Task button to see the Tabs open in that Task.<br><br>
-                        Click on the ‘Archive’ button to archive the current page.<br><br>
-                        Collapse/Expand Dock button is to the extreme left of the Dock.<br><br>
-                        Hover on any link on the page to see if a link is already open in one of the tabs. This helps in preventing the same URL multiple times.<br><br>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-12">
-            <img src="../images/help/Sailboat%20Dock.png" style="width: 100%">
-        </div>
-    </div>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What If I am not doing any tasks , I am doing general browsing?</a>
+				<div class="cd-faq-content">
+					<p>If you are not working on any particular task and want to do some general browsing switch to 'Default' task.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
 
-    <div class="row" id="archive-section">
-        <div class="col-lg-10 offset-1">
-            <hr>
-            <h2>Archived Pages</h2>
-            <hr>
-            <div class="row">
-                <div class="offset-1 col-lg-5">
-                </div>
-                <div class="col-lg-7">
-                    <p>
-                        When you archive a page it gives you the ability to search through the full content of the page.<br><br>
-                        We think it will be quite useful in re-finding information.<br><br>
-                        So if you find yourself in a position when you sort of remember reading some word somewhere use this feature!<br><br>
-                        Oh yes don’t forget to archive pages before you try to use this!<br><br>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do we switch between tasks?</a>
+				<div class="cd-faq-content">
+					<p>Click on any Task button in the Dock to switch to that Task. Alternatively you can use shortcut ‘Control+~’ to switch between Tasks.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
 
-    <div class="row" id="settings-section">
-        <div class="col-lg-10 offset-1">
-            <hr>
-            <h2>Settings</h2>
-            <hr>
-            <div class="row">
-                <div class="offset-1 col-lg-5">
-                </div>
-                <div class="col-lg-7">
-                    <p>
+		<ul id="dock" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Dock</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What is SailBoat Dock?</a>
+				<div class="cd-faq-content">
+					<p>The Sailboat dock helps you work with Tasks in an easy and quick way. There will be some common Tasks in your dock right when you install it. You can continue to use them or delete them.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
 
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do we switch between tasks using Dock?</a>
+				<div class="cd-faq-content">
+					<p>Click on any Task button in the Dock to switch to that Task.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
 
-</div>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do I create a new task?</a>
+				<div class="cd-faq-content">
+					<p>Click on the ‘+’ button at the extreme right on the dock. Press ‘enter’ after entering the name of Task.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do I add current tab to any Task?</a>
+				<div class="cd-faq-content">
+					<p>Press ‘+’ beside the Task button to add the current tab to that Task</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do I view tabs open in a Task?</a>
+				<div class="cd-faq-content">
+					<p>Hover on a Task button to see the Tabs open in that Task.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do I archive a tab ?</a>
+				<div class="cd-faq-content">
+					<p>Click on the ‘Archive’ button to archive the current page.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">How do I collapse the dock ?</a>
+				<div class="cd-faq-content">
+					<p>Collapse/Expand Dock button is to the extreme left of the Dock.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="archived" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Archived Pages</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What happens when I archive a page?</a>
+				<div class="cd-faq-content">
+					<p>When you archive a page it gives you the ability to search through the full content of the page.So if you find yourself in a position when you sort of remember reading some word somewhere use this feature!</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="privacy" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Privacy</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">Does SailBoat track my data and history?</a>
+				<div class="cd-faq-content">
+					<p>No, it does not. We do not store anything on our servers, it is stored on your local machine.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+	</div> <!-- cd-faq-items -->
+	<a href="#0" class="cd-close-panel">Close</a>
+</section> <!-- cd-faq -->
+<script src="../js/jquery-2.1.1.js"></script>
+<script src="../js/jquery.mobile.custom.min.js"></script>
+<script src="../js/main.js"></script> <!-- Resource jQuery -->
 <script src="../utils/util.js"></script>
 <script src="help.js"></script>
 </body>
