@@ -144,7 +144,7 @@ function renderChart(data) {
                             }
                             m += " mins";
                         }
-                        label = h + m;
+                        label += ': ' + h + m;
                         return label;
                     }
                 }

@@ -338,7 +338,7 @@ function loadHoverBooster() {
 
 function makeDockBigInCenter() {
     $('#sailboat-dock').siblings().css({"filter": "blur(100px)"});
-    $('#sailboat-dock').css({'height': '100px', 'margin-bottom': '45vh'});
+    $('#sailboat-dock').css({'height': '100px', 'margin-bottom': '45vh', 'background-color': 'white'});
     $('.task-btn').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'margin-top': '10px'});
     $('.open-task-btn').css({
         'height': '75%',
@@ -354,7 +354,7 @@ function makeDockBigInCenter() {
 
 function resetDockSizeNPosition() {
     $('#sailboat-dock').siblings().css({"filter": ""});
-    $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0'});
+    $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0', 'background-color': ''});
     $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px', 'margin-top': '4px'});
     $('.open-task-btn').css({
         'height': '20px',
