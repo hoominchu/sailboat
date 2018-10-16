@@ -215,11 +215,11 @@ chrome.storage.local.get("time-spent-notification", function (value) {
 
 
 
-chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
-    if (query != null) {
-        chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
-    }
-});
+// chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
+//     if (query != null) {
+//         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
+//     }
+// });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name == "time-spent-notification") {
