@@ -40,7 +40,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             saveTaskInWindow(CTASKID);
             deactivateTaskInWindow(CTASKID);
             activateTaskInWindow(request.nextTaskId);
-            fireTaskNameNotification(request.nextTaskId, "switchNotification");
         }
         recordInReport();
     }

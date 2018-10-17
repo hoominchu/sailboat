@@ -1,4 +1,4 @@
-function fireTaskNameNotification(taskId, notificationType) {
+function fireTaskNameNotification(taskId) {
     let taskNAME = " Default";
     if (TASKS[taskId]) {
         taskNAME = " " + TASKS[taskId].name
