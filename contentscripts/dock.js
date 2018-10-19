@@ -34,10 +34,7 @@ $(document).ready(function () {
 $(window).focus(function () {
     // start time on page
     startTime = new Date();
-    chrome.storage.local.get("TASKS", function (tasks) {
-        tasks = tasks["TASKS"];
-        loadTaskNames(CTASKID, tasks);
-    });
+    loadTaskNames(CTASKID);
     setHighlightIdx();
 });
 
@@ -246,11 +243,8 @@ function sendCreateTaskMsg(taskName) {
             "activated": false,
             "tabs": []
         }, function () {
-            chrome.storage.local.get("TASKS", function (tasks) {
-                tasks = tasks["TASKS"];
-                $('.task-btn').remove();
-                loadTaskNames(CTASKID, tasks);
-            });
+            $('.task-btn').remove();
+            loadTaskNames(CTASKID);
         });
 }
 
@@ -471,6 +465,7 @@ function loadDock() {
 
     $collapseButton.click(function () {
         $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
+
         $('#collapse-img').transition({rotate: '+=180'}, 'slow');
         chrome.storage.local.get("Settings", function (settings) {
             settings = settings["Settings"];
