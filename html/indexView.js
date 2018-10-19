@@ -36,14 +36,14 @@ function setUpUnarchivedTasks(Tasks, task_id, ctaskid) {
         if (ctaskid == task_id) {
             var card = $("<div>", {
                 "class": "card border-primary mb-3 task",
-                "style": "max-width: 20rem; height:12em; border-radius:0.8em",
+                "style": "max-width: 100rem; height:12em; border-radius:0.8em",
                 "id": task_id
             });
         }
         else {
             var card = $("<div>", {
                 "class": "card mb-3 task",
-                "style": "max-width: 20rem; height:12em; border-radius:0.8em",
+                "style": "max-width: 100rem; height:12em; border-radius:0.8em",
                 "id": task_id
             });
         }
@@ -54,7 +54,7 @@ function setUpUnarchivedTasks(Tasks, task_id, ctaskid) {
     else {
         var card = $("<div>", {
             "class": "card border-secondary mb-3 task",
-            "style": "max-width: 20rem; height:12em; border-radius:0.8em",
+            "style": "max-width: 100rem; height:12em; border-radius:0.8em",
             "id": task_id
         });
         var card_header = $("<div>", {"class": "card-header", "text": Tasks[task_id].name});
@@ -110,14 +110,14 @@ function setUpArchivedTasks(Tasks, task_id) {
     if (Tasks[task_id].isOpen) {
         var card = $("<div>", {
             "class": "card border-primary mb-3 task",
-            "style": "max-width: 20rem; height:12em; border-radius:0.8em",
+            "style": "max-width: 100rem; height:12em; border-radius:0.8em",
             "id": task_id
         });
     }
     else {
         var card = $("<div>", {
             "class": "card border-secondary mb-3 task",
-            "style": "max-width: 20rem; height:12em; border-radius:0.8em",
+            "style": "max-width: 100rem; height:12em; border-radius:0.8em",
             "id": task_id
         });
     }

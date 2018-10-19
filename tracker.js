@@ -1,7 +1,7 @@
-const reportSnapshotPeriod = 1; // in minutes
+const reportSnapshotPeriod = 5; // in minutes
 
 // Alarm for taking snapshot of Sailboat
-chrome.alarms.create('reportSnapshot', {'delayInMinutes': 0, 'periodInMinutes': reportSnapshotPeriod});
+chrome.alarms.create('reportSnapshot', {'delayInMinutes': 5, 'periodInMinutes': reportSnapshotPeriod});
 
 function getNArchivedTasks(tasks) {
     let nArchivedTasks = 0;

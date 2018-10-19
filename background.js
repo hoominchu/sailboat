@@ -177,11 +177,11 @@ function toggleTimeSpentNotification(){
         if(typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]){
             chrome.storage.local.get("time-period-for-task-notification", function (result) {
                 if (!result["time-period-for-task-notification"]) {
-                    chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+                    chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
                 }
                 else {
                     chrome.alarms.create("time-spent-notification", {
-                        "delayInMinutes": 0,
+                        "delayInMinutes": 5,
                         "periodInMinutes": parseInt(result["time-period-for-task-notification"])
                     });
                 }
@@ -196,7 +196,7 @@ function toggleTimeSpentNotification(){
 function changeTaskNotificationPeriod(){
     chrome.storage.local.get("time-period-for-task-notification", function (value) {
         chrome.alarms.clear("time-spent-notification");
-        chrome.alarms.create("time-spent-notification", {"delayInMinutes": 0, "periodInMinutes": parseInt(value["time-period-for-task-notification"])});
+        chrome.alarms.create("time-spent-notification", {"delayInMinutes": 5, "periodInMinutes": parseInt(value["time-period-for-task-notification"])});
     });
 }
 
@@ -204,11 +204,11 @@ chrome.storage.local.get("time-spent-notification", function (value) {
     if(typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]){
         chrome.storage.local.get("time-period-for-task-notification", function (result) {
             if (!result["time-period-for-task-notification"]) {
-                chrome.alarms.create("taskName notification", {"delayInMinutes": 0, "periodInMinutes": 10})
+                chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
             }
             else {
                 chrome.alarms.create("time-spent-notification", {
-                    "delayInMinutes": 0,
+                    "delayInMinutes": 5,
                     "periodInMinutes": parseInt(result["time-period-for-task-notification"])
                 });
             }
