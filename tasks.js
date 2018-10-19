@@ -279,6 +279,7 @@ function closeTask(taskId) {
 
 function downloadTasks(){
   let dateObj = new Date();
-  var date = dateObj.toDateString();
+  let date = dateObj.toDateString();
   downloadObjectAsJson(TASKS, "Sailboat Tasks from " + date);
 }
+

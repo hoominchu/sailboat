@@ -5,6 +5,11 @@ $("#downloadTasks").click(function () {
     chrome.runtime.sendMessage({"type": "download-tasks"});
 });
 
+$("#downloadCollections").click(function () {
+    updateClickReport('Export JSON');
+    chrome.runtime.sendMessage({"type": "download-collections"});
+});
+
 $("#restoreTasks").click(function () {
     chrome.runtime.sendMessage({"type": "restore-task-from-file"});
 });
@@ -352,3 +357,5 @@ $(document).ready(function () {
 //     tempObj[key] = obj;
 //     chrome.storage.local.set(tempObj);
 // }
+
+

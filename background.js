@@ -61,6 +61,10 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         downloadTasks();
     }
 
+    else if (request.type === "download-collections") {
+        downloadCollections();
+    }
+
     else if (request.type === "like-page") {
         likePage(request.url, CTASKID);
     }
@@ -235,6 +239,13 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     suggest({filename: currentTaskName + "/" + item.filename});
 });
 
+function downloadCollections(){
+    let dateObj = new Date();
+    let date = dateObj.toDateString();
+    chrome.storage.local.get("Collections", function(collections){
+        downloadObjectAsJson(collections, "Sailboat Collections from " + date);
 
+    });
+}
 
 

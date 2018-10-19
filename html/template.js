@@ -48,3 +48,11 @@ for (let i = 0; i < navItems.length; i++) {
         navItems[i].parentElement.className += " active";
     }
 }
+
+function updateClickReport(key) {
+    chrome.storage.local.get('Report Clicks', function (report) {
+        report = report['Report Clicks'];
+        report[key]++;
+        chrome.storage.local.set({'Report Clicks': report});
+    });
+}
