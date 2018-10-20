@@ -16,6 +16,10 @@ chrome.windows.onRemoved.addListener(function(oldWindowId){
        }
     });
 
+    updateStorage("TASKS", TASKS);
+
+    reloadSailboatTabs();
+
 });
 
 chrome.windows.onCreated.addListener(function(window){
@@ -82,5 +86,6 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
         else{
         }
 
+        updateStorage("TASKS", TASKS)
         reloadSailboatTabs();
     });

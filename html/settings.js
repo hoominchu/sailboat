@@ -1,17 +1,21 @@
 //STUFF RELATED TO IMPORTING AND EXPORTING OF TASKS
 
 $("#downloadTasks").click(function () {
-    updateClickReport('Export JSON');
+    updateClickReport('Back Up Tasks');
     chrome.runtime.sendMessage({"type": "download-tasks"});
 });
 
 $("#downloadCollections").click(function () {
-    updateClickReport('Export JSON');
+    updateClickReport('Back Up Collections');
     chrome.runtime.sendMessage({"type": "download-collections"});
 });
 
 $("#restoreTasks").click(function () {
-    chrome.runtime.sendMessage({"type": "restore-task-from-file"});
+    updateClickReport('Restore Tasks');
+});
+
+$("#restoreCollections").click(function () {
+    updateClickReport('Restore Collections');
 });
 
 // function restoreTaskObjectFromFile()
@@ -22,11 +26,21 @@ function readSingleFile(fileInput) {
     }
     if (file.type == "application/json") {
         const reader = new FileReader();
-        reader.onload = function (e) {
-            const contents = e.target.result;
-            restoreTasksFromString(contents);
-        };
+        if(this.id === "tasks-file-input"){
+            reader.onload = function (e) {
+                const contents = e.target.result;
+                restoreTasksFromString(contents);
+            };
+        }
+        else if(this.id === "collections-file-input") {
+            reader.onload = function (e) {
+                const contents = e.target.result;
+                restoreCollectionsFromString(contents);
+            };
+        }
+
         reader.readAsText(file);
+
     }
     else {
         alert("Please upload a JSON file.")
@@ -34,15 +48,29 @@ function readSingleFile(fileInput) {
 
 }
 
-//Need some form of validation for string.
+//Restoring Tasks
 function restoreTasksFromString(string) {
     const tasks = JSON.parse(string);
     chrome.runtime.sendMessage({"type": "restore-tasks", "taskObject": tasks});
     const successIcon = $('<i style="color:#43ac6a">Tasks Restored</i>');
-    $("#fileUploadMessage").append(successIcon);
+    $("#tasksUploadMessage").append(successIcon);
 }
 
-document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+document.getElementById('tasks-file-input').addEventListener('change', readSingleFile, false);
+
+///////////////////////////
+
+//Restoring Collections
+function restoreCollectionsFromString(string) {
+    const collections = JSON.parse(string);
+    chrome.runtime.sendMessage({"type": "restore-collections", "collectionsObject": collections});
+    const successIcon = $('<i style="color:#43ac6a">Collections Restored</i>');
+    $("#collectionsUploadMessage").append(successIcon);
+}
+
+document.getElementById('collections-file-input').addEventListener('change', readSingleFile, false);
+
+//////////////////////////
 
 
 //TASK NOTIFICATIONS

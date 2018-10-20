@@ -138,9 +138,13 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 
     else if (request.type === "restore-tasks") {
-        updateClickReport('Restore JSON');
         TASKS = request.taskObject;
         updateStorage("TASKS", TASKS);
+    }
+
+    else if (request.type === "restore-collections") {
+        let temp = request.collectionsObject["Collections"];
+        updateStorage("Collections", temp);
     }
 
     else if (request.type === "give unarchived tasks dict") {
