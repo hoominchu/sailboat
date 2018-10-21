@@ -50,7 +50,7 @@ chrome.windows.onCreated.addListener(function(window){
 
                 chrome.browserAction.setBadgeText({"text": TASKS[0].name.slice(0, 4)});
 
-                createBookmarks(0);
+                // createBookmarks(0);
 
                 TASKS = tasks;
 

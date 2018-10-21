@@ -155,7 +155,7 @@ function isEmpty(obj) {
     return JSON.stringify(obj) === JSON.stringify({});
 }
 
-chrome.bookmarks.getTree(function (bookmarks) {
-    TASKS[CTASKID].bookmarks = bookmarks;
-    updateStorage("TASKS", TASKS);
-});
+// chrome.bookmarks.getTree(function (bookmarks) {
+//     TASKS[CTASKID].bookmarks = bookmarks;
+//     updateStorage("TASKS", TASKS);
+// });

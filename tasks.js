@@ -71,14 +71,14 @@ function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
         tabs = [];
     }
     if (createFromCurrentTabs) {
-        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, bookmarks);
+        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, {});
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
         TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
         updateStorage("TASKS", TASKS);
     }
     else {
         const emptyArray = [];
-        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, bookmarks);
+        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, {});
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
         TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
         updateStorage("TASKS", TASKS);
@@ -192,10 +192,10 @@ function saveTaskInWindow(task_id) {
                 TASKS[task_id].tabs = window.tabs;
                 updateStorage("TASKS", TASKS);
             });
-            chrome.bookmarks.getTree(function (bookmarks) {
-                TASKS[task_id].bookmarks = bookmarks;
-                updateStorage("TASKS", TASKS);
-            });
+            // chrome.bookmarks.getTree(function (bookmarks) {
+            //     TASKS[task_id].bookmarks = bookmarks;
+            //     updateStorage("TASKS", TASKS);
+            // });
         }
     }
 }
