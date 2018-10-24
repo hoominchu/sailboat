@@ -155,7 +155,46 @@ function isEmpty(obj) {
     return JSON.stringify(obj) === JSON.stringify({});
 }
 
+const sessionId = new Date().getTime();
+
 chrome.bookmarks.getTree(function (bookmarks) {
     TASKS[CTASKID].bookmarks = bookmarks;
     updateStorage("TASKS", TASKS);
+});
+
+const trackerDownloads = sessionId + "-downloads";
+const trackerTabActivate = sessionId + "-tab-activate";
+const trackerTabCreate = sessionId + "-tab-create";
+const trackerTabRemove = sessionId + "-tab-remove";
+
+chrome.storage.local.get(trackerDownloads, function (e) {
+    if (isEmpty(e)) {
+        let obj = {};
+        obj[trackerDownloads] = {};
+        chrome.storage.local.set(obj);
+    }
+});
+
+chrome.storage.local.get(trackerTabActivate, function (e) {
+    if (isEmpty(e)) {
+        let obj = {};
+        obj[trackerTabActivate] = {};
+        chrome.storage.local.set(obj);
+    }
+});
+
+chrome.storage.local.get(trackerTabCreate, function (e) {
+    if (isEmpty(e)) {
+        let obj = {};
+        obj[trackerTabCreate] = {};
+        chrome.storage.local.set(obj);
+    }
+});
+
+chrome.storage.local.get(trackerTabRemove, function (e) {
+    if (isEmpty(e)) {
+        let obj = {};
+        obj[trackerTabRemove] = {};
+        chrome.storage.local.set(obj);
+    }
 });
