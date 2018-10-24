@@ -5,6 +5,14 @@ $("#downloadTasks").click(function () {
     chrome.runtime.sendMessage({"type": "download-tasks"});
 });
 
+
+$("#downloadTrackingData").click(function () {
+    updateClickReport('Download Tracking Data');
+    chrome.storage.local.get("tracker", function(tracker){
+        downloadObjectAsJson(tracker["tracker"], "tracker");
+    });
+});
+
 $("#downloadCollections").click(function () {
     updateClickReport('Back Up Collections');
     chrome.runtime.sendMessage({"type": "download-collections"});
@@ -385,5 +393,15 @@ $(document).ready(function () {
 //     tempObj[key] = obj;
 //     chrome.storage.local.set(tempObj);
 // }
+
+function downloadObjectAsJson(exportObj, exportName) {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
 
 

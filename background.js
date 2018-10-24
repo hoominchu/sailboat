@@ -232,9 +232,6 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name == "time-spent-notification") {
         fireTaskNameNotification(CTASKID, "timeSpentNotification");
     }
-    else if (alarm.name === "reportSnapshot") {
-        takeReportSnapshot();
-    }
 });
 
 //Save downloads to appropriate task folder
