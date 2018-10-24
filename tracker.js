@@ -102,7 +102,7 @@ function trackEvent(eventName, details){
     let date = new Date();
     trackEvent["timeStamp"] = date.toString();
     trackEvent["taskToWindow"] = taskToWindow;
-    trackEvent["tasks"] = TASKS;
+    // trackEvent["tasks"] = TASKS;
     return trackEvent;
 }
 

@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             deactivateTaskInWindow(CTASKID);
             activateTaskInWindow(request.nextTaskId);
         }
-        recordInReport();
+        // recordInReport();
     }
 
     else if (request.type === "close-task") {
