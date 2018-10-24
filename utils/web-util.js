@@ -47,42 +47,6 @@ function closeAllTabs(shouldPinnedClose, windowID) {
     }
 }
 
-function removeBookmarks(taskId) {
-
-    // removing the bookmarks will aslo update the TASKS object as the bookmarks events are triggered
-    // save the bookmarks as they were after removing the bookmarks
-    function saveBookmarksInTask(bookmarks) {
-        chrome.storage.local.get("TASKS", function (tasks) {
-            tasks = tasks["TASKS"];
-            tasks[taskId].bookmarks = bookmarks;
-            updateStorage("TASKS", tasks);
-        })
-    }
-
-    function removeBookmarksFromOthers(bookmarks) {
-        chrome.bookmarks.getChildren("2", function (children) {
-            for (var i = 0; i < children.length; i++) {
-                chrome.bookmarks.removeTree(children[i].id)
-            }
-            saveBookmarksInTask(bookmarks);
-        });
-    }
-
-    function removeBookmarksFromBar(bookmarks) {
-        chrome.bookmarks.getChildren("1", function (children) {
-            for (var i = 0; i < children.length; i++) {
-                chrome.bookmarks.removeTree(children[i].id)
-            }
-            removeBookmarksFromOthers(bookmarks);
-        });
-
-    }
-
-    chrome.bookmarks.getTree(function (bookmarks) {
-        removeBookmarksFromBar(bookmarks);
-    });
-}
-
 function createBookmarks(taskId) {
 
     function addBookmarks(parentNode) {
@@ -133,6 +97,46 @@ function createBookmarks(taskId) {
         }
 
     });
+}
+
+function changeBookmarks(lastTaskId, cTaskId) {
+
+    // removing the bookmarks will also update the TASKS object as the bookmarks events are triggered
+    // save the bookmarks as they were after removing the bookmarks
+    function saveBookmarksInTask(bookmarks) {
+        chrome.storage.local.get("TASKS", function (tasks) {
+            tasks = tasks["TASKS"];
+            tasks[lastTaskId].bookmarks = bookmarks;
+            updateStorage("TASKS", tasks);
+
+            //create bookmarks for current task after deleting bookmarks from last task
+            createBookmarks(cTaskId);
+        });
+    }
+
+    function removeBookmarksFromOthers(bookmarks) {
+        chrome.bookmarks.getChildren("2", function (children) {
+            for (var i = 0; i < children.length; i++) {
+                chrome.bookmarks.removeTree(children[i].id)
+            }
+            saveBookmarksInTask(bookmarks);
+        });
+    }
+
+    function removeBookmarksFromBar(bookmarks) {
+        chrome.bookmarks.getChildren("1", function (children) {
+            for (var i = 0; i < children.length; i++) {
+                chrome.bookmarks.removeTree(children[i].id)
+            }
+            removeBookmarksFromOthers(bookmarks);
+        });
+
+    }
+
+    chrome.bookmarks.getTree(function (bookmarks) {
+        removeBookmarksFromBar(bookmarks);
+    });
+
 }
 
 function returnQuery(selectorDict) {
