@@ -220,8 +220,6 @@ chrome.storage.local.get("time-spent-notification", function (value) {
     }
 });
 
-
-
 // chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
 //     if (query != null) {
 //         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
@@ -245,7 +243,6 @@ function downloadCollections(){
     let date = dateObj.toDateString();
     chrome.storage.local.get("Collections", function(collections){
         downloadObjectAsJson(collections, "Sailboat Collections from " + date);
-
     });
 }
 

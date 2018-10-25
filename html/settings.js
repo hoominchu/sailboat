@@ -8,8 +8,15 @@ $("#downloadTasks").click(function () {
 
 $("#downloadTrackingData").click(function () {
     updateClickReport('Download Tracking Data');
-    chrome.storage.local.get("tracker", function(tracker){
-        downloadObjectAsJson(tracker["tracker"], "tracker");
+    chrome.storage.local.get(null, function(allObjects){
+        let trackerObj = {};
+
+        for (let key in allObjects) {
+            if (key.startsWith('tracker-')) {
+                trackerObj[key] = allObjects[key];
+            }
+        }
+        downloadObjectAsJson(trackerObj, "tracker");
     });
 });
 

@@ -162,10 +162,10 @@ chrome.bookmarks.getTree(function (bookmarks) {
     updateStorage("TASKS", TASKS);
 });
 
-const trackerDownloads = sessionId + "-downloads";
-const trackerTabActivate = sessionId + "-tab-activate";
-const trackerTabCreate = sessionId + "-tab-create";
-const trackerTabRemove = sessionId + "-tab-remove";
+const trackerDownloads = 'tracker-' + sessionId + "-downloads";
+const trackerTabActivate = 'tracker-' + sessionId + "-tab-activate";
+const trackerTabCreate = 'tracker-' + sessionId + "-tab-create";
+const trackerTabRemove = 'tracker-' + sessionId + "-tab-remove";
 
 chrome.storage.local.get(trackerDownloads, function (e) {
     if (isEmpty(e)) {
