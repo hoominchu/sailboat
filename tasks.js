@@ -232,7 +232,7 @@ function deleteTask(task_id) {
             alert("This task is open. Please close it before deleting.");
         }
         else {
-            const confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it ?");
+            const confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it?");
             if (confirmation) {
                 delete TASKS[task_id];
                 if (taskToWindow[task_id]) {

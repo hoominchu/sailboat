@@ -1,5 +1,14 @@
 let timeSpentOnTasks = {};
 
+// Handling Enter keypress to create task
+$(document).keypress(function(ev){
+    if (ev.keyCode === 13) {
+        if (document.getElementById("taskName").value && document.getElementById("taskName").value.length > 0) {
+            $('#createTask').click();
+        }
+    }
+});
+
 function showTasks(Tasks, ctaskid) {
     $("#tasks-container").empty();
     $("#archived-tasks").empty();
