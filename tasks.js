@@ -178,7 +178,8 @@ function activateTaskInWindow(task_id) {
                         lastTaskId = 0;
                     }
                     changeBookmarks(lastTaskId, task_id);
-                    updateStorage("CTASKID", task_id)
+                    updateStorage("CTASKID", task_id);
+                    switchingTask = false;
 
                 });
 

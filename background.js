@@ -1,4 +1,5 @@
 "use strict";
+let switchingTask = false;
 
 createAndActivateDefaultTask();
 
@@ -37,6 +38,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
     else if (request.type === "switch-task" && request.nextTaskId !== "") {
         if (CTASKID != request.nextTaskId) {
+            switchingTask = true;
             saveTaskInWindow(CTASKID);
             deactivateTaskInWindow(CTASKID);
             activateTaskInWindow(request.nextTaskId);

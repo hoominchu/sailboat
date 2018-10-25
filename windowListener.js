@@ -76,6 +76,11 @@ chrome.windows.onCreated.addListener(function (window) {
         catch (err) {
             console.log(err.message);
         }
+    } else {
+        if(!switchingTask){
+            chrome.windows.remove(window.id);
+            alert("Sorry, we currently support only 1 window per task!")
+        }
     }
 });
 
