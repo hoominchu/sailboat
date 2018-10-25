@@ -16,16 +16,20 @@ function showTasks(Tasks, ctaskid) {
         }
     }
     document.getElementById("createTask").addEventListener("click", function () {
-        const tabs = [];
-        chrome.windows.getCurrent({"populate": true}, function (window) {
-            for (let i = 0; i < window.tabs.length; i++) {
-                if (window.tabs[i].highlighted) {
-                    tabs.push(window.tabs[i]);
+        if (document.getElementById("taskName").value && document.getElementById("taskName").value.length > 0) {
+            const tabs = [];
+            chrome.windows.getCurrent({"populate": true}, function (window) {
+                for (let i = 0; i < window.tabs.length; i++) {
+                    if (window.tabs[i].highlighted) {
+                        tabs.push(window.tabs[i]);
+                    }
                 }
-            }
-            const closeCurrentTask = confirm("Switch to the new task?");
-            sendCreateTaskMessage(closeCurrentTask, tabs);
-        });
+                const closeCurrentTask = confirm("Switch to the new task?");
+                sendCreateTaskMessage(closeCurrentTask, tabs);
+            });
+        } else {
+            alert('You need to enter a task name to create a task');
+        }
     });
 }
 

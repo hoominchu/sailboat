@@ -12,7 +12,7 @@ function Task(task_id, task_name, tabs, bookmarks, isOpen) {
 }
 
 function createAndActivateDefaultTask() {
-    var task = new Task(0, "Default", {}, {}, true); //The default task is active when created.
+    var task = new Task(0, "Leisure", {}, {}, true); //The default task is active when created.
     TASKS[task.id] = task;
     chrome.windows.getCurrent(function (window) {
         taskToWindow[0] = window.id; //Assigned to the current window.
