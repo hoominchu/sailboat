@@ -17,7 +17,7 @@ function createAndActivateDefaultTask() {
     chrome.windows.getCurrent(function (window) {
         taskToWindow[0] = window.id; //Assigned to the current window.
     });
-    chrome.browserAction.setBadgeText({"text": "Default"}); //Badge set to Default
+    chrome.browserAction.setBadgeText({"text": "Leisure"}); //Badge set to Default
 }
 
 
