@@ -77,9 +77,11 @@ chrome.windows.onCreated.addListener(function (window) {
             console.log(err.message);
         }
     } else {
-        if(!switchingTask){
-            chrome.windows.remove(window.id);
-            alert("Sorry, we currently support only 1 window per task!")
+        if (!switchingTask) {
+            if (!(window.type === chrome.windows.WindowType.POPUP || window.type === chrome.windows.WindowType.PANEL || window.type === chrome.windows.APP || window.type === chrome.windows.WindowType.DEVTOOLS)) {
+                chrome.windows.remove(window.id);
+                alert("Sorry, we currently support only 1 window per task!")
+            }
         }
     }
 });
