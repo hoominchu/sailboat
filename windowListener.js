@@ -13,11 +13,11 @@ chrome.windows.onRemoved.addListener(function (oldWindowId) {
             });
         }
         else {
+            changeBookmarks(CTASKID, 0);
             CTASKID = -1;
             updateStorage("CTASKID", -1);
         }
     });
-
     updateStorage("TASKS", TASKS);
     reloadSailboatTabs();
 });
@@ -49,20 +49,6 @@ chrome.windows.onCreated.addListener(function (window) {
                 taskToWindow[0] = window.id; //assign the window id to the task
 
                 chrome.browserAction.setBadgeText({"text": TASKS[0].name.slice(0, 4)});
-
-
-                chrome.bookmarks.getChildren("1", function (children) {
-                    for (var i = 0; i < children.length; i++) {
-                        chrome.bookmarks.removeTree(children[i].id)
-                    }
-                    chrome.bookmarks.getChildren("2", function (children) {
-                        for (var i = 0; i < children.length; i++) {
-                            chrome.bookmarks.removeTree(children[i].id)
-                        }
-                        createBookmarks(0);
-                    });
-                });
-
 
                 TASKS = tasks;
 

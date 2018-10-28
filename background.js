@@ -8,6 +8,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "create-task") {
         createTask(request.taskName, request.tabs, false, {});
         if (request.activated) {
+            switchingTask = true;
             saveTaskInWindow(CTASKID);
             deactivateTaskInWindow(CTASKID);
             activateTaskInWindow(TASKS["lastAssignedId"]);

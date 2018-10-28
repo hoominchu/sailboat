@@ -47,59 +47,59 @@ function closeAllTabs(shouldPinnedClose, windowID) {
     }
 }
 
-function createBookmarks(taskId) {
+function changeBookmarks(lastTaskId, cTaskId) {
 
-    function addBookmarks(parentNode) {
-        let childrenNode = parentNode.children;
-        for (let idx in childrenNode) {
-            let bookmarkNode = childrenNode[idx];
-            // if it has url property, then it is not a folder
-            if (bookmarkNode.hasOwnProperty("url")) {
-                // add the url under the parent
-                chrome.bookmarks.create({
-                    'index': bookmarkNode.index,
-                    'parentId': parentNode.id,
-                    'title': bookmarkNode.title,
-                    'url': bookmarkNode.url
-                });
-            } else {
-                // if it is a folder, create it, call addBookmarks on the node
-                chrome.bookmarks.create({
-                    'index': bookmarkNode.index,
-                    'parentId': parentNode.id,
-                    'title': bookmarkNode.title
-                }, function (newFolder) {
-                    bookmarkNode.id = newFolder.id;
-                    addBookmarks(bookmarkNode);
-                })
-            }
-        }
-    }
+    function createBookmarks(taskId) {
 
-    chrome.storage.local.get("TASKS", function (tasks) {
-
-        tasks = tasks["TASKS"];
-        if (!isEmpty(tasks[taskId].bookmarks)) {
-            let bookmarks = tasks[taskId].bookmarks[0].children;
-            let bookmarksInBookmarksBar;
-            let bookMarksInOtherBookmarks;
-            for (let idx in bookmarks) {
-                if (bookmarks[idx].id === "1") { // id = 1 is always bookmarks bar
-                    bookmarksInBookmarksBar = bookmarks[idx];
-                } else if (bookmarks[idx].id === "2") { // id = 2 is always other bookmarks
-                    bookMarksInOtherBookmarks = bookmarks[idx];
+        function addBookmarks(parentNode) {
+            let childrenNode = parentNode.children;
+            for (let idx in childrenNode) {
+                let bookmarkNode = childrenNode[idx];
+                // if it has url property, then it is not a folder
+                if (bookmarkNode.hasOwnProperty("url")) {
+                    // add the url under the parent
+                    chrome.bookmarks.create({
+                        'index': bookmarkNode.index,
+                        'parentId': parentNode.id,
+                        'title': bookmarkNode.title,
+                        'url': bookmarkNode.url
+                    });
+                } else {
+                    // if it is a folder, create it, call addBookmarks on the node
+                    chrome.bookmarks.create({
+                        'index': bookmarkNode.index,
+                        'parentId': parentNode.id,
+                        'title': bookmarkNode.title
+                    }, function (newFolder) {
+                        bookmarkNode.id = newFolder.id;
+                        addBookmarks(bookmarkNode);
+                    })
                 }
             }
-
-            addBookmarks(bookmarksInBookmarksBar);
-            addBookmarks(bookMarksInOtherBookmarks);
-
         }
 
-    });
-}
+        chrome.storage.local.get("TASKS", function (tasks) {
 
-function changeBookmarks(lastTaskId, cTaskId) {
+            tasks = tasks["TASKS"];
+            if (!isEmpty(tasks[taskId].bookmarks)) {
+                let bookmarks = tasks[taskId].bookmarks[0].children;
+                let bookmarksInBookmarksBar;
+                let bookMarksInOtherBookmarks;
+                for (let idx in bookmarks) {
+                    if (bookmarks[idx].id === "1") { // id = 1 is always bookmarks bar
+                        bookmarksInBookmarksBar = bookmarks[idx];
+                    } else if (bookmarks[idx].id === "2") { // id = 2 is always other bookmarks
+                        bookMarksInOtherBookmarks = bookmarks[idx];
+                    }
+                }
+
+                addBookmarks(bookmarksInBookmarksBar);
+                addBookmarks(bookMarksInOtherBookmarks);
+
+            }
+
+        });
+    }
 
     // removing the bookmarks will also update the TASKS object as the bookmarks events are triggered
     // save the bookmarks as they were after removing the bookmarks

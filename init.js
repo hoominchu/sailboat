@@ -157,9 +157,15 @@ function isEmpty(obj) {
 
 const sessionId = new Date().getTime();
 
-chrome.bookmarks.getTree(function (bookmarks) {
-    TASKS[CTASKID].bookmarks = bookmarks;
-    updateStorage("TASKS", TASKS);
+chrome.storage.local.get("sailboatInitialised", function (response) {
+    if (isEmpty(response)) {
+        chrome.bookmarks.getTree(function (bookmarks) {
+            TASKS[CTASKID].bookmarks = bookmarks;
+            console.log("Bookmarks saved to default");
+            updateStorage("TASKS", TASKS);
+            updateStorage("sailboatInitialised", "true");
+        });
+    }
 });
 
 const trackerDownloads = 'tracker-' + sessionId + "-downloads";
