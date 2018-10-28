@@ -106,9 +106,10 @@ function changeBookmarks(lastTaskId, cTaskId) {
     function saveBookmarksInTask(bookmarks) {
         chrome.storage.local.get("TASKS", function (tasks) {
             tasks = tasks["TASKS"];
-            tasks[lastTaskId].bookmarks = bookmarks;
-            updateStorage("TASKS", tasks);
-
+            if(tasks[lastTaskId]){
+                tasks[lastTaskId].bookmarks = bookmarks;
+                updateStorage("TASKS", tasks);
+            }
             //create bookmarks for current task after deleting bookmarks from last task
             createBookmarks(cTaskId);
         });

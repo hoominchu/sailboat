@@ -177,7 +177,7 @@ function activateTaskInWindow(task_id) {
                     else {
                         lastTaskId = 0;
                     }
-                    changeBookmarks(lastTaskId, task_id);
+                    // changeBookmarks(lastTaskId, task_id);
                     updateStorage("CTASKID", task_id);
                     switchingTask = false;
 

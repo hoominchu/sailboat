@@ -13,7 +13,7 @@ chrome.windows.onRemoved.addListener(function (oldWindowId) {
             });
         }
         else {
-            changeBookmarks(CTASKID, 0);
+            // changeBookmarks(CTASKID, 0);
             CTASKID = -1;
             updateStorage("CTASKID", -1);
         }
@@ -56,6 +56,8 @@ chrome.windows.onCreated.addListener(function (window) {
 
                 updateStorage("TASKS", tasks);
                 updateStorage("CTASKID", 0);
+
+                // changeBookmarks(-1, 0);
 
             });
         }
