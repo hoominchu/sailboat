@@ -19,6 +19,7 @@ chrome.windows.onRemoved.addListener(function (oldWindowId) {
     });
     updateStorage("TASKS", TASKS);
     reloadSailboatTabs();
+
 });
 
 chrome.windows.onCreated.addListener(function (window) {
@@ -59,6 +60,9 @@ chrome.windows.onCreated.addListener(function (window) {
                 saveBookmarks = false;
                 changeBookmarks(-1, 0);
 
+                reloadSailboatTabs();
+
+
             });
         }
         catch (err) {
@@ -71,6 +75,7 @@ chrome.windows.onCreated.addListener(function (window) {
                 alert("Sorry, we currently support only 1 window per task!")
             }
         }
+
     }
 });
 
@@ -94,5 +99,7 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
     }
 
     updateStorage("TASKS", TASKS);
+
     reloadSailboatTabs();
+
 });
