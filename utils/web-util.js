@@ -47,6 +47,7 @@ function closeAllTabs(shouldPinnedClose, windowID) {
     }
 }
 
+
 function changeBookmarks(lastTaskId, cTaskId) {
 
     function createBookmarks(taskId) {
@@ -95,9 +96,9 @@ function changeBookmarks(lastTaskId, cTaskId) {
 
                 addBookmarks(bookmarksInBookmarksBar);
                 addBookmarks(bookMarksInOtherBookmarks);
+                saveBookmarks = true;
 
             }
-
         });
     }
 
@@ -105,10 +106,12 @@ function changeBookmarks(lastTaskId, cTaskId) {
     // save the bookmarks as they were after removing the bookmarks
     function saveBookmarksInTask(bookmarks) {
         chrome.storage.local.get("TASKS", function (tasks) {
-            tasks = tasks["TASKS"];
-            if(tasks[lastTaskId]){
-                tasks[lastTaskId].bookmarks = bookmarks;
-                updateStorage("TASKS", tasks);
+            if (saveBookmarks) {
+                tasks = tasks["TASKS"];
+                if (tasks[lastTaskId]) {
+                    tasks[lastTaskId].bookmarks = bookmarks;
+                    updateStorage("TASKS", tasks);
+                }
             }
             //create bookmarks for current task after deleting bookmarks from last task
             createBookmarks(cTaskId);

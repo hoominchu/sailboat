@@ -1,3 +1,5 @@
+let saveBookmarks = true;
+
 function Task(task_id, task_name, tabs, bookmarks, isOpen) {
     this.id = task_id;
     this.name = task_name;
@@ -16,8 +18,58 @@ function createAndActivateDefaultTask() {
     TASKS[task.id] = task;
     chrome.windows.getCurrent(function (window) {
         taskToWindow[0] = window.id; //Assigned to the current window.
+
+        // change bookmarks,tabs to task 0 bookmarks,tabs
+        chrome.storage.local.get("sailboatInitialised", function (response) { // first check if sailboat is initialised
+            if (!isEmpty(response)) {
+
+                chrome.tabs.getAllInWindow(function (tabs) {
+                    let tabIds = [];
+                    for (let tabIdx = 0; tabIdx < tabs.length; tabIdx++) {
+                        tabIds.push(tabs[tabIdx].id);
+                    }
+                    chrome.tabs.remove(tabIds);
+                });
+
+                chrome.storage.local.get("TASKS", function (tasks) {
+                    tasks = tasks["TASKS"];
+                    //Mark task as active
+                    const now = new Date();
+                    tasks[0].activationTime.push(now.toString());
+                    tasks[0].isOpen = true;
+
+                    if (tasks[0].tabs.length > 0) { //task has more than 0 tabs.
+                        for (let i = 0; i < tasks[0].tabs.length; i++) {
+                            let url = tasks[0].tabs[i].url;
+                            chrome.tabs.create({"url": url}, function (tab) {
+                                if (i === 0) {
+                                    chrome.tabs.query({"url": "chrome://newtab/"}, function (tabs) {
+                                        chrome.tabs.remove(tabs[0].id);
+                                    });
+                                }
+                            });
+
+                        }
+                    }
+                    TASKS = tasks;
+                    CTASKID = 0;
+                    updateStorage("TASKS", tasks);
+                    updateStorage("CTASKID", 0);
+                    saveBookmarks = false;
+                    changeBookmarks(-1, 0);
+
+                    chrome.windows.getAll(function (windows) {
+                        for (let i = 0; i < windows.length; i++) {
+                            if (window.id !== windows[i].id) {
+                                chrome.windows.remove(windows[i].id);
+                            }
+                        }
+                    });
+                });
+            }
+        });
     });
-    chrome.browserAction.setBadgeText({"text": "Leisure"}); //Badge set to Default
+    chrome.browserAction.setBadgeText({"text": "Leisure"}); //Badge set to Leisure
 }
 
 
@@ -177,7 +229,8 @@ function activateTaskInWindow(task_id) {
                     else {
                         lastTaskId = 0;
                     }
-                    // changeBookmarks(lastTaskId, task_id);
+                    // saveBookmarks = false;
+                    changeBookmarks(lastTaskId, task_id);
                     updateStorage("CTASKID", task_id);
                     switchingTask = false;
 
@@ -192,6 +245,13 @@ function activateTaskInWindow(task_id) {
     });
 }
 
+function saveBookmarksInStorage(taskId) {
+    chrome.bookmarks.getTree(function (bookmarks) {
+        TASKS[taskId].bookmarks = bookmarks;
+        updateStorage("TASKS", TASKS);
+    });
+}
+
 //This works only to save the task in the current window.
 function saveTaskInWindow(task_id) {
     //Saving involves the following:
@@ -201,10 +261,6 @@ function saveTaskInWindow(task_id) {
         if (TASKS[task_id]) {
             chrome.windows.getCurrent({"populate": true}, function (window) {
                 TASKS[task_id].tabs = window.tabs;
-                updateStorage("TASKS", TASKS);
-            });
-            chrome.bookmarks.getTree(function (bookmarks) {
-                TASKS[task_id].bookmarks = bookmarks;
                 updateStorage("TASKS", TASKS);
             });
         }
