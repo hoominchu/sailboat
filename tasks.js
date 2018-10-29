@@ -23,49 +23,55 @@ function createAndActivateDefaultTask() {
         chrome.storage.local.get("sailboatInitialised", function (response) { // first check if sailboat is initialised
             if (!isEmpty(response)) {
 
+                // get all the tabs open currently
                 chrome.tabs.getAllInWindow(function (tabs) {
                     let tabIds = [];
                     for (let tabIdx = 0; tabIdx < tabs.length; tabIdx++) {
                         tabIds.push(tabs[tabIdx].id);
                     }
-                    chrome.tabs.remove(tabIds);
+                    activateLeisure(tabIds);
                 });
 
-                chrome.storage.local.get("TASKS", function (tasks) {
-                    tasks = tasks["TASKS"];
-                    //Mark task as active
-                    const now = new Date();
-                    tasks[0].activationTime.push(now.toString());
-                    tasks[0].isOpen = true;
+                function activateLeisure(tabIdsToBeRemoved) {
+                    chrome.storage.local.get("TASKS", function (tasks) {
+                        tasks = tasks["TASKS"];
+                        //Mark task as active
+                        const now = new Date();
+                        tasks[0].activationTime.push(now.toString());
+                        tasks[0].isOpen = true;
 
-                    if (tasks[0].tabs.length > 0) { //task has more than 0 tabs.
-                        for (let i = 0; i < tasks[0].tabs.length; i++) {
-                            let url = tasks[0].tabs[i].url;
-                            chrome.tabs.create({"url": url}, function (tab) {
-                                if (i === 0) {
-                                    chrome.tabs.query({"url": "chrome://newtab/"}, function (tabs) {
-                                        chrome.tabs.remove(tabs[0].id);
-                                    });
-                                }
-                            });
+                        if (tasks[0].tabs.length > 0) { //task has more than 0 tabs.
+                            for (let i = 0; i < tasks[0].tabs.length; i++) {
+                                let url = tasks[0].tabs[i].url;
+                                chrome.tabs.create({"url": url}, function (tab) {
+                                    if (i === 0) {
+                                        chrome.tabs.query({"url": "chrome://newtab/"}, function (tabs) {
+                                            chrome.tabs.remove(tabs[0].id);
+                                        });
+                                    }
+                                });
 
-                        }
-                    }
-                    TASKS = tasks;
-                    CTASKID = 0;
-                    updateStorage("TASKS", tasks);
-                    updateStorage("CTASKID", 0);
-                    saveBookmarks = false;
-                    changeBookmarks(-1, 0);
-
-                    chrome.windows.getAll(function (windows) {
-                        for (let i = 0; i < windows.length; i++) {
-                            if (window.id !== windows[i].id) {
-                                chrome.windows.remove(windows[i].id);
                             }
                         }
+                        TASKS = tasks;
+                        CTASKID = 0;
+                        updateStorage("TASKS", tasks);
+                        updateStorage("CTASKID", 0);
+                        saveBookmarks = false;
+                        changeBookmarks(-1, 0);
+
+                        chrome.tabs.remove(tabIdsToBeRemoved);
+                        chrome.windows.getAll(function (windows) {
+                            for (let i = 0; i < windows.length; i++) {
+                                if (window.id !== windows[i].id) {
+                                    chrome.windows.remove(windows[i].id);
+                                }
+                            }
+                        });
+
+
                     });
-                });
+                }
             }
         });
     });
