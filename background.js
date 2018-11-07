@@ -167,7 +167,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 
     else if (request.type === "get-search-results-from-history") {
-        searchHistory({"text": request.query}, sender.tab.id);
+        searchHistory({"text": request.query, 'startTime': 0}, sender.tab.id);
     }
 
     else if (request.type === "toggle-time-spent-notification"){

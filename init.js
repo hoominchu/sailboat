@@ -77,24 +77,24 @@ chrome.storage.local.get("Click Log", function (e) {
         chrome.storage.local.set({"Click Log": {}});
     }
 });
-
-chrome.storage.local.get("Report Snapshots", function (e) {
-    if (isEmpty(e)) {
-        chrome.storage.local.set({"Report Snapshots": {}});
-    }
-});
-
-chrome.storage.local.get("Report Switches", function (e) {
-    if (isEmpty(e)) {
-        chrome.storage.local.set({"Report Switches": {}});
-    }
-});
-
-chrome.storage.local.get("Report Views", function (e) {
-    if (isEmpty(e)) {
-        chrome.storage.local.set({"Report Views": {}});
-    }
-});
+//
+// chrome.storage.local.get("Report Snapshots", function (e) {
+//     if (isEmpty(e)) {
+//         chrome.storage.local.set({"Report Snapshots": {}});
+//     }
+// });
+//
+// chrome.storage.local.get("Report Switches", function (e) {
+//     if (isEmpty(e)) {
+//         chrome.storage.local.set({"Report Switches": {}});
+//     }
+// });
+//
+// chrome.storage.local.get("Report Views", function (e) {
+//     if (isEmpty(e)) {
+//         chrome.storage.local.set({"Report Views": {}});
+//     }
+// });
 
 chrome.storage.local.get("Report Clicks", function (e) {
     if (isEmpty(e)) {

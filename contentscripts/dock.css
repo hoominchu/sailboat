@@ -20,11 +20,11 @@
 .sailboat-dock {
     width: 96vw; !important;
     height: 30px; !important;
-    background-color: rgba(50, 50, 50, 0.2); !important;
+    background-color: white; !important;
     box-shadow: none; !important;
     border-radius: 10px; !important;
     display: inline-block; !important;
-    border: none; !important;
+    border: 1px solid grey; !important;
     left: 45px; !important;
     bottom: 5px !important;
     overflow-x: scroll;
@@ -70,14 +70,14 @@
 .collapse-btn {
     width: 3%; !important;
     height: 30px; !important;
-    background-color: rgba(255, 255, 255, 0.2); !important;
+    background-color: rgba(255, 255, 255, 1); !important;
     box-shadow: none; !important;
     border-radius: 100px; !important;
     display: inline-block; !important;
     left: 5px; !important;
     vertical-align: center; !important;
     text-align: center; !important;
-    border: none; !important;
+    border: 1px solid grey; !important;
     line-height: 15px; !important;
     bottom: 5px !important;
 }
@@ -141,6 +141,7 @@
     overflow-y: hidden;
     overflow-x: auto;
     white-space: nowrap;
+    background-color: white;
 }
 
 .sailboat-dock::-webkit-scrollbar {
@@ -181,8 +182,9 @@
 }
 
 .open-task {
-    border: 0.8px solid #158ae2; !important;
+    border: none; !important;
     box-sizing: border-box;
+    background-color: #3bb4d8; !important;
 }
 
 textarea:focus, input:focus{
@@ -234,9 +236,9 @@ textarea:focus, input:focus{
 .task-btn {
     font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
     color: rgba(32, 32, 32, 0.79); !important;
-    border: none; !important;
+    border: 0.5px dashed grey; !important;
     font-size: 8pt; !important;
-    width: 120px; !important;
+    width: 150px; !important;
     margin-left: 10px; !important;
     margin-top: 4px; !important;
     background-color: rgba(237, 237, 237, 0.42); !important;
@@ -248,18 +250,18 @@ textarea:focus, input:focus{
     height: 20px; !important;
     display: inline-block; !important;
     line-height: 16px; !important;
-    box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 
 .open-task-btn {
     font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
-    color: rgba(32, 32, 32, 0.79); !important;
+    color: rgba(32, 32, 32, 0.9); !important;
     /*border: none; !important;*/
-    font-size: 8pt; !important;
+    font-size: 9.5pt; !important;
+    font-weight: bold;
     width: 70%;
-    background-color: rgba(237, 237, 237, 0.42); !important;
+    background-color: rgba(0, 10, 19, 0.15);
     text-overflow: ellipsis; !important;
     white-space: nowrap; !important;
     overflow: hidden; !important;
@@ -273,7 +275,7 @@ textarea:focus, input:focus{
     margin: 0; !important;
     padding: 2px;
     cursor: pointer;
-    box-sizing: border-box;
+    box-sizing: content-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
@@ -341,11 +343,12 @@ textarea:focus, input:focus{
 
 .current-task {
     color: white; !important;
-    background-color: rgba(7, 185, 79, 0.37);
+    background-color: rgba(7, 185, 79, 0.75);
     font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; !important;
     color: rgba(32, 32, 32, 0.79);
     border: none; !important;
-    font-size: 8pt; !important;
+    font-size: 9.5pt; !important;
+    font-weight: bold;
     width: 100%;
     text-overflow: ellipsis; !important;
     white-space: nowrap; !important;

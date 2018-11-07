@@ -348,7 +348,7 @@ function makeDockBigInCenter() {
 
 function resetDockSizeNPosition() {
     $('#sailboat-dock').siblings().css({"filter": ""});
-    $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0', 'background-color': ''});
+    $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0', 'background-color': 'white'});
     $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px', 'margin-top': '4px'});
     $('.open-task-btn').css({
         'height': '20px',
@@ -359,7 +359,7 @@ function resetDockSizeNPosition() {
     });
     $('.add-to-task-btn').show();
     $('.close-task-btn').show();
-    $('.current-task').css({'height': '20px', 'border-radius': '0', 'line-height': '16px', 'font-size': '8pt'});
+    $('.current-task').css({'height': '20px', 'border-radius': '0', 'line-height': '16px', 'font-size': '9pt'});
 }
 
 function setDockBGActive() {
@@ -367,7 +367,7 @@ function setDockBGActive() {
 }
 
 function resetDockBG() {
-    $('div.dock').css({'background-color': 'rgba(50, 50, 50, 0.2)'});
+    $('div.dock').css({'background-color': 'rgba(255, 255, 255, 1)'});
 }
 
 function loadKeyPressHandler() {
@@ -576,6 +576,7 @@ function loadTaskNames(ctaskid) {
                     openTaskBtn.addClass("current-task");
                 } else if (tasks[taskid].isOpen == true) {
                     openTaskBtn.addClass("open-task");
+                    openTaskBtn.css('background-color', '#3bb4d8');
                 }
 
                 if (taskid === '0') {
