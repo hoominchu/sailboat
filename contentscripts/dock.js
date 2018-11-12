@@ -576,7 +576,6 @@ function loadTaskNames(ctaskid) {
                     openTaskBtn.addClass("current-task");
                 } else if (tasks[taskid].isOpen == true) {
                     openTaskBtn.addClass("open-task");
-                    openTaskBtn.css('background-color', '#3bb4d8');
                 }
 
                 if (taskid === '0') {
