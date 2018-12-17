@@ -40,11 +40,12 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     else if (request.type === "switch-task" && request.nextTaskId !== "") {
         if (CTASKID != request.nextTaskId) {
             switchingTask = true;
-            saveTaskInWindow(CTASKID);
-            deactivateTaskInWindow(CTASKID);
-            activateTaskInWindow(request.nextTaskId);
+            saveTaskInWindow(CTASKID, function () {
+                deactivateTaskInWindow(CTASKID, function () {
+                    activateTaskInWindow(request.nextTaskId);
+                });
+            });
         }
-        // recordInReport();
     }
 
     else if (request.type === "close-task") {
