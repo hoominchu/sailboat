@@ -384,7 +384,7 @@ function loadKeyPressHandler() {
             $('#collapse-dock-btn').click();
         }
 
-        if (keyEvent.ctrlKey && keycode.shiftKey && keyEvent.keyCode === 65) {
+        if (keyEvent.ctrlKey && keyEvent.shiftKey && keyEvent.keyCode === 65) {
             archivePage();
         }
 
