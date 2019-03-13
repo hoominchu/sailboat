@@ -31,103 +31,20 @@ $(document).ready(function () {
     });
 });
 
-$(window).focus(function () {
-    // start time on page
-    startTime = new Date();
-    loadTaskNames(CTASKID);
-    setHighlightIdx();
-});
+// $(window).focus(function () {
+//     // start time on page
+//     startTime = new Date();
+//     loadTaskNames(CTASKID);
+//     setHighlightIdx();
+// });
+//
+// $(window).blur(function () {
+//     //end time on page
+//     var endTime = new Date();
+//     addToHistory(window.location.href, document.title, CTASKID, startTime, endTime);
+//
+// });
 
-$(window).blur(function () {
-    //end time on page
-    var endTime = new Date();
-    addToHistory(window.location.href, document.title, CTASKID, startTime, endTime);
-
-});
-
-function addToHistory(url, title, taskId, startTime, endTime) {
-
-    if (url !== "chrome://newtab/" && url !== "about:blank" && url) {
-
-        let today = new Date();
-        let dd = today.getDate();
-        let mm = today.getMonth() + 1; //January is 0!
-        let yyyy = today.getFullYear();
-        if (dd < 10) {
-            dd = '0' + dd
-        }
-        if (mm < 10) {
-            mm = '0' + mm
-        }
-        today = dd + '-' + mm + '-' + yyyy;
-        let historyToday = 'HISTORY-' + today;
-
-
-        // add/update the entry in the history object
-        chrome.storage.local.get([historyToday, "TASKS"], function (results) {
-
-            let history;
-            let tasks = results["TASKS"];
-
-            //initialise the history object for today if not present
-            if (!results[historyToday]) {
-                history = {};
-            } else {
-                history = results[historyToday];
-            }
-
-            // get the task name
-            let taskObject = tasks[taskId];
-            let taskName = taskObject.name;
-
-            if (!(taskId in history)) {
-                history[taskId] = {
-                    "urls": {},
-                    "totalTime": 0,
-                    "taskName": taskName
-                }
-            }
-
-            let taskHistory = history[taskId];
-            let urls = taskHistory["urls"];
-            let totalTaskTime = taskHistory["totalTime"];
-
-            let timeDiff = (endTime - startTime) / 1000;
-            totalTaskTime += timeDiff;
-
-            if (!(url in urls)) {
-                urls[url] = {
-                    "timeIntervals": [],
-                    "timeSpent": 0,
-                    "title": title,
-                    "lastVisited": startTime.getTime()
-                }
-            }
-            let urlHistory = urls[url];
-            let timeIntervals = urlHistory["timeIntervals"];
-            let timeSpent = urlHistory["timeSpent"];
-            timeIntervals.push([startTime.toLocaleTimeString(), endTime.toLocaleTimeString()]);
-            timeSpent += timeDiff;
-            urls[url] = {
-                "timeIntervals": timeIntervals,
-                "timeSpent": timeSpent,
-                "title": title,
-                "lastVisited": startTime.getTime()
-            };
-
-            history[taskId] = {
-                "urls": urls,
-                "totalTime": totalTaskTime,
-                "taskName": taskName
-            };
-
-            let o = {};
-            o[historyToday] = history;
-            chrome.storage.local.set(o);
-        });
-    }
-
-}
 
 function sendDetectTaskMessage() {
     const contentString = cleanTag(document.documentElement.innerText);
