@@ -90,8 +90,7 @@ function filterTasks(filter) {
                         tasksDict[taskId] = TASKS[taskId].name;
                     }
                 }
-            }
-            else {
+            } else {
                 tasksDict[taskId] = TASKS[taskId].name;
             }
         }
@@ -133,8 +132,7 @@ function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
         TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
         updateStorage("TASKS", TASKS);
-    }
-    else {
+    } else {
         const emptyArray = [];
         var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, {});
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
@@ -170,7 +168,7 @@ function addTabsToTask(taskId, tabs) {
 
 }
 
-function activateTaskInWindow(task_id) {
+function activateTaskInWindow(taskId) {
     //Activating a task involves the following:
     //1. Set the CTASKID to it's id.
     //2. Mark its task object as active and add the current time to its activation time.
@@ -181,48 +179,39 @@ function activateTaskInWindow(task_id) {
 
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks["TASKS"];
-        if (task_id != CTASKID) { //Do all this only if it is not already active.
+        if (taskId !== CTASKID) { //Do all this only if it is not already active.
             try {
 
+
                 //Mark task as active.
-                var now = new Date();
-                tasks[task_id].activationTime.push(now.toString());
-                tasks[task_id].isOpen = true;
+                let now = new Date();
+                tasks[taskId].activationTime.push(now.toString());
+                tasks[taskId].isOpen = true;
 
-                if (taskToWindow.hasOwnProperty(task_id)) { //Task is already open in some window, so just switch to that window.
-                    // chrome.windows.update(taskToWindow[task_id], {"state": "maximised"}, function(window){
-                    //     chrome.windows.update(window.id, {"focused": true});
-                    // });
-                    chrome.windows.update(taskToWindow[task_id], {"focused": true});
+                if (taskToWindow.hasOwnProperty(taskId)) {
+                    // task is already open in some window, so just switch to that window.
+                    chrome.windows.update(taskToWindow[taskId], {"focused": true});
 
-                }
-
-                else { //Task is not open, so we create a new window with its tabs.
-
-                    if (tasks[task_id].tabs.length > 0) { //task has more than 0 tabs.
-                        var urls = [];
-                        for (var i = 0; i < tasks[task_id].tabs.length; i++) {
-                            urls.push(tasks[task_id].tabs[i].url);
+                } else {
+                    // task is not open, so we create a new window with its tabs.
+                    let urls = [];
+                    if (tasks[taskId].tabs.length > 0) { // task has more than 0 tabs.
+                        for (let i = 0; i < tasks[taskId].tabs.length; i++) {
+                            urls.push(tasks[taskId].tabs[i].url);
                         }
-                        chrome.windows.create({"url": urls}, function (window) { //create a window with these tabs
-                            var taskId = task_id;
-                            taskToWindow[taskId] = window.id; //assign the window id to the task
-                        });
+                    } else {
+                        // if no tabs in the task - open index page
+                        urls.push("html/index.html");
                     }
-                    else {
-                        chrome.windows.create({"url": "html/index.html"}, function (window) { //task has 0 tabs.
-                            var taskId = task_id;
-                            taskToWindow[taskId] = window.id; //assign the window id to the task
-                        });
-                    }
+                    chrome.windows.create({"url": urls}, function (window) { //create a window with these tabs
+                        taskToWindow[taskId] = window.id; //assign the window id to the task
+                    });
                 }
-
-                //Set the badge text as new task name.
-                chrome.browserAction.setBadgeText({"text": TASKS[task_id].name.slice(0, 4)});
-
-                CTASKID = task_id; //Set the CTASKID as the id of the task/
 
                 TASKS = tasks;
+
+                //Set the badge text as new task name.
+                chrome.browserAction.setBadgeText({"text": TASKS[taskId].name.slice(0, 4)});
 
                 updateStorage("TASKS", tasks); //Update chrome storage.
 
@@ -231,20 +220,18 @@ function activateTaskInWindow(task_id) {
                 chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
                     if (cTaskIdObject["CTASKID"]) {
                         lastTaskId = cTaskIdObject["CTASKID"];
-                    }
-                    else {
+                    } else {
                         lastTaskId = 0;
                     }
                     // saveBookmarks = false;
-                    changeBookmarks(lastTaskId, task_id);
-                    updateStorage("CTASKID", task_id);
+                    changeBookmarks(lastTaskId, taskId);
+                    updateStorage("CTASKID", taskId);
+                    CTASKID = taskId; //Set the CTASKID as the id of the task/x
                     switchingTask = false;
-
                 });
 
 
-            }
-            catch (err) {
+            } catch (err) {
                 console.log(err.message);
             }
         }
@@ -259,32 +246,30 @@ function saveBookmarksInStorage(taskId) {
 }
 
 //This works only to save the task in the current window.
-function saveTaskInWindow(task_id) {
-    //Saving involves the following:
-    //1.Replacing the task's tabs with the tabs in the current window.
-    //2.Replacing the task's bookmarks with the current bookmarks.
+function saveTaskInWindow(taskId, f) {
+    // save the tabs in the TASK object
     if (window) {
-        if (TASKS[task_id]) {
+        if (TASKS[taskId]) {
             chrome.windows.getCurrent({"populate": true}, function (window) {
-                TASKS[task_id].tabs = window.tabs;
+                TASKS[taskId].tabs = window.tabs;
                 updateStorage("TASKS", TASKS);
+                if (f != null) {
+                    f();
+                }
             });
         }
     }
 }
 
 //Run this when a task is deactivated.
-function deactivateTaskInWindow(task_id) {
-    if (CTASKID === task_id) {
+function deactivateTaskInWindow(taskId, f) {
+    if (CTASKID === taskId) {
         //Mark task object as inactive and add the current time to its deactivation time.
-        const now = new Date();
-        TASKS[task_id].deactivationTime.push(now.toString());
-        // if(taskToWindow[task_id]){
-        //     chrome.windows.update(taskToWindow[task_id], {"focused": false}, function(window){
-        //         chrome.windows.update(window.id, {"state": "minimized"});
-        //     });
-        // }
+        TASKS[taskId].deactivationTime.push(new Date().toString());
         updateStorage("TASKS", TASKS);
+        if (f != null) {
+            f();
+        }
     }
 
 }
@@ -293,8 +278,7 @@ function deleteTask(task_id) {
     if (TASKS[task_id]) {
         if (taskToWindow[task_id]) {
             alert("This task is open. Please close it before deleting.");
-        }
-        else {
+        } else {
             const confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it?");
             if (confirmation) {
                 delete TASKS[task_id];
@@ -327,8 +311,7 @@ function archiveTask(task_id) {
     if (task_id != CTASKID) {
         TASKS[task_id].archived = !TASKS[task_id].archived;
         updateStorage("TASKS", TASKS);
-    }
-    else {
+    } else {
         alert("Can't archive an open task. Please switch before archiving.")
     }
 
