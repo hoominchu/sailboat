@@ -210,7 +210,7 @@ function updateStorage(key, obj) {
 function getDomainFromURL(url) {
     let domain = "";
     const arr = url.split('/');
-    if (url.search("http") != -1) {
+    if (url.search("http") !== -1) {
         domain = arr[2];
     }
     else {
@@ -326,3 +326,4 @@ function searchHistory(query, tabId) {
         chrome.tabs.sendMessage(tabId, {"type": "set-search-results-from-history", "results": results});
     });
 }
+

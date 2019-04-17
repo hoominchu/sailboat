@@ -76,7 +76,6 @@ function setUpUnarchivedTasks(Tasks, task_id, ctaskid) {
     const card_body = $("<div>", {"class": "card-body text-dark"});
     const card_buttons = $("<div>", {"class": "btn-group"});
     const open_button = $("<button class='btn btn-outline-success btn-sm round-corner-left openTask' type='button' id='" + Tasks[task_id].id + "'>Open</button>");
-    const close_button = $("<button class='btn btn-outline-dark btn-sm closeTask' type='button' id='" + Tasks[task_id].id + "'>Close</button>");
     const rename_button = $("<button class='btn btn-outline-dark btn-sm renameTask' type='button' id='" + Tasks[task_id].id + "'>Rename</button>");
     const delete_button = $("<button class='btn btn-outline-danger btn-sm round-corner-right deleteTask' type='button' id='" + Tasks[task_id].id + "'>Delete</button>");
     const archive_button = $("<button class='btn btn-outline-dark btn-sm archiveTask' type='button' id='" + Tasks[task_id].id + "'>Archive</button>");
@@ -85,7 +84,6 @@ function setUpUnarchivedTasks(Tasks, task_id, ctaskid) {
     //Don't Add rename/archive/delete buttons to default task.
     if (task_id != "0") {
         card_buttons.append(open_button);
-        card_buttons.append(close_button);
         card_buttons.append(rename_button);
         card_buttons.append(archive_button);
         card_buttons.append(delete_button);
@@ -93,7 +91,6 @@ function setUpUnarchivedTasks(Tasks, task_id, ctaskid) {
     else {
         card_buttons.append(open_button);
         card_buttons.append(close_button_rounded);
-
     }
 
     card_body.append(card_buttons);

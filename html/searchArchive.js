@@ -60,8 +60,6 @@ $(document).ready(function () {
 });
 
 
-
-
 function showResults(results) {
     const resultsElement = document.getElementById("archiveSearchResults");
     resultsElement.innerText = "";
@@ -71,7 +69,7 @@ function showResults(results) {
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
             let resultElement = document.createElement("p");
-            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : "+results[i]["task"]+"</p>";
+            let urlString = "<p><a href='" + results[i]["url"] + "'>" + results[i]["url"] + "</a> | Task : " + results[i]["task"] + "</p>";
             let matchedTermsString = "<p><small>Matched terms : ";
             let contextStrings = "<p><small>";
             let matchedTerms = results[i]["matched terms"];
@@ -85,7 +83,7 @@ function showResults(results) {
             resultsElement.appendChild(resultElement);
         }
     } else {
-      $("#archiveSearchResults").append($("<p>No matches found. Archive more pages!</p>"));
+        $("#archiveSearchResults").append($("<p>No matches found. Archive more pages!</p>"));
     }
 
     $("#archiveSearchResults").append($("<hr>"));
@@ -258,29 +256,29 @@ function searchArchivedPages(query, tasks, pageContent) {
     }
 }
 
-function getSearchResultsFromHistory(query){
-  chrome.runtime.sendMessage({"type":"get-search-results-from-history", "query": query});
+function getSearchResultsFromHistory(query) {
+    chrome.runtime.sendMessage({"type": "get-search-results-from-history", "query": query});
 }
 
-chrome.runtime.onMessage.addListener(function(message){
-  if(message.type == "set-search-results-from-history"){
+chrome.runtime.onMessage.addListener(function (message) {
+    if (message.type === "set-search-results-from-history") {
 
-    const resultsFromHistory = $('<div style="margin-top:10px"><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
-    const resultsElement = $("#archiveSearchResults");
-    resultsElement.append(resultsFromHistory);
-    results = message.results;
-    let resultsMinusResultsFromGoogleSearch = 0;
-    for(var i = 0; i<results.length;i++){
-        if(domainsToExclude.indexOf(getDomainFromURL(results[i]["url"]))<0){
-          let urlString = $("<p><a href='" + results[i]["url"] + "'>" + results[i]["title"] + "</a>"+"</p>");
-          resultsElement.append(urlString);
-          resultsMinusResultsFromGoogleSearch++;
+        const resultsFromHistory = $('<div style="margin-top:10px"><p style="color: #008cba;"><b>From your history</b></p><hr></div>');
+        const resultsElement = $("#archiveSearchResults");
+        resultsElement.append(resultsFromHistory);
+        results = message.results;
+        let resultsMinusResultsFromGoogleSearch = 0;
+        for (var i = 0; i < results.length; i++) {
+            if (domainsToExclude.indexOf(getDomainFromURL(results[i]["url"])) < 0) {
+                let urlString = $("<p><a href='" + results[i]["url"] + "'>" + results[i]["title"] + "</a>" + "</p>");
+                resultsElement.append(urlString);
+                resultsMinusResultsFromGoogleSearch++;
+            }
         }
+        if (resultsMinusResultsFromGoogleSearch === 0) {
+            var historyNoMatches = $("<p>No matches found in history.</p>");
+            resultsElement.append(historyNoMatches);
+        }
+        resultsElement.append("<div style='height:5px;'></div>");
     }
-    if(resultsMinusResultsFromGoogleSearch == 0){
-      var historyNoMatches = $("<p>No matches found in history.</p>");
-      resultsElement.append(historyNoMatches);
-    }
-    resultsElement.append("<div style='height:5px;'></div>");
-  }
 });

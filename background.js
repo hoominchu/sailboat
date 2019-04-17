@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 
     else if (request.type === "like-page") {
-        likePage(request.url, CTASKID);
+        likePage(request.url, request.content, CTASKID);
     }
 
     else if (request.type === "add-url-to-task") {
@@ -90,9 +90,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     }
 
     else if (request.type === "search-archive") {
-        if (request.query != null) {
-            chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
-        }
+        searchArchive(request.query, sender.tab.id);
     }
 
     else if (request.type === "onmouseover") {
@@ -170,18 +168,18 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         searchHistory({"text": request.query, 'startTime': 0}, sender.tab.id);
     }
 
-    else if (request.type === "toggle-time-spent-notification"){
+    else if (request.type === "toggle-time-spent-notification") {
         toggleTimeSpentNotification();
     }
 
-    else if (request.type === "time-period-for-task-notification"){
+    else if (request.type === "time-period-for-task-notification") {
         changeTaskNotificationPeriod();
     }
 });
 
-function toggleTimeSpentNotification(){
+function toggleTimeSpentNotification() {
     chrome.storage.local.get("time-spent-notification", function (value) {
-        if(typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]){
+        if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
             chrome.storage.local.get("time-period-for-task-notification", function (result) {
                 if (!result["time-period-for-task-notification"]) {
                     chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
@@ -200,15 +198,18 @@ function toggleTimeSpentNotification(){
     });
 }
 
-function changeTaskNotificationPeriod(){
+function changeTaskNotificationPeriod() {
     chrome.storage.local.get("time-period-for-task-notification", function (value) {
         chrome.alarms.clear("time-spent-notification");
-        chrome.alarms.create("time-spent-notification", {"delayInMinutes": 5, "periodInMinutes": parseInt(value["time-period-for-task-notification"])});
+        chrome.alarms.create("time-spent-notification", {
+            "delayInMinutes": 5,
+            "periodInMinutes": parseInt(value["time-period-for-task-notification"])
+        });
     });
 }
 
 chrome.storage.local.get("time-spent-notification", function (value) {
-    if(typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]){
+    if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
         chrome.storage.local.get("time-period-for-task-notification", function (result) {
             if (!result["time-period-for-task-notification"]) {
                 chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
@@ -230,7 +231,7 @@ chrome.storage.local.get("time-spent-notification", function (value) {
 // });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name == "time-spent-notification") {
+    if (alarm.name === "time-spent-notification") {
         fireTaskNameNotification(CTASKID, "timeSpentNotification");
     }
 });
@@ -241,12 +242,17 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
     suggest({filename: currentTaskName + "/" + item.filename});
 });
 
-function downloadCollections(){
+function downloadCollections() {
     let dateObj = new Date();
     let date = dateObj.toDateString();
-    chrome.storage.local.get("Collections", function(collections){
+    chrome.storage.local.get("Collections", function (collections) {
         downloadObjectAsJson(collections, "Sailboat Collections from " + date);
     });
 }
 
+function searchArchive(query, tabId) {
+    query = query.replace(/\+/g, ' ');
+    var results = lunrIndex.search(query);
+    chrome.tabs.sendMessage(tabId, {"type": "show-archived-results-on-google-page", "results": results});
+}
 

@@ -19,7 +19,8 @@ $(document).ready(function () {
                 const $resultsContentDiv = $('<div style="padding: 10px;" id="sailboat-results-content">');
                 $resultsBox.append($resultsContentDiv);
 
-                searchArchivedPages(query);
+                // searchArchivedPages(query);
+                lunrSearch(query);
                 getSearchResultsFromHistory(query);
             }
         }
@@ -42,94 +43,98 @@ function isGoogleResultsPage() { //check if the page is an actual search results
     }
 }
 
-function searchArchivedPages(query) {
-    chrome.storage.local.get("TASKS", function (tasks) {
-        tasks = tasks["TASKS"];
-        chrome.storage.local.get("Page Content", function (pageContent) {
-            pageContent = pageContent["Page Content"];
-            let searchIn = "Archived pages"; //searchSettings["search in"];
-            let results = [];
-
-            let queryTerms = [];
-
-            query = query.trim();
-
-            if (query[0] === "\"" && query[query.length - 1] === "\"") {
-                query = query.substring(1, query.length - 1);
-                queryTerms = [query];
-            } else {
-                queryTerms = query.split("+");
-            }
-
-            const queryLength = queryTerms.length
-
-            for (let i = 0; i < queryLength; i++) {
-                if (commonwords.indexOf(queryTerms[i]) > -1) {
-                    queryTerms.splice(i, 1);
-                    i = i - 1 //reset the counter to the previous position.
-                }
-            }
-
-            for (let taskid in tasks) {
-                if (taskid !== "lastAssignedId") {
-                    const task = tasks[taskid];
-                    let searchThroughPages = task["likedPages"];
-
-                    if (searchThroughPages.length == 0) {
-                    }
-                    else {
-                        for (let i = 0; i < searchThroughPages.length; i++) {
-
-                            if (searchThroughPages[i] != null) {
-                                let url = searchThroughPages[i];
-                                if (pageContent.hasOwnProperty(url)) {
-                                    let content = pageContent[url];
-                                    let wordsArray;
-                                    try {
-                                        wordsArray = content.toLowerCase().split(/[.\-_\s,()@!&*+{}:;"'\\?]/);
-                                    } catch (e) {
-                                        // alert("Please try reloading tab : " + url + ".");
-                                    }
-
-
-                                    let result = {
-                                        "url": url,
-                                        "task": task["name"],
-                                        "matched terms": [],
-                                        "context": []
-                                    };
-
-                                    for (let j = 0; j < queryTerms.length; j++) {
-                                        if (wordsArray.indexOf(queryTerms[j].toLowerCase()) > -1) {
-                                            result["matched terms"].push(queryTerms[j]);
-                                            let contextString = getContextString(queryTerms[j], content, 10);
-                                            result["context"].push(contextString);
-                                        }
-                                    }
-                                    if (result["matched terms"].length > 0) {
-                                        results.push(result);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            results = sortResults(results);
-            showArchivedResults(results);
-
-
-            function sortResults(results) {
-                results.sort(function (a, b) {
-                    return b["matched terms"].length - a["matched terms"].length;
-                });
-
-                return results;
-            }
-        })
-    });
+function lunrSearch(query) {
+    chrome.runtime.sendMessage({'type':'search-archive', 'query': query});
 }
+
+// function searchArchivedPages(query) {
+//     chrome.storage.local.get("TASKS", function (tasks) {
+//         tasks = tasks["TASKS"];
+//         chrome.storage.local.get("Page Content", function (pageContent) {
+//             pageContent = pageContent["Page Content"];
+//             let searchIn = "Archived pages"; //searchSettings["search in"];
+//             let results = [];
+//
+//             let queryTerms = [];
+//
+//             query = query.trim();
+//
+//             if (query[0] === "\"" && query[query.length - 1] === "\"") {
+//                 query = query.substring(1, query.length - 1);
+//                 queryTerms = [query];
+//             } else {
+//                 queryTerms = query.split("+");
+//             }
+//
+//             const queryLength = queryTerms.length
+//
+//             for (let i = 0; i < queryLength; i++) {
+//                 if (commonwords.indexOf(queryTerms[i]) > -1) {
+//                     queryTerms.splice(i, 1);
+//                     i = i - 1 //reset the counter to the previous position.
+//                 }
+//             }
+//
+//             for (let taskid in tasks) {
+//                 if (taskid !== "lastAssignedId") {
+//                     const task = tasks[taskid];
+//                     let searchThroughPages = task["likedPages"];
+//
+//                     if (searchThroughPages.length == 0) {
+//                     }
+//                     else {
+//                         for (let i = 0; i < searchThroughPages.length; i++) {
+//
+//                             if (searchThroughPages[i] != null) {
+//                                 let url = searchThroughPages[i];
+//                                 if (pageContent.hasOwnProperty(url)) {
+//                                     let content = pageContent[url];
+//                                     let wordsArray;
+//                                     try {
+//                                         wordsArray = content.toLowerCase().split(/[.\-_\s,()@!&*+{}:;"'\\?]/);
+//                                     } catch (e) {
+//                                         // alert("Please try reloading tab : " + url + ".");
+//                                     }
+//
+//
+//                                     let result = {
+//                                         "url": url,
+//                                         "task": task["name"],
+//                                         "matched terms": [],
+//                                         "context": []
+//                                     };
+//
+//                                     for (let j = 0; j < queryTerms.length; j++) {
+//                                         if (wordsArray.indexOf(queryTerms[j].toLowerCase()) > -1) {
+//                                             result["matched terms"].push(queryTerms[j]);
+//                                             let contextString = getContextString(queryTerms[j], content, 10);
+//                                             result["context"].push(contextString);
+//                                         }
+//                                     }
+//                                     if (result["matched terms"].length > 0) {
+//                                         results.push(result);
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//
+//             results = sortResults(results);
+//             showArchivedResults(results);
+//
+//
+//             function sortResults(results) {
+//                 results.sort(function (a, b) {
+//                     return b["matched terms"].length - a["matched terms"].length;
+//                 });
+//
+//                 return results;
+//             }
+//         })
+//     });
+// }
 
 function getContextString(term, string, length) {
     let wordsArray = string.split(/[.\-_\s,()@!&*+{}:;"'\\?]/);
@@ -151,6 +156,45 @@ function getContextString(term, string, length) {
     }
 
     return retStr;
+}
+
+function newShowArchivedResults(results) {
+    // console.log(results);
+    // const $archiveResults = $('<div id="sailboat-archive-results" style="padding: 10px; border: 1px solid lightblue;"><p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
+    // $archiveResults.css({'max-height':'330px','width':'435px', 'overflow':'scroll', 'margin-bottom':'10px'});
+    // $('#rhs').prepend($archiveResults);
+
+    const fromYourArchive = $('<p style="color: #008cba;"><b>From your archive</b></p><hr></div>');
+    $("#sailboat-results-content").append(fromYourArchive);
+
+    const $resultsElement = $('#sailboat-results-content');
+    // resultsElement.innerText = "";
+
+    if (results.length > 0) {
+        for (let i = 0; i < results.length; i++) {
+            let $resultElement = $('<div class="sailboat-result-element"></div>');
+            let $urlString = $('<div class = "sailboat-result-url"><a href="' + results[i]["url"] + '">' + results[i]['url'] + '</a></div>');
+            let $task = $('<p><small>Task : ' + results[i]['task'] + '</small></p>');
+            let $matchedTerms = $('<small></small>');
+            let $contextStrings = $('<small class="st"></small>');
+            let matchedTerms = results[i]["matched terms"];
+            for (let j = 0; j < matchedTerms.length; j++) {
+                $matchedTerms.append($('<strong>' + matchedTerms[j] + ' | </strong>'));
+                $contextStrings.append($('<p>' + results[i]["context"][j] + '</p>'));
+            }
+            $resultElement.append($urlString).append($task).append($matchedTerms).append($contextStrings);//innerHTML = urlString + $matchedTerms + '<br>';
+            $resultsElement.append($resultElement);
+            $resultElement.click(function (ev) {
+                chrome.storage.local.get('Report Clicks', function (report) {
+                    report = report['Report Clicks'];
+                    report['SB results clicks']++;
+                    chrome.storage.local.set({'Report Clicks': report});
+                })
+            });
+        }
+    } else {
+        $("#sailboat-results-content").append($("<p style='line-height: 1.8em;'>No matches found. Archive more pages!</p>"));
+    }
 }
 
 function showArchivedResults(results) {
@@ -218,8 +262,12 @@ chrome.runtime.onMessage.addListener(function (message) {
         }
         resultsElement.append("<div style='height:5px;'></div>");
     }
-});
 
+    if (message.type === 'show-archived-results-on-google-page') {
+        console.log('Received in cs');
+        console.log(message.results);
+    }
+});
 
 function removeWordsFromString(wordsToRemove, string) {
     //wordsToRemove is an array of words that should be removed.

@@ -38,7 +38,7 @@ function returnPage(page, url) {
 //     }
 // }
 
-function likePage(url, method) {
+function likePage(url, content, method) {
     if (TASKS[CTASKID].likedPages.indexOf(url) > -1) {
         TASKS[CTASKID].likedPages.splice([TASKS[CTASKID].likedPages.indexOf(url)],1);
     } else {
@@ -52,6 +52,7 @@ function likePage(url, method) {
     }
 
     updateStorage("TASKS", TASKS);
+    lunrIndex.addDoc({'url': url, 'content': content});
     // updatePreferredDomain(url);
     // removeFromPageContentAndTextLog(url);
 }

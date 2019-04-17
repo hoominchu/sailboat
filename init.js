@@ -9,15 +9,31 @@ const taskToWindow = {};
 const tabIdToURL = {};
 const activeTabId = 0;
 
-//
 const backgroundPageId = -1;
 
-// //Suggestion log dictionary
-// chrome.storage.local.get("Suggestions Log", function (e) {
-//     if (isEmpty(e)) {
-//         chrome.storage.local.set({"Suggestions Log": {"Correct suggestions": 0, "Incorrect suggestions": 0}});
-//     }
-// });
+
+// Initializing lunr index for archived pages.
+var lunrIndex;
+var archivedDocs = [];
+
+chrome.storage.local.get('Page Content', function (pageContent) {
+    pageContent = pageContent['Page Content'];
+    for (var url in pageContent) {
+        var doc = {};
+        doc['url'] = url;
+        doc['content'] = pageContent[url];
+        archivedDocs.push(doc);
+    }
+
+    lunrIndex = elasticlunr(function () {
+       this.setRef('url');
+       this.addField('content');
+    });
+
+    for (var i = 0; i < archivedDocs.length; i++) {
+        lunrIndex.addDoc(archivedDocs[i]);
+    }
+});
 
 
 chrome.storage.local.get("TASKS", function (taskObject) {

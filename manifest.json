@@ -11,6 +11,7 @@
     "scripts": [
       "lib/jquery-3.2.1.min.js",
       "lib/compromise.js",
+      "lib/elasticlunr.js",
       "utils/util.js",
       "utils/web-util.js",
       "init.js",

@@ -502,7 +502,8 @@ function archivePage() {
     $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
     chrome.runtime.sendMessage({
         "type": "like-page",
-        "url": window.location.href
+        "url": window.location.href,
+        "content": document.documentElement.innerText
     });
 
     if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
