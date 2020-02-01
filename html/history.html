@@ -4,21 +4,18 @@
     <title>Sail Boat</title>
     <script src="../lib/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/highcharts.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/custom.css">
     <link rel="stylesheet" href="../css/history.css">
     <link rel="stylesheet" href="../css/datatables.css">
 </head>
 <body>
-<style>
-    .hide {
-        display: none;
-    }
-</style>
+
 <script src="template.js"></script>
 
 <div class="container-fluid">
-
+    <div id="history-timeline" style="height: 500px"></div>
     <div class="row" style="padding-top: 1em">
         <div class="col-lg-2">
             <div class="btn-group-vertical" style="width: 100%; padding-bottom: 2em" data-toggle="buttons">
@@ -48,7 +45,11 @@
 <script src="sortElements.js"></script>
 <script src="../lib/datatables.js"></script>
 <script src="../lib/any-number.js"></script>
-<script src="history.js"></script>
 <script src="../utils/util.js"></script>
+<script src="../lib/highcharts.js"></script>
+<script src="../lib/highcharts-more.src.js"></script>
+<script src="../lib/compromise.min.js"></script>
+<script src="dummy-data.js"></script>
+<script src="history.js"></script>
 </body>
 </html>

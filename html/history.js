@@ -124,6 +124,169 @@ function resetTable() {
     $('#historyTableDiv').append('<table id="historyTable" class="display" width="100%"></table>');
 }
 
+function loadTimelineChart() {
+    let topics = {};
+
+//     [
+//         [Date.UTC(1970, 10, 25), 0],
+//         [Date.UTC(1970, 11,  6), 0.25],
+//     ]
+// }, {
+//     name: "Winter 2015-2016",
+//     data: [
+//         [Date.UTC(1970, 10,  9), 0],
+//         [Date.UTC(1970, 10, 15), 0.23],
+//     ]
+// }, {
+//     name: "Winter 2016-2017",
+//     data: [
+//         [Date.UTC(1970, 9, 15), 0],
+//         [Date.UTC(1970, 9, 31), 0.09],
+//     ]
+// }]
+
+    let freqCounter = {};
+
+    // Go over the object and append an element to main body.
+    for (let i = 0; i < historyObject.length; i++) {
+
+        var video = historyObject[i];
+
+        if (video.title.indexOf('video that has been removed') > -1)
+            continue;
+
+        // var $elem = $template.clone();
+        // $elem.removeClass('template');
+        // $elem.find('.video-title').text(video.title.replace('Watched ', '') + '           |                ' + video.time);
+        // $elem.css('display', 'block');
+        // $('.container').append($elem);
+
+        let dateString = video.time.substr(0,10);
+        let title = video.title.replace('Watched ', '');
+
+        let year = parseInt(dateString.substr(0, 4));
+        let month = parseInt(dateString.substr(5, 2));
+        let date = parseInt(dateString.substr(8, 2));
+
+        let key = year + '-' + month;
+
+        // Chart 2
+        let doc = nlp(title.toLowerCase());
+        let t = doc.topics().json();
+        for (let j = 0; j < t.length; j++) {
+            let topic = t[j].text;
+
+            // Clean the topic string
+            topic = topic.replace(/[^a-z0-9]/gmi, ' ').replace(/\s+/g, ' ').trim();
+
+            if (topics.hasOwnProperty(topic)) {
+                topics[topic]['data'].push(Date.UTC(year, month, date));
+            } else {
+                topics[topic] = {
+                    name: video.title.replace('Watched ', ''),
+                    data:[Date.UTC(year, month, 1)]
+                };
+            }
+
+            if (freqCounter.hasOwnProperty(topic)) {
+                if (freqCounter[topic].hasOwnProperty(key)) {
+                    freqCounter[topic][key] = freqCounter[topic][key] + 1;
+                } else {
+                    freqCounter[topic][key] = 1;
+                }
+            } else {
+                freqCounter[topic] = {};
+                freqCounter[topic][key] = 1;
+            }
+        }
+    }
+
+    let chartData = [];
+    for (let topic in topics) {
+        let obj = {};
+        obj.name = topic;
+        obj.data = [];
+        let freqObj = freqCounter[topic];
+
+        for (let key in freqObj) {
+            if (freqObj[key] < 5)
+                continue;
+            const y = parseInt(key.split('-')[0]);
+            const m = parseInt(key.split('-')[1]);
+            let entry = [Date.UTC(y, m, 15), freqObj[key]];
+            obj.data.push(entry);
+        }
+        if (obj.data.length > 0) {
+            obj.data.reverse();
+            chartData.push(obj);
+        }
+    }
+
+    Highcharts.chart('history-timeline', {
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: 'See how your browsing habits have changed'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the dummy year
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: 'Date'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Frequency'
+            },
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%b}: {point.y:.2f} times'
+        },
+
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+
+        colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+
+        // Define the data points. All series have a dummy year
+        // of 1970/71 in order to be compared on the same x axis. Note
+        // that in JavaScript, months start at 0 for January, 1 for February etc.
+        series: chartData,
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    plotOptions: {
+                        series: {
+                            marker: {
+                                radius: 2.5
+                            }
+                        }
+                    }
+                }
+            }]
+        }
+    });
+}
+
 $(document).ready(function () {
     logView(window.location.pathname);
     chrome.storage.local.get("TASKS", function (taskObject) {
@@ -156,4 +319,5 @@ $(document).ready(function () {
             getTaskHistory(0);
         }
     });
+    loadTimelineChart();
 });

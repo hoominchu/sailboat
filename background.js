@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         openLikedPages(request.taskId);
     } else if (request.type === "search-archive") {
         if (request.query != null) {
-            chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
+            // chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
         }
     } else if (request.type === "onmouseover") {
         const fromWindowID = sender.tab.windowId;
