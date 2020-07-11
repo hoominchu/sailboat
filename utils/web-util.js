@@ -8,49 +8,8 @@ function downloadObjectAsJson(exportObj, exportName) {
     downloadAnchorNode.remove();
 }
 
-function closeAllTabs(shouldPinnedClose, windowID) {
-
-    if (windowID != null && !shouldPinnedClose) {
-        chrome.tabs.query({"windowId": windowID}, function (allTabs) {
-            for (let i = 0; i < allTabs.length; i++) {
-                if (!allTabs[i].pinned) {
-                    chrome.tabs.remove(allTabs[i].id);
-                }
-            }
-        });
-    }
-
-    else if (windowID != null && shouldPinnedClose) {
-        chrome.tabs.query({"windowId": windowID}, function (allTabs) {
-            for (let i = 0; i < allTabs.length; i++) {
-                chrome.tabs.remove(allTabs[i].id);
-            }
-        });
-    }
-
-    else if (windowID == null && !shouldPinnedClose) {
-        chrome.tabs.query({}, function (allTabs) {
-            for (let i = 0; i < allTabs.length; i++) {
-                if (!allTabs[i].pinned) {
-                    chrome.tabs.remove(allTabs[i].id);
-                }
-            }
-        });
-    }
-
-    else {
-        chrome.tabs.query({}, function (allTabs) {
-            for (let i = 0; i < allTabs.length; i++) {
-                chrome.tabs.remove(allTabs[i].id);
-            }
-        });
-    }
-}
-
 function changeBookmarks(lastTaskId, cTaskId) {
-
-    function createBookmarks(taskId) {
-
+    function createBookmarks(taskId, tasks) {
         function addBookmarks(parentNode) {
             let childrenNode = parentNode.children;
             for (let idx in childrenNode) {
@@ -78,10 +37,8 @@ function changeBookmarks(lastTaskId, cTaskId) {
             }
         }
 
-        chrome.storage.local.get("TASKS", function (tasks) {
-
-            tasks = tasks["TASKS"];
-            if (!isEmpty(tasks[taskId].bookmarks)) {
+        if (!isEmpty(tasks[taskId].bookmarks)) {
+            if (tasks[taskId] && tasks[taskId].bookmarks && tasks[taskId].bookmarks[0] && tasks[taskId].bookmarks[0].children) {
                 let bookmarks = tasks[taskId].bookmarks[0].children;
                 let bookmarksInBookmarksBar;
                 let bookMarksInOtherBookmarks;
@@ -92,53 +49,25 @@ function changeBookmarks(lastTaskId, cTaskId) {
                         bookMarksInOtherBookmarks = bookmarks[idx];
                     }
                 }
-
                 addBookmarks(bookmarksInBookmarksBar);
                 addBookmarks(bookMarksInOtherBookmarks);
-                saveBookmarks = true;
             }
-        });
+        }
     }
 
-    // removing the bookmarks will also update the TASKS object as the bookmarks events are triggered
-    // save the bookmarks as they were after removing the bookmarks
-    function saveBookmarksInTask(bookmarks) {
-        chrome.storage.local.get("TASKS", function (tasks) {
-            if (saveBookmarks) {
-                tasks = tasks["TASKS"];
-                if (tasks[lastTaskId]) {
-                    tasks[lastTaskId].bookmarks = bookmarks;
-                    updateStorage("TASKS", tasks);
-                }
-            }
-            //create bookmarks for current task after deleting bookmarks from last task
-            createBookmarks(cTaskId);
-        });
-    }
-
-    function removeBookmarksFromOthers(bookmarks) {
+    // Remove the existing bookmarks in bar and other bookmarks
+    chrome.bookmarks.getChildren("1", function (children) {
+        for (var i = 0; i < children.length; i++) {
+            chrome.bookmarks.removeTree(children[i].id);
+        }
         chrome.bookmarks.getChildren("2", function (children) {
             for (var i = 0; i < children.length; i++) {
                 chrome.bookmarks.removeTree(children[i].id)
             }
-            saveBookmarksInTask(bookmarks);
+            // Now create the bookmarks for the current task.
+            createBookmarks(cTaskId, TASKS);
         });
-    }
-
-    function removeBookmarksFromBar(bookmarks) {
-        chrome.bookmarks.getChildren("1", function (children) {
-            for (var i = 0; i < children.length; i++) {
-                chrome.bookmarks.removeTree(children[i].id)
-            }
-            removeBookmarksFromOthers(bookmarks);
-        });
-
-    }
-
-    chrome.bookmarks.getTree(function (bookmarks) {
-        removeBookmarksFromBar(bookmarks);
     });
-
 }
 
 function returnQuery(selectorDict) {
@@ -196,7 +125,6 @@ function returnQuery(selectorDict) {
         }
     }
     return query;
-
 }
 
 function updateStorage(key, obj) {

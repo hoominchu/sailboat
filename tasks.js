@@ -14,48 +14,50 @@ function Task(task_id, task_name, tabs, bookmarks, isOpen) {
 }
 
 function createAndActivateDefaultTask() {
-    var task = new Task(0, "Leisure", {}, {}, true); //The default task is active when created.
-    TASKS[task.id] = task;
-    chrome.windows.getCurrent(function (window) {
-        taskToWindow[task.id] = window.id; //Assigned to the current window.
-        // change bookmarks,tabs to task 0 bookmarks,tabs
-        function activateLeisure(tabsToBeAdded) {
+    chrome.bookmarks.getTree(function(bookmarks) {
+        var task = new Task(0, "Leisure", {}, bookmarks, true); //The default task is active when created.
+        TASKS[task.id] = task;
+        chrome.windows.getCurrent(function (window) {
+            taskToWindow[task.id] = window.id; //Assigned to the current window.
+            // change bookmarks,tabs to task 0 bookmarks,tabs
+            function activateLeisure(tabsToBeAdded) {
 
-            task.tabs = tabsToBeAdded;
-            //Mark task as active
-            const now = new Date().getTime();
-            task.activationTime.push(now);
-            let tasks = {lastAssignedId: 0};
-            tasks[task.id] = task;
+                task.tabs = tabsToBeAdded;
+                //Mark task as active
+                const now = new Date().getTime();
+                task.activationTime.push(now);
+                let tasks = {lastAssignedId: 0};
+                tasks[task.id] = task;
+                TASKS = tasks;
+                CTASKID = task.id;
 
-            TASKS = tasks;
-            CTASKID = task.id;
-            updateStorage("TASKS", tasks);
-            updateStorage("CTASKID", task.id);
-            saveBookmarks = false;
-            changeBookmarks(-1, task.id);
+                updateStorage("TASKS", tasks);
+                updateStorage("CTASKID", task.id);
+                // saveBookmarks = true;
+                // changeBookmarks(0, task.id);
 
-            // Refresh all the open tabs so that content script gets injected.
-            for (let i = 0; i < tabsToBeAdded.length; i++) {
-                chrome.tabs.reload(tabsToBeAdded[i].id);
+                // Refresh all the open tabs so that content script gets injected.
+                for (let i = 0; i < tabsToBeAdded.length; i++) {
+                    chrome.tabs.reload(tabsToBeAdded[i].id);
+                }
+
+                // Close all the other windows. Or should we add all the tabs to the default task?
+                chrome.windows.getAll(function (windows) {
+                    for (let i = 0; i < windows.length; i++) {
+                        if (window.id !== windows[i].id) {
+                            chrome.windows.remove(windows[i].id);
+                        }
+                    }
+                });
             }
 
-            // Close all the other windows. Or should we add all the tabs to the default task?
-            chrome.windows.getAll(function (windows) {
-                for (let i = 0; i < windows.length; i++) {
-                    if (window.id !== windows[i].id) {
-                        chrome.windows.remove(windows[i].id);
-                    }
-                }
+            // get all the tabs open currently
+            chrome.tabs.getAllInWindow(function (tabs) {
+                activateLeisure(tabs);
             });
-        }
-
-        // get all the tabs open currently
-        chrome.tabs.getAllInWindow(function (tabs) {
-            activateLeisure(tabs);
         });
+        chrome.browserAction.setBadgeText({"text": "Leisure"}); //Badge set to Leisure
     });
-    chrome.browserAction.setBadgeText({"text": "Leisure"}); //Badge set to Leisure
 }
 
 //filterTasks takes a dictionary of type {"archived": false}, and returns dict of type {0: "Default", 1: "Shopping"} that fit the filters
@@ -106,13 +108,13 @@ function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
         tabs = [];
     }
     if (createFromCurrentTabs) {
-        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, {});
+        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, []);
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
         TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
         updateStorage("TASKS", TASKS);
     } else {
         const emptyArray = [];
-        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, {});
+        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, []);
         TASKS[TASKS["lastAssignedId"] + 1] = newTask;
         TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
         updateStorage("TASKS", TASKS);
@@ -194,19 +196,16 @@ function activateTaskInWindow(taskId) {
                 updateStorage("TASKS", tasks); //Update chrome storage.
 
                 let lastTaskId;
-
-                chrome.storage.local.get("CTASKID", function (cTaskIdObject) {
-                    if (cTaskIdObject["CTASKID"]) {
-                        lastTaskId = cTaskIdObject["CTASKID"];
-                    } else {
-                        lastTaskId = 0;
-                    }
-                    // saveBookmarks = false;
-                    changeBookmarks(lastTaskId, taskId);
-                    updateStorage("CTASKID", taskId);
-                    CTASKID = taskId; //Set the CTASKID as the id of the task/x
-                    switchingTask = false;
-                });
+                if (response["CTASKID"]) {
+                    lastTaskId = response["CTASKID"];
+                } else {
+                    lastTaskId = 0;
+                }
+                // saveBookmarks = false;
+                changeBookmarks(lastTaskId, taskId);
+                updateStorage("CTASKID", taskId);
+                CTASKID = taskId; //Set the CTASKID as the id of the task/x
+                // switchingTask = false;
             } catch (err) {
                 console.log(err.message);
             }
@@ -242,12 +241,15 @@ function deactivateTaskInWindow(taskId, f) {
     if (CTASKID === taskId) {
         //Mark task object as inactive and add the current time to its deactivation time.
         TASKS[taskId].deactivationTime.push(new Date().getTime());
-        updateStorage("TASKS", TASKS);
-        if (f != null) {
-            f();
-        }
+        // Save the bookmarks
+        chrome.bookmarks.getTree(function(bookmarks) {
+            TASKS[taskId].bookmarks = bookmarks;
+            updateStorage("TASKS", TASKS);
+            if (f != null) {
+                f();
+            }
+        });
     }
-
 }
 
 function deleteTask(task_id) {

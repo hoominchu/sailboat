@@ -57,13 +57,9 @@
   "permissions": [
     "tabs",
     "storage",
-    "history",
     "bookmarks",
-    "unlimitedStorage",
     "https://*/*",
-    "http://*/*",
-    "webRequest",
-    "activeTab"
+    "http://*/*"
   ],
 
   "icons": { "16": "images/Sailboat16.png",
