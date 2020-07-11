@@ -1,7 +1,14 @@
 "use strict";
 let switchingTask = false;
-
-createAndActivateDefaultTask();
+let CTASKID;
+chrome.storage.local.get("CTASKID", function(response) {
+    CTASKID = response['CTASKID'];
+    if (typeof response['CTASKID'] !== 'undefined') {
+        activateTaskInWindow(CTASKID)
+    } else {
+        createAndActivateDefaultTask();
+    }
+});
 
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
@@ -124,6 +131,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "time-period-for-task-notification") {
         changeTaskNotificationPeriod();
     }
+    return true;
 });
 
 function toggleTimeSpentNotification() {
@@ -144,6 +152,10 @@ function toggleTimeSpentNotification() {
         }
     });
 }
+
+chrome.commands.onCommand.addListener(function(command) {
+    console.log('Command:', command);
+});
 
 function changeTaskNotificationPeriod() {
     chrome.storage.local.get("time-period-for-task-notification", function (value) {
@@ -204,7 +216,7 @@ function searchArchive(query, tabId) {
 // add to history
 function addToHistory(url, title, taskId, startTime, endTime) {
 
-    if (url !== "chrome://newtab/" && url !== "about:blank" && url) {
+    if (url.indexOf('://newtab/') < 0 && url !== "about:blank" && url) {
 
         let today = new Date();
         let dd = today.getDate();
@@ -338,7 +350,7 @@ function handleWindowOnFocusChanged(windowId) {
 chrome.tabs.onUpdated.addListener(handleOnUpdated);
 chrome.tabs.onActivated.addListener(handleOnActivated);
 chrome.tabs.onRemoved.addListener(handleOnRemoved);
-chrome.windows.onFOcusChanged.addListener(handleWindowOnFocusChanged);
+chrome.windows.onFocusChanged.addListener(handleWindowOnFocusChanged);
 
 
 

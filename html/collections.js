@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    logView(window.location.pathname);
+    // logView(window.location.pathname);
 
     setTimeout(function () {
         gapi.client.setApiKey('AIzaSyAuPajSr17inQQYo4hXnh6DiWCs84fJXpo');

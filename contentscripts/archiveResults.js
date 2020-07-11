@@ -20,7 +20,7 @@ $(document).ready(function () {
                 $resultsBox.append($resultsContentDiv);
 
                 // searchArchivedPages(query);
-                lunrSearch(query);
+                // lunrSearch(query);
                 getSearchResultsFromHistory(query);
             }
         }

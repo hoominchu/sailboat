@@ -17,26 +17,27 @@ $(document).ready(function () {
         if (cTaskIdObject["CTASKID"] > -1) {
             CTASKID = cTaskIdObject["CTASKID"];
             loadDock();
-            loadArchiveButton();
             loadNewTaskBtn();
             loadTaskNames(CTASKID);
-            markLikedStatus(window.location.href, CTASKID);
-            setHighlightIdx();
+            // loadArchiveButton();
+            // markLikedStatus(window.location.href, CTASKID);
+            // setHighlightIdx();
             // sendDetectTaskMessage();
             checkAndUpdateCollections();
-            loadHoverBooster();
+            // loadHoverBooster();
             loadClickLogger();
-            loadKeyPressHandler();
+            // loadKeyPressHandler();
         }
     });
 });
 
-// $(window).focus(function () {
-//     // start time on page
-//     startTime = new Date();
-//     loadTaskNames(CTASKID);
-//     setHighlightIdx();
-// });
+$(window).focus(function () {
+    // start time on page
+    startTime = new Date();
+    loadTaskNames(CTASKID);
+    updateDock();
+    // setHighlightIdx();
+});
 //
 // $(window).blur(function () {
 //     //end time on page
@@ -44,6 +45,21 @@ $(document).ready(function () {
 //     addToHistory(window.location.href, document.title, CTASKID, startTime, endTime);
 //
 // });
+
+function updateDock() {
+    chrome.storage.local.get('TASKS', function(response) {
+       var tasks = response['TASKS'];
+        for (let idx in tasks) {
+            var task = tasks[idx];
+            var $openTaskBtn = $('.task-btn[id=' + task.id + ']').find('.open-task-btn');
+            if (task.isOpen) {
+                $openTaskBtn.addClass('open-task');
+            } else {
+                $openTaskBtn.removeClass('open-task');
+            }
+        }
+    });
+}
 
 
 function sendDetectTaskMessage() {
@@ -102,6 +118,12 @@ function showNewTaskPopup() {
     newTaskBar.siblings().css({"filter": "blur(100px)"});
     newTaskBar.show();
     newTaskBar.focus();
+}
+
+function hideNewTaskPopup() {
+    const newTaskBar = $('#new-task-input');
+    newTaskBar.siblings().css({"filter": "none"});
+    newTaskBar.hide();
 }
 
 function cleanElemText(txt) {
@@ -247,131 +269,25 @@ function loadHoverBooster() {
     });
 }
 
-function makeDockBigInCenter() {
-    $('#sailboat-dock').siblings().css({"filter": "blur(100px)"});
-    $('#sailboat-dock').css({'height': '100px', 'margin-bottom': '45vh', 'background-color': 'white'});
-    $('.task-btn').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'margin-top': '10px'});
-    $('.open-task-btn').css({
-        'height': '75%',
-        'border-radius': '10px',
-        'line-height': '75px',
-        'font-size': '14pt',
-        'width': '100%'
-    });
-    $('.add-to-task-btn').hide();
-    $('.close-task-btn').hide();
-    $('.current-task').css({'height': '75%', 'border-radius': '10px', 'line-height': '75px', 'font-size': '14pt'});
-}
+window.onkeydown = function(event) {
+    if (event.code === 'ControlLeft') {
+        $('.sailboat-parts').hide();
+    }
 
-function resetDockSizeNPosition() {
-    $('#sailboat-dock').siblings().css({"filter": ""});
-    $('#sailboat-dock').css({'height': '30px', 'margin-bottom': '0', 'background-color': 'white'});
-    $('.task-btn').css({'height': '20px', 'border-radius': '100px', 'line-height': '16px', 'margin-top': '4px'});
-    $('.open-task-btn').css({
-        'height': '20px',
-        'border-radius': '0',
-        'line-height': '16px',
-        'font-size': '8pt',
-        'width': '70%'
-    });
-    $('.add-to-task-btn').show();
-    $('.close-task-btn').show();
-    $('.current-task').css({'height': '20px', 'border-radius': '0', 'line-height': '16px', 'font-size': '9pt'});
-}
+    if (event.code === 'Escape') {
+        hideNewTaskPopup();
+    }
+};
 
-function setDockBGActive() {
-    $('div.dock').css({'background-color': 'rgba(50, 50, 50, 0.9)'});
-}
-
-function resetDockBG() {
-    $('div.dock').css({'background-color': 'rgba(255, 255, 255, 1)'});
-}
-
-function loadKeyPressHandler() {
-
-    // Keypress shortcut
-    $(document).keyup(function (keyEvent) {
-        const searchArchiveInput = $('#searchArchiveInput');
-        if (keyEvent.keyCode === 83 && keyEvent.ctrlKey && keyEvent.shiftKey) {
-            searchArchiveInput.siblings().css({"filter": "blur(100px)"});
-            searchArchiveInput.show();
-            searchArchiveInput.focus();
-            isArchiveSearchOpen = true;
-        } else if (keyEvent.ctrlKey && keyEvent.keyCode === 37 && keyEvent.shiftKey) {
-            $('#collapse-dock-btn').click();
-        }
-
-        if (keyEvent.ctrlKey && keyEvent.shiftKey && keyEvent.keyCode === 65) {
-            archivePage();
-        }
-
-        if (keyEvent.ctrlKey && keyEvent.keyCode === 80) {
-            chrome.runtime.sendMessage(
-                {
-                    "type": "switch-task",
-                    "nextTaskId": 0
-                }
-            );
-        }
-
-        if (keyEvent.keyCode === 27) {
-            $("input.input-bar").siblings().css({"filter": ""});
-            $("input.input-bar").hide();
-            isArchiveSearchOpen = false;
-        }
-
-        if (keyEvent.keyCode === 17) {
-            if (!isArchiveSearchOpen) {
-                resetDockBG();
-                resetDockSizeNPosition();
-                $('div.highlighted-task').click();
-                $('div.task-btn').find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-                chrome.storage.local.set({"highlightIdx": highlightIdx});
-                ctrlPressed = false;
-            }
-        }
-        if (keyEvent.keyCode === 16) {
-            shiftPressed = false;
-        }
-
-    });
-
-    $(document).keydown(function (keyEvent) {
-
-        if (keyEvent.ctrlKey) {
-            ctrlPressed = true;
-        }
-
-        if (keyEvent.shiftKey) {
-            shiftPressed = true;
-        }
-
-        if (ctrlPressed && !shiftPressed && keyEvent.keyCode === 192) {
-            makeDockBigInCenter();
-            setDockBGActive();
-            $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-
-            highlightIdx = (highlightIdx + 1) % nTasks;
-            $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').addClass('highlighted-task');
-        }
-
-        if (ctrlPressed && shiftPressed && keyEvent.keyCode === 192) {
-            makeDockBigInCenter();
-            setDockBGActive();
-            $('div.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').removeClass('highlighted-task');
-
-            highlightIdx = (highlightIdx - 1) % nTasks;
-            $('.task-btn').eq(highlightIdx).find('div.open-task-btn, div.current-task').addClass('highlighted-task');
-        }
-    });
-
+window.onkeyup = function (event) {
+    if (event.code === 'ControlLeft') {
+        $('.sailboat-parts').show();
+    }
 }
 
 function loadDock() {
 
     const $sailboatParts = $('<div class="sailboat-parts"></div>');
-    // const shadowRoot = $sailboatParts[0].attachShadow({mode: 'open'});
-    //
     const $dock = $('<div class="sailboat-float sailboat-dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
@@ -395,24 +311,13 @@ function loadDock() {
         });
     });
 
-    // dock.resizable();
-    // dock.sortable({
-    //     cancel: '.non-sortable',
-    //     cursor: "grabbing",
-    //     scroll: false,
-    //     zIndex: 500,
-    //     remove: function (event, ui) {
-    //         console.log(event);
-    //         console.log(ui);
-    //     }
-    // });
     $dock.disableSelection();
-    // shadowRoot.appendChild($collapseButton[0]);
-    // shadowRoot.appendChild($dock[0]);
-    // document.body.appendChild(shadowRoot);
+
+
     $sailboatParts.append($collapseButton);
     $sailboatParts.append($dock);
     $(document.body).append($sailboatParts);
+
 }
 
 function archivePage() {

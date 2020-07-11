@@ -47,7 +47,6 @@ function closeAllTabs(shouldPinnedClose, windowID) {
     }
 }
 
-
 function changeBookmarks(lastTaskId, cTaskId) {
 
     function createBookmarks(taskId) {
@@ -97,7 +96,6 @@ function changeBookmarks(lastTaskId, cTaskId) {
                 addBookmarks(bookmarksInBookmarksBar);
                 addBookmarks(bookMarksInOtherBookmarks);
                 saveBookmarks = true;
-
             }
         });
     }
@@ -297,6 +295,7 @@ function setTaskBadge(windowId, task_id) {
 // }
 
 function reloadSailboatTabs() {
+    return;
     chrome.tabs.query({"title": "Sailboat"}, function (tabs) { //Reload the Sail Boat page when window is switched.
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.reload(tabs[i].id);

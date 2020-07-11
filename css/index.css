@@ -3,17 +3,43 @@ body {
   /*background-size: cover;*/
 }
 
+.task-card.template {
+  display: none;
+}
+
+.task-card { height: 180px; }
+
+.card { height: 100%; width: 100%; border-radius: 10px; }
+
+.time-spent-on-task { position: absolute; bottom: 5px; }
+
+.card-header { border-top-left-radius: 10px; border-top-right-radius: 10px; }
+
+.default-task-card .renameTask, .default-task-card .archiveTask { display: none; }
+
 .content{
   margin-top:2em;
 }
 
-.open-task{
-  background-color:#008cba;
+.open-task .card {
+  border: 2px solid #008cba;
 }
 
-.active-task{
-  background-color: #43ac6a;
+.active-task .card {
+  border: 2px solid #43ac6a;
 }
+
+.current-tasks, .archived-tasks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 320px));
+  /* This is better for small screens, once min() is better supported */
+  /* grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); */
+  grid-gap: 1rem;
+  justify-content: center;
+}
+
+.btn-group { width: 100%; }
+.btn-group .btn { width: 25%; }
 
 /*.card-body, .card {*/
   /*background-color: rgba(255, 255, 255, 0.5);*/

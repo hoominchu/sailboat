@@ -11,30 +11,30 @@ const navbar = $('<nav class="navbar navbar-expand-lg navbar-dark bg-dark">' +
     '            <li class="nav-item ">' +
     '                <a class="nav-link" href="index.html">Home</a>' +
     '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="history.html">History</a>' +
-    '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="searchArchive.html">Search</a>' +
-    '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="dashboard.html">Dashboard</a>' +
-    '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="collections.html">Collections</a>' +
-    '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="notes.html">Notes</a>' +
-    '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="settings.html">Settings</a>' +
-    '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="history.html">History</a>' +
+    // '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="searchArchive.html">Search</a>' +
+    // '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="dashboard.html">Dashboard</a>' +
+    // '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="collections.html">Collections</a>' +
+    // '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="notes.html">Notes</a>' +
+    // '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="settings.html">Settings</a>' +
+    // '            </li>' +
     '            <li class="nav-item">' +
     '                <a class="nav-link" href="about.html">About</a>' +
     '            </li>' +
-    '            <li class="nav-item">' +
-    '                <a class="nav-link" href="help.html">Help</a>' +
-    '            </li>' +
+    // '            <li class="nav-item">' +
+    // '                <a class="nav-link" href="help.html">Help</a>' +
+    // '            </li>' +
     '        </ul>' +
     '    </div>' +
     '</nav>');

@@ -12,57 +12,48 @@ chrome.windows.onRemoved.addListener(function (oldWindowId) {
                 activateTaskInWindow(getKeyByValue(taskToWindow, window.id));
             });
         }
-        else {
-            CTASKID = -1;
-            updateStorage("CTASKID", -1);
-        }
     });
     updateStorage("TASKS", TASKS);
     reloadSailboatTabs();
-
 });
 
 chrome.windows.onCreated.addListener(function (window) {
-    if (isEmpty(taskToWindow)) { //If no window is open, the newly created window should have the default task.
+    if (isEmpty(taskToWindow)) { //If no window is open, then newly created window should have last TASK that was open.
         try {
-            chrome.storage.local.get("TASKS", function (tasks) {
-                tasks = tasks["TASKS"];
+            chrome.storage.local.get(["TASKS", 'CTASKID'], function (response) {
+                let tasks = response["TASKS"];
+                CTASKID = response['CTASKID'];
                 //Mark task as active
-                const now = new Date();
-                tasks[0].activationTime.push(now.toString());
-                tasks[0].isOpen = true;
+                const now = new Date().getTime();
+                tasks[CTASKID].activationTime.push(now);
+                tasks[CTASKID].isOpen = true;
 
-                if (tasks[0].tabs.length > 0) { //task has more than 0 tabs.
-                    for (let i = 0; i < tasks[0].tabs.length; i++) {
-                        let url = tasks[0].tabs[i].url;
-                        chrome.tabs.create({"url": url}, function (tab) {
-                            if (i === 0) {
-                                chrome.tabs.query({"url": "chrome://newtab/"}, function (tabs) {
-                                    chrome.tabs.remove(tabs[0].id);
-                                });
-                            }
-                        });
+                // The browser opens the tabs automatically. So do not reopen.
+                // Maybe we could just go over verify if the open tabs and the task object are in sync.
+                // if (tasks[CTASKID].tabs.length > 0) { //task has more than 0 tabs.
+                //     for (let i = 0; i < tasks[0].tabs.length; i++) {
+                //         let url = tasks[0].tabs[i].url;
+                //         chrome.tabs.create({"url": url}, function (tab) {
+                //             if (i === 0) {
+                //                 chrome.tabs.query({"url": "chrome://newtab/"}, function (tabs) {
+                //                     if (tabs && tabs.length > 0)
+                //                         chrome.tabs.remove(tabs[0].id);
+                //                 });
+                //             }
+                //         });
+                //     }
+                // }
 
-                    }
-                }
+                taskToWindow[CTASKID] = window.id; //assign the window id to the task
 
-                taskToWindow[0] = window.id; //assign the window id to the task
-
-                chrome.browserAction.setBadgeText({"text": TASKS[0].name.slice(0, 4)});
+                chrome.browserAction.setBadgeText({"text": TASKS[CTASKID].name.slice(0, 4)});
 
                 TASKS = tasks;
-
-                CTASKID = 0;
-
-                updateStorage("TASKS", tasks);
-                updateStorage("CTASKID", 0);
+                // updateStorage("TASKS", tasks);
 
                 saveBookmarks = false;
                 changeBookmarks(-1, 0);
-
-                reloadSailboatTabs();
-
-
+                // reloadSailboatTabs();
             });
         }
         catch (err) {
@@ -86,6 +77,7 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
             if (newWindowId !== chrome.windows.WINDOW_ID_NONE) { //Check if the focus has changed to some new window.
                 chrome.windows.get(newWindowId, function (window) {
                     if (window.type === "normal") {
+                        console.log('this is getting triggered: ' + taskToWindow + ' : ' + newWindowId);
                         activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
                     }
                 });
@@ -100,6 +92,6 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
 
     updateStorage("TASKS", TASKS);
 
-    reloadSailboatTabs();
+    // reloadSailboatTabs();
 
 });

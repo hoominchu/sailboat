@@ -17,14 +17,11 @@
       "init.js",
       "tasks.js",
       "tag.js",
-      "contentanalyser.js",
       "webpage.js",
       "contextmenu.js",
       "tabsListener.js",
       "windowListener.js",
       "bookmarksListener.js",
-      "notifications.js",
-      "tracker.js",
       "background.js"
     ]
   },
@@ -32,8 +29,7 @@
     {
       "matches": [
         "https://*/*",
-        "http://*/*",
-        "file:///*"
+        "http://*/*"
       ],
       "css": [
         "css/custom.css",
@@ -47,10 +43,9 @@
         "utils/util.js",
         "utils/web-util.js",
         "contentscripts/dock.js",
-        "contentscripts/timeSpent.js",
-        "contentscripts/archiveResults.js"
+        "contentscripts/timeSpent.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
@@ -76,13 +71,13 @@
     "https://*/*",
     "http://*/*",
     "webRequest",
-    "alarms"
+    "alarms",
+    "activeTab"
   ],
 
   "icons": { "16": "images/Sailboat16.png",
            "48": "images/Sailboat48.png",
           "128": "images/Sailboat128.png" },
-
 
   "chrome_url_overrides": {
     "newtab": "html/index.html"
