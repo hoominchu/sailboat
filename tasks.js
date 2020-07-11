@@ -154,10 +154,10 @@ function activateTaskInWindow(taskId) {
     //5. Add the task's bookmarks to the current bookmarks.
     //6. Update storage for changes.
 
-    chrome.storage.local.get("TASKS", function (tasks) {
-        tasks = tasks["TASKS"];
+    chrome.storage.local.get(['TASKS', 'CTASKID'], function (response) {
+        let tasks = response["TASKS"];
         chrome.windows.getCurrent(function (window) {
-            if (taskId === CTASKID) {
+            if (taskId === response['CTASKID']) {
                 taskToWindow[taskId] = window.id;
             }
             try {

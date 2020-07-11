@@ -93,15 +93,15 @@ function showTasks(tasks, ctaskid) {
     $('.renameSubmit').click(function() {
         let forTaskId = $('.newNameForTask').attr('for-task-id');
         let newName = $("#newNameForTask").val();
-        setTaskName(newName, forTaskId);
+        // setTaskName(newName, forTaskId);
+        $('#renameModal').modal('hide');
         chrome.runtime.sendMessage(
             {
                 "type": "rename-task",
                 "taskId": forTaskId,
                 "newTaskName": newName
-            }, getAndShowTasks
+            }, function(response) {getAndShowTasks();}
         );
-        $('#renameModal').modal('hide');
     });
     $('.deleteTask').click(function() {
         var delTaskId = $(this).closest(".task-card").attr("task-id");
@@ -110,24 +110,23 @@ function showTasks(tasks, ctaskid) {
         } else {
             const confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it?");
             if (confirmation) {
-                $('.task-card[task-id=' + delTaskId + ']').remove();
                 chrome.runtime.sendMessage(
                     {
                         "type": "delete-task",
                         "taskToRemove": delTaskId
-                    }
+                    }, function(response) {getAndShowTasks();}
                 );
             }
         }
     });
     $('.archiveTask').click(function() {
         let taskid = $(this).closest(".task-card").attr("task-id");
-        toggleCardArchiveState(taskid);
+        // toggleCardArchiveState(taskid);
         chrome.runtime.sendMessage(
             {
                 "type": "archive-task",
                 "taskId": taskid
-            }
+            }, function(response) {getAndShowTasks();}
         );
     });
 }
@@ -196,6 +195,6 @@ function sendCreateTaskMessage(closeCurrentTask, tabs) {
             "taskName": document.getElementById("taskName").value,
             "tabs": tabs,
             "activated": closeCurrentTask
-        }, getAndShowTasks
+        }, function(response) {getAndShowTasks();}
     );
 }

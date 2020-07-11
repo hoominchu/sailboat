@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Sailboat",
   "description": "Browsing as it should be.",
-  "version": "0.0.0.12",
+  "version": "0.0.0.13",
   "browser_action": {
     "default_icon": "images/SailBoat.png",
     "default_title": "Sail Boat"
@@ -10,15 +10,11 @@
   "background": {
     "scripts": [
       "lib/jquery-3.2.1.min.js",
-      "lib/compromise.js",
-      "lib/elasticlunr.js",
       "utils/util.js",
       "utils/web-util.js",
       "init.js",
       "tasks.js",
       "tag.js",
-      "webpage.js",
-      "contextmenu.js",
       "tabsListener.js",
       "windowListener.js",
       "bookmarksListener.js",
@@ -57,21 +53,16 @@
     "images/logo_white_sails_no_text.png",
     "images/trash.svg"
   ],
-  "content_security_policy": "script-src 'self' https://apis.google.com 'unsafe-inline' 'unsafe eval' object-src",
+  "content_security_policy": "script-src 'self' https://apis.google.com object-src",
   "permissions": [
-    "downloads",
     "tabs",
     "storage",
-    "notifications",
     "history",
     "bookmarks",
     "unlimitedStorage",
-    "contextMenus",
-    "cookies",
     "https://*/*",
     "http://*/*",
     "webRequest",
-    "alarms",
     "activeTab"
   ],
 
@@ -81,14 +72,5 @@
 
   "chrome_url_overrides": {
     "newtab": "html/index.html"
-  },
-  "commands": {
-    "pause-tasks": {
-      "suggested-key": {
-        "default": "Alt+P",
-        "mac": "Option+P"
-      },
-      "description":"Pause tasks"
-    }
   }
 }

@@ -40,14 +40,14 @@ chrome.storage.local.get(["sailboatInitialised", 'CTASKID'], function (response)
                 archivedDocs.push(doc);
             }
 
-            lunrIndex = elasticlunr(function () {
-                this.setRef('url');
-                this.addField('content');
-            });
+            // lunrIndex = elasticlunr(function () {
+            //     this.setRef('url');
+            //     this.addField('content');
+            // });
 
-            for (var i = 0; i < archivedDocs.length; i++) {
-                lunrIndex.addDoc(archivedDocs[i]);
-            }
+            // for (var i = 0; i < archivedDocs.length; i++) {
+            //     lunrIndex.addDoc(archivedDocs[i]);
+            // }
         });
 
         // chrome.storage.local.get("TASKS", function (taskObject) {

@@ -36,7 +36,6 @@ $(window).focus(function () {
     startTime = new Date();
     loadTaskNames(CTASKID);
     updateDock();
-    // setHighlightIdx();
 });
 //
 // $(window).blur(function () {
@@ -105,12 +104,6 @@ function checkAndUpdateCollections() {
     })
 }
 
-function setHighlightIdx() {
-    chrome.storage.local.get("highlightIdx", function (hi) {
-        highlightIdx = hi["highlightIdx"];
-    })
-}
-
 function showNewTaskPopup() {
     const newTaskBar = $('#new-task-input');
     newTaskBar.val("");
@@ -134,57 +127,16 @@ function cleanElemText(txt) {
     return txt;
 }
 
-function groupElementsByClass() {
-    let groups = {};
-    $('*').each(function () {
-        if ($(this).is(':visible')) {
-            let text = $(this).text();
-            text = cleanElemText(text);
-            if ($(this).text() && text.length < 100 && stopwords.indexOf(text.toLowerCase()) < 0 && /[a-zA-Z]/.test(text)) {
-                const classes = $(this).attr('class');
-                const style = $(this).attr('style');
-                const link = $(this).attr('href');
-                if (classes) {
-                    if (groups.hasOwnProperty(classes)) {
-                        if (groups[classes].indexOf(text) < 0) {
-                            groups[classes].push(text);
-                        }
-                    } else {
-                        groups[classes] = [text];
-                    }
-                }
-                if (style) {
-                    if (groups.hasOwnProperty(style)) {
-                        if (groups[style].indexOf(text) < 0) {
-                            groups[style].push(text);
-                        }
-                    } else {
-                        groups[style] = [text];
-                    }
-                }
-                // if (link) {
-                //     if (groups.hasOwnProperty(link)) {
-                //         groups[link].push(text);
-                //     } else {
-                //         groups[link] = [text];
-                //     }
-                // }
-            }
-        }
-    }, console.log(groups));
-}
-
 function sendCreateTaskMsg(taskName) {
-    chrome.runtime.sendMessage(
-        {
-            "type": "create-task",
-            "taskName": taskName,
-            "activated": false,
-            "tabs": []
-        }, function () {
-            $('.task-btn').remove();
-            loadTaskNames(CTASKID);
-        });
+    chrome.runtime.sendMessage({
+        "type": "create-task",
+        "taskName": taskName,
+        "activated": false,
+        "tabs": []
+    }, function (response) {
+        $('.task-btn').remove();
+        loadTaskNames(CTASKID);
+    });
 }
 
 function loadNewTaskBtn() {
@@ -381,154 +333,141 @@ function markLikedStatus(url, ctaskid) {
     });
 }
 
-function loadTaskNames(ctaskid) {
-
+function addTaskButtonToDock(task, ctaskid) {
     let plusIconPath = chrome.runtime.getURL("images/plus.svg");
     let closeIconPath = chrome.runtime.getURL("images/close.svg");
     const dock = $('#tasks-area');
+    let taskBtn = $('<div class="task-btn" id="' + task.id + '"></div>');
+    let openTaskBtn = $('<div class="open-task-btn" data-toggle="tooltip">' + task.name + '</div>');
+
+    if (task.id == ctaskid) {
+        openTaskBtn.removeClass("open-task-btn");
+        openTaskBtn.addClass("current-task");
+    } else if (task.isOpen == true) {
+        openTaskBtn.addClass("open-task");
+    }
+
+    if (task.id === '0') {
+        openTaskBtn.addClass("non-sortable default-task-btn");
+    }
+
+    openTaskBtn.click(function (task) {
+        chrome.runtime.sendMessage(
+            {
+                "type": "switch-task",
+                "nextTaskId": task.target.parentElement.id,
+            }
+        );
+    });
+
+    openTaskBtn.hover(function (e) {
+        const hoveredTaskId = e.target.parentElement.id;
+        let pagesInTask = 'Tabs open in this task are: \n\n';
+        chrome.storage.local.get("TASKS", function (tasks) {
+            tasks = tasks["TASKS"];
+            const hoveredTask = tasks[hoveredTaskId];
+            for (let tabId in hoveredTask.tabs) {
+                if (hoveredTask.tabs[tabId].title != null) {
+                    pagesInTask += hoveredTask.tabs[tabId].title + '\n';
+                } else {
+                    pagesInTask += hoveredTask.tabs[tabId].url + '\n';
+                }
+            }
+            e.target.title = pagesInTask;
+        })
+    });
+
+    taskBtn.append(openTaskBtn);
+
+    if (task.id !== ctaskid) {
+        let addToTaskBtn = $('<div class="add-to-task-btn" data-toggle="tooltip" title="Add current tab to this task"></div>');
+        addToTaskBtn.css('background-image', 'url(' + plusIconPath + ')');
+        addToTaskBtn.click(function (task) {
+            return function (task) {
+                addSelectedTabsToTaskMessage(task.target.parentElement.id);
+            }(task);
+        });
+
+        let closeTaskBtn = $('<div class="close-task-btn" data-toggle="tooltip" title="Close this task"></div>');
+        closeTaskBtn.css('background-image', 'url(' + closeIconPath + ')');
+        closeTaskBtn.click(function (closeButton) {
+            $(this).parent().find('.open-task').removeClass('open-task');
+            return function (closeButton) {
+                chrome.runtime.sendMessage(
+                    {
+                        "type": "close-task",
+                        "taskId": closeButton.target.parentElement.id
+                    }
+                );
+            }(closeButton);
+        });
+
+        taskBtn.append(addToTaskBtn);
+        taskBtn.append(closeTaskBtn);
+    }
+
+    taskBtn.on('dragover', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        $(this).toggleClass("highlighted-task", 1000);
+    });
+
+    taskBtn.on('dragenter', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    });
+
+    taskBtn.on('dragleave', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        $(this).removeClass("highlighted-task");
+    });
+
+    taskBtn.on('drop', function (ev) {
+        const droppedHTML = ev.originalEvent.dataTransfer.getData("text/html");
+        const dropContext = $('<div>').append(droppedHTML);
+        const href = $(dropContext).find("a").attr('href');
+        if (href) {
+            const targetTaskID = ev.currentTarget.id;
+            addURLToTaskMessage(href, targetTaskID);
+        } else {
+            $(this).removeClass("highlighted-task");
+            $(this).addClass('red-highlighted-task');
+            setTimeout(function () {
+                taskBtn.removeClass('red-highlighted-task');
+            }, 150);
+        }
+        taskBtn.removeClass("highlighted-task");
+    });
+    dock.append(taskBtn);
+    nTasks = $('.task-btn').length;
+}
+
+function loadTaskNames(ctaskid) {
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks['TASKS'];
         $('.task-btn').remove();
         for (let taskid in tasks) {
             if (tasks[taskid].archived === false) {
-                let taskBtn = $('<div class="task-btn" id="' + taskid + '"></div>');
-                let openTaskBtn = $('<div class="open-task-btn" data-toggle="tooltip">' + tasks[taskid].name + '</div>');
-
-                if (taskid == ctaskid) {
-                    openTaskBtn.removeClass("open-task-btn");
-                    openTaskBtn.addClass("current-task");
-                } else if (tasks[taskid].isOpen == true) {
-                    openTaskBtn.addClass("open-task");
-                }
-
-                if (taskid === '0') {
-                    openTaskBtn.addClass("non-sortable default-task-btn");
-                }
-
-                openTaskBtn.click(function (task) {
-                    chrome.runtime.sendMessage(
-                        {
-                            "type": "switch-task",
-                            "nextTaskId": task.target.parentElement.id,
-                        }
-                    );
-                });
-
-                openTaskBtn.hover(function (e) {
-                    const hoveredTaskId = e.target.parentElement.id;
-                    let pagesInTask = 'Tabs open in this task are: \n\n';
-                    chrome.storage.local.get("TASKS", function (tasks) {
-                        tasks = tasks["TASKS"];
-                        const hoveredTask = tasks[hoveredTaskId];
-                        for (let tabId in hoveredTask.tabs) {
-                            if (hoveredTask.tabs[tabId].title != null) {
-                                pagesInTask += hoveredTask.tabs[tabId].title + '\n';
-                            } else {
-                                pagesInTask += hoveredTask.tabs[tabId].url + '\n';
-                            }
-                        }
-                        e.target.title = pagesInTask;
-                    })
-                });
-
-                taskBtn.append(openTaskBtn);
-
-                if (taskid !== ctaskid) {
-                    let addToTaskBtn = $('<div class="add-to-task-btn" data-toggle="tooltip" title="Add current tab to this task"></div>');
-                    addToTaskBtn.css('background-image', 'url(' + plusIconPath + ')');
-                    addToTaskBtn.click(function (task) {
-                        return function (task) {
-                            addSelectedTabsToTaskMessage(task.target.parentElement.id);
-                        }(task);
-                    });
-
-                    let closeTaskBtn = $('<div class="close-task-btn" data-toggle="tooltip" title="Close this task"></div>');
-                    closeTaskBtn.css('background-image', 'url(' + closeIconPath + ')');
-                    closeTaskBtn.click(function (closeButton) {
-                        $(this).parent().find('.open-task').removeClass('open-task');
-                        return function (closeButton) {
-                            chrome.runtime.sendMessage(
-                                {
-                                    "type": "close-task",
-                                    "taskId": closeButton.target.parentElement.id
-                                }
-                            );
-                        }(closeButton);
-                    });
-
-                    taskBtn.append(addToTaskBtn);
-                    taskBtn.append(closeTaskBtn);
-                }
-
-                taskBtn.on('dragover', function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    $(this).toggleClass("highlighted-task", 1000);
-                });
-
-                taskBtn.on('dragenter', function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                });
-
-                taskBtn.on('dragleave', function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    $(this).removeClass("highlighted-task");
-                });
-
-                taskBtn.on('drop', function (ev) {
-                    const droppedHTML = ev.originalEvent.dataTransfer.getData("text/html");
-                    const dropContext = $('<div>').append(droppedHTML);
-                    const href = $(dropContext).find("a").attr('href');
-                    if (href) {
-                        const targetTaskID = ev.currentTarget.id;
-                        addURLToTaskMessage(href, targetTaskID);
-                    } else {
-                        $(this).removeClass("highlighted-task");
-                        $(this).addClass('red-highlighted-task');
-                        setTimeout(function () {
-                            taskBtn.removeClass('red-highlighted-task');
-                        }, 150);
-                    }
-                    taskBtn.removeClass("highlighted-task");
-                });
-
-                dock.append(taskBtn);
+                addTaskButtonToDock(tasks[taskid], ctaskid)
             }
         }
-        nTasks = $('.task-btn').length;
     });
-
-    chrome.storage.local.get("Settings", function (settings) {
-        settings = settings["Settings"];
-        if (JSON.parse(settings["isDockCollapsed"])) {
-            $("#sailboat-dock").hide();
-            $('#collapse-img').transition({rotate: '180'});
-        } else {
-            $("#sailboat-dock").show();
-            $('#collapse-img').transition({rotate: '0'});
-        }
-    })
 }
 
 function addURLToTaskMessage(url, taskId) {
-    chrome.runtime.sendMessage(
-        {
-            "type": "add-url-to-task",
-            "taskId": taskId,
-            "url": url
-        });
-    // location.reload();
+    chrome.runtime.sendMessage({
+        "type": "add-url-to-task",
+        "taskId": taskId,
+        "url": url
+    });
 }
 
 function addSelectedTabsToTaskMessage(taskId) {
-    chrome.runtime.sendMessage(
-        {
-            "type": "add-to-task",
-            "taskId": taskId
-        });
-    // location.reload();
+    chrome.runtime.sendMessage({
+        "type": "add-to-task",
+        "taskId": taskId
+    });
 }
 
 // Takes an uncleaned tag and cleans it. Add any required condition in this condition.

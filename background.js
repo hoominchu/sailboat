@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "download-collections") {
         downloadCollections();
     } else if (request.type === "like-page") {
-        likePage(request.url, request.content, CTASKID);
+        // likePage(request.url, request.content, CTASKID);
     } else if (request.type === "add-url-to-task") {
         addURLToTask(request.url, request.taskId);
     } else if (request.type === "archive-task") {
@@ -127,11 +127,11 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "get-search-results-from-history") {
         searchHistory({"text": request.query, 'startTime': 0}, sender.tab.id);
     } else if (request.type === "toggle-time-spent-notification") {
-        toggleTimeSpentNotification();
+        // toggleTimeSpentNotification();
     } else if (request.type === "time-period-for-task-notification") {
         changeTaskNotificationPeriod();
     }
-    return true;
+    sendResponse(true);
 });
 
 function toggleTimeSpentNotification() {
@@ -153,9 +153,9 @@ function toggleTimeSpentNotification() {
     });
 }
 
-chrome.commands.onCommand.addListener(function(command) {
-    console.log('Command:', command);
-});
+// chrome.commands.onCommand.addListener(function(command) {
+//     console.log('Command:', command);
+// });
 
 function changeTaskNotificationPeriod() {
     chrome.storage.local.get("time-period-for-task-notification", function (value) {
@@ -167,20 +167,20 @@ function changeTaskNotificationPeriod() {
     });
 }
 
-chrome.storage.local.get("time-spent-notification", function (value) {
-    if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
-        chrome.storage.local.get("time-period-for-task-notification", function (result) {
-            if (!result["time-period-for-task-notification"]) {
-                chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
-            } else {
-                chrome.alarms.create("time-spent-notification", {
-                    "delayInMinutes": 5,
-                    "periodInMinutes": parseInt(result["time-period-for-task-notification"])
-                });
-            }
-        });
-    }
-});
+// chrome.storage.local.get("time-spent-notification", function (value) {
+//     if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
+//         chrome.storage.local.get("time-period-for-task-notification", function (result) {
+//             if (!result["time-period-for-task-notification"]) {
+//                 chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
+//             } else {
+//                 chrome.alarms.create("time-spent-notification", {
+//                     "delayInMinutes": 5,
+//                     "periodInMinutes": parseInt(result["time-period-for-task-notification"])
+//                 });
+//             }
+//         });
+//     }
+// });
 
 // chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
 //     if (query != null) {
@@ -188,17 +188,17 @@ chrome.storage.local.get("time-spent-notification", function (value) {
 //     }
 // });
 
-chrome.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name === "time-spent-notification") {
-        fireTaskNameNotification(CTASKID, "timeSpentNotification");
-    }
-});
+// chrome.alarms.onAlarm.addListener(function (alarm) {
+//     if (alarm.name === "time-spent-notification") {
+//         fireTaskNameNotification(CTASKID, "timeSpentNotification");
+//     }
+// });
 
 //Save downloads to appropriate task folder
-chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
-    const currentTaskName = TASKS[CTASKID].name;
-    suggest({filename: currentTaskName + "/" + item.filename});
-});
+// chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
+//     const currentTaskName = TASKS[CTASKID].name;
+//     suggest({filename: currentTaskName + "/" + item.filename});
+// });
 
 function downloadCollections() {
     let dateObj = new Date();
