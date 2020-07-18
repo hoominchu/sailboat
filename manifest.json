@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "Sailboat",
 	"description": "Browsing as it should be.",
-	"version": "0.0.0.14",
+	"version": "0.0.0.15",
 	"browser_action": {
 		"default_icon": "images/SailBoat.png",
 		"default_title": "Sailboat"
