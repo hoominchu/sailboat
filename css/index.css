@@ -39,7 +39,7 @@ body {
 }
 
 .btn-group { width: 100%; }
-.btn-group .btn { width: 25%; }
+.btn-group .btn { width: 25%; font-size: 12px; }
 
 /*.card-body, .card {*/
   /*background-color: rgba(255, 255, 255, 0.5);*/

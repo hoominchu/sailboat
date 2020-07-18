@@ -1,0 +1,15 @@
+
+.feature-block {
+    width: 100%;
+    margin: 15px 0;
+}
+
+.feature-image {
+    width: 100%;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.feature-description {
+    margin-bottom: 20px;
+}

@@ -8,6 +8,10 @@ function updateGlobalVariables() {
 
 }
 
+chrome.browserAction.onClicked.addListener(function() {
+    chrome.tabs.create({'url':'html/about.html'});
+})
+
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.type === "create-task") {
@@ -138,6 +142,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     return true;
 });
 
+// Whenever TASKS is updated in the storage, send a message to the currently active tab to update the dock so that the changes are reflected
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (changes.hasOwnProperty('TASKS')) {
         chrome.tabs.query({active: true}, function(tabs) {
@@ -157,33 +162,6 @@ function changeTaskNotificationPeriod() {
         });
     });
 }
-
-// chrome.storage.local.get("time-spent-notification", function (value) {
-//     if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
-//         chrome.storage.local.get("time-period-for-task-notification", function (result) {
-//             if (!result["time-period-for-task-notification"]) {
-//                 chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
-//             } else {
-//                 chrome.alarms.create("time-spent-notification", {
-//                     "delayInMinutes": 5,
-//                     "periodInMinutes": parseInt(result["time-period-for-task-notification"])
-//                 });
-//             }
-//         });
-//     }
-// });
-
-// chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
-//     if (query != null) {
-//         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
-//     }
-// });
-
-//Save downloads to appropriate task folder
-// chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
-//     const currentTaskName = TASKS[CTASKID].name;
-//     suggest({filename: currentTaskName + "/" + item.filename});
-// });
 
 function downloadCollections() {
     let dateObj = new Date();
@@ -331,5 +309,32 @@ chrome.tabs.onActivated.addListener(handleOnActivated);
 chrome.tabs.onRemoved.addListener(handleOnRemoved);
 chrome.windows.onFocusChanged.addListener(handleWindowOnFocusChanged);
 
+
+// chrome.storage.local.get("time-spent-notification", function (value) {
+//     if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
+//         chrome.storage.local.get("time-period-for-task-notification", function (result) {
+//             if (!result["time-period-for-task-notification"]) {
+//                 chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
+//             } else {
+//                 chrome.alarms.create("time-spent-notification", {
+//                     "delayInMinutes": 5,
+//                     "periodInMinutes": parseInt(result["time-period-for-task-notification"])
+//                 });
+//             }
+//         });
+//     }
+// });
+
+// chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
+//     if (query != null) {
+//         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
+//     }
+// });
+
+//Save downloads to appropriate task folder
+// chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
+//     const currentTaskName = TASKS[CTASKID].name;
+//     suggest({filename: currentTaskName + "/" + item.filename});
+// });
 
 

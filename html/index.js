@@ -61,8 +61,14 @@ $(document).keypress(function(ev){
     }
 });
 
-$(window).focus(function(){
-    getAndShowTasks();
+// $(window).focus(function(){
+//     getAndShowTasks();
+// });
+
+chrome.runtime.onMessage.addListener(function (request, sender) {
+    if (request.message === 'update-dock') {
+        getAndShowTasks();
+    }
 });
 
 function getAndShowTasks() {
