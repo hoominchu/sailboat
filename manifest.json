@@ -1,72 +1,70 @@
 {
-  "manifest_version": 2,
-  "name": "Sailboat",
-  "description": "Browsing as it should be.",
-  "version": "0.0.0.13",
-  "browser_action": {
-    "default_icon": "images/SailBoat.png",
-    "default_title": "Sail Boat"
-  },
-  "background": {
-    "scripts": [
-      "lib/jquery-3.2.1.min.js",
-      "utils/util.js",
-      "utils/web-util.js",
-      "init.js",
-      "tasks.js",
-      "tag.js",
-      "tabsListener.js",
-      "windowListener.js",
-      "bookmarksListener.js",
-      "background.js"
-    ]
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://*/*",
-        "http://*/*"
-      ],
-      "css": [
-        "css/custom.css",
-        "contentscripts/dock.css"
-      ],
-      "js": [
-        "lib/jquery-3.2.1.min.js",
-        "lib/jquery-ui.min.js",
-        "lib/jquery.transit.min.js",
-        "lib/compromise.js",
-        "utils/util.js",
-        "utils/web-util.js",
-        "contentscripts/dock.js",
-        "contentscripts/timeSpent.js"
-      ],
-      "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    "images/left-arrow.svg",
-    "images/archive-search.svg",
-    "images/plus.svg",
-    "images/close.svg",
-    "images/plus-filled.svg",
-    "images/logo_white_sails_no_text.png",
-    "images/trash.svg"
-  ],
-  "content_security_policy": "script-src 'self' https://apis.google.com object-src",
-  "permissions": [
-    "tabs",
-    "storage",
-    "bookmarks",
-    "https://*/*",
-    "http://*/*"
-  ],
-
-  "icons": { "16": "images/Sailboat16.png",
-           "48": "images/Sailboat48.png",
-          "128": "images/Sailboat128.png" },
-
-  "chrome_url_overrides": {
-    "newtab": "html/index.html"
-  }
+	"manifest_version": 2,
+	"name": "Sailboat",
+	"description": "Browsing as it should be.",
+	"version": "0.0.0.14",
+	"browser_action": {
+		"default_icon": "images/SailBoat.png",
+		"default_title": "Sailboat"
+	},
+	"background": {
+		"scripts": [
+			"lib/jquery-3.2.1.min.js",
+			"utils/util.js",
+			"utils/web-util.js",
+			"tabsListener.js",
+			"windowListener.js",
+			"bookmarksListener.js",
+			"tasks.js",
+			"init.js",
+			"tag.js",
+			"background.js"
+		]
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"https://*/*",
+				"http://*/*"
+			],
+			"css": [
+				"css/custom.css",
+				"contentscripts/dock.css"
+			],
+			"js": [
+				"lib/jquery-3.2.1.min.js",
+				"lib/jquery-ui.min.js",
+				"lib/jquery.transit.min.js",
+				"lib/compromise.js",
+				"utils/util.js",
+				"utils/web-util.js",
+				"contentscripts/dock.js",
+				"contentscripts/timeSpent.js"
+			],
+			"run_at": "document_start"
+		}
+	],
+	"web_accessible_resources": [
+		"images/left-arrow.svg",
+		"images/archive-search.svg",
+		"images/plus.svg",
+		"images/close.svg",
+		"images/plus-filled.svg",
+		"images/logo_white_sails_no_text.png",
+		"images/trash.svg"
+	],
+	"content_security_policy": "script-src 'self' https://apis.google.com object-src",
+	"permissions": [
+		"tabs",
+		"storage",
+		"bookmarks",
+		"https://*/*",
+		"http://*/*"
+	],
+	"icons": { "16": "images/Sailboat16.png",
+		"48": "images/Sailboat48.png",
+		"128": "images/Sailboat128.png" },
+	"chrome_url_overrides": {
+		"newtab": "html/index.html"
+	}
 }

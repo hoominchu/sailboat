@@ -8,7 +8,7 @@ function downloadObjectAsJson(exportObj, exportName) {
     downloadAnchorNode.remove();
 }
 
-function changeBookmarks(lastTaskId, cTaskId) {
+function changeBookmarks(cTaskId) {
     function createBookmarks(taskId, tasks) {
         function addBookmarks(parentNode) {
             let childrenNode = parentNode.children;

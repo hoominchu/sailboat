@@ -1,11 +1,13 @@
-chrome.windows.onRemoved.addListener(function (oldWindowId) {
-
+function windowRemovedHandler(oldWindowId) {
+    // What does this condition mean?
     if (oldWindowId !== backgroundPageId) {
-        TASKS[getKeyByValue(taskToWindow, oldWindowId)].isOpen = false;
-        deactivateTaskInWindow(getKeyByValue(taskToWindow, oldWindowId));
-        delete taskToWindow[getKeyByValue(taskToWindow, oldWindowId)];
+        if (TASKS[getKeyByValue(taskToWindow, oldWindowId)]) {
+            TASKS[getKeyByValue(taskToWindow, oldWindowId)].isOpen = false;
+            deactivateTaskInWindow(getKeyByValue(taskToWindow, oldWindowId));
+            delete taskToWindow[getKeyByValue(taskToWindow, oldWindowId)];
+        }
     }
-    chrome.storage.local.set({'TASKS': TASKS}, function() {
+    chrome.storage.local.set({'TASKS': TASKS}, function () {
         chrome.windows.getAll(function (allWindows) {
             if (allWindows.length > 0) {
                 chrome.windows.getCurrent(function (window) {
@@ -14,14 +16,14 @@ chrome.windows.onRemoved.addListener(function (oldWindowId) {
             }
         });
     });
-});
+}
 
-chrome.windows.onCreated.addListener(function (window) {
-    if (isEmpty(taskToWindow)) { //If no window is open, then newly created window should have last TASK that was open.
+function windowCreatedHandler(window) {
+    if (isEmpty(taskToWindow)) {
         try {
-            chrome.storage.local.get(["TASKS", 'CTASKID'], function (response) {
+            chrome.storage.local.get(["TASKS"], function (response) {
                 let tasks = response["TASKS"];
-                CTASKID = response['CTASKID'];
+                CTASKID = 0;
                 //Mark task as active
                 const now = new Date().getTime();
                 tasks[CTASKID].activationTime.push(now);
@@ -30,15 +32,13 @@ chrome.windows.onCreated.addListener(function (window) {
                 // The browser opens the tabs automatically. So do not reopen.
                 // Maybe we could just go over verify if the open tabs and the task object are in sync.
 
-                taskToWindow[CTASKID] = window.id; //assign the window id to the task
                 chrome.browserAction.setBadgeText({"text": TASKS[CTASKID].name.slice(0, 4)});
                 TASKS = tasks;
-                saveBookmarks = false;
-                changeBookmarks(-1, 0);
-                // reloadSailboatTabs();
+                // Do not update taskToWindow here. It should get updated in activateWindowInTask.
+                activateDefaultTaskOnStartup(true);
+                changeBookmarks(CTASKID);
             });
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err.message);
         }
     } else {
@@ -48,11 +48,10 @@ chrome.windows.onCreated.addListener(function (window) {
                 alert("Sorry, we currently support only 1 window per task!")
             }
         }
-
     }
-});
+}
 
-chrome.windows.onFocusChanged.addListener(function (newWindowId) {
+function windowFocusChangedHandler(newWindowId) {
     if (getKeyByValue(taskToWindow, newWindowId)) { //Check if the window that is switched to has an id associated with it.
         if (CTASKID != getKeyByValue(taskToWindow, newWindowId)) { //If the window that is switched to is not already active do the following..
             deactivateTaskInWindow(CTASKID); //Deactivate the current task.
@@ -62,13 +61,20 @@ chrome.windows.onFocusChanged.addListener(function (newWindowId) {
                         activateTaskInWindow(getKeyByValue(taskToWindow, newWindowId));
                     }
                 });
+            } else { //If there is no window to switch to, don't do anything.
+                // Ideally we should show an alert saying we do not recognise this window, would you like to close it?
             }
-            else { //If there in no window to switch to, don't do anything.
-            }
-
         }
-    }
-    else {
+    } else {
     }
     updateStorage("TASKS", TASKS);
-});
+}
+
+function attachWindowListners() {
+    console.log('attaching window listners');
+    chrome.windows.onRemoved.addListener(windowRemovedHandler);
+
+    chrome.windows.onCreated.addListener(windowCreatedHandler);
+
+    chrome.windows.onFocusChanged.addListener(windowFocusChangedHandler);
+}

@@ -21,7 +21,6 @@ function createAndActivateDefaultTask() {
             taskToWindow[task.id] = window.id; //Assigned to the current window.
             // change bookmarks,tabs to task 0 bookmarks,tabs
             function activateLeisure(tabsToBeAdded) {
-
                 task.tabs = tabsToBeAdded;
                 //Mark task as active
                 const now = new Date().getTime();
@@ -40,16 +39,16 @@ function createAndActivateDefaultTask() {
                 for (let i = 0; i < tabsToBeAdded.length; i++) {
                     chrome.tabs.reload(tabsToBeAdded[i].id);
                 }
-
-                // Close all the other windows. Or should we add all the tabs to the default task?
-                chrome.windows.getAll(function (windows) {
-                    for (let i = 0; i < windows.length; i++) {
-                        if (window.id !== windows[i].id) {
-                            chrome.windows.remove(windows[i].id);
-                        }
-                    }
-                });
             }
+
+            // Close all the other windows. Or should we add all the tabs to the default task?
+            chrome.windows.getAll(function (windows) {
+                for (let i = 0; i < windows.length; i++) {
+                    if (window.id !== windows[i].id) {
+                        chrome.windows.remove(windows[i].id);
+                    }
+                }
+            });
 
             // get all the tabs open currently
             chrome.tabs.getAllInWindow(function (tabs) {
@@ -57,6 +56,9 @@ function createAndActivateDefaultTask() {
             });
         });
         chrome.browserAction.setBadgeText({"text": "Leisure"}); //Badge set to Leisure
+        attachTabsListners();
+        attachWindowListners();
+        attachBookmarksListner();
     });
 }
 
@@ -107,18 +109,9 @@ function createTask(taskName, tabs, createFromCurrentTabs, bookmarks) {
     if (tabs === null) {
         tabs = [];
     }
-    if (createFromCurrentTabs) {
-        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, []);
-        TASKS[TASKS["lastAssignedId"] + 1] = newTask;
-        TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
-        updateStorage("TASKS", TASKS);
-    } else {
-        const emptyArray = [];
-        var newTask = new Task(TASKS["lastAssignedId"] + 1, taskName, emptyArray, []);
-        TASKS[TASKS["lastAssignedId"] + 1] = newTask;
-        TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
-        updateStorage("TASKS", TASKS);
-    }
+    TASKS[TASKS["lastAssignedId"] + 1] = new Task(TASKS["lastAssignedId"] + 1, taskName, tabs, []);
+    TASKS["lastAssignedId"] = TASKS["lastAssignedId"] + 1;
+    updateStorage("TASKS", TASKS);
 }
 
 function addTabsToTask(taskId, tabs) {
@@ -147,6 +140,87 @@ function addTabsToTask(taskId, tabs) {
     }
 }
 
+function activateDefaultTaskOnStartup(wasAppRunningInBG) {
+    const taskId = 0;
+    chrome.storage.local.get(['TASKS', 'CTASKID'], function (response) {
+        let tasks = response["TASKS"];
+
+        //Mark task as active.
+        let now = new Date().getTime();
+        tasks[taskId].activationTime.push(now);
+        tasks[taskId].isOpen = true;
+
+        TASKS = tasks;
+        CTASKID = taskId; //Set the CTASKID as the id of the task/x
+
+        // task is not open, so we create a new window with its tabs.
+        let urls = [];
+        if (tasks[taskId].tabs.length > 0) { // task has more than 0 tabs.
+            for (let i = 0; i < tasks[taskId].tabs.length; i++) {
+                urls.push(tasks[taskId].tabs[i].url);
+            }
+        } else {
+            // if no tabs in the task - open index page
+            urls.push("html/index.html");
+        }
+
+        if (wasAppRunningInBG) {
+            chrome.windows.getCurrent(function (window) {
+                // If the app was running in the bg, chrome opens the window with the tabs that were open at the time of closing.
+                // So first remove those tabs.
+                chrome.tabs.query({windowId: window.id}, function(tabs) {
+                    let tabsToBeRemoved = []
+                    for (let i = 0; i < tabs.length; i++) {
+                        tabsToBeRemoved.push(tabs[i].id);
+                    }
+                    try {
+                        for (let i = urls.length - 1; i >= 0; i--) {
+                            chrome.tabs.create({'windowId': window.id, "url": urls[i], 'active': false, 'index': 0}, function (tab) { //create a window with these tabs
+                                console.log('Creating tab: ' + urls[i]);
+                            });
+                        }
+                        taskToWindow[taskId] = window.id; //assign the window id to the task
+                        chrome.browserAction.setBadgeText({"text": TASKS[taskId].name.slice(0, 4)}, function() {
+                            changeBookmarks(taskId);
+                        });
+                    } catch (err) {
+                        console.log(err.message);
+                    }
+                    chrome.tabs.remove(tabsToBeRemoved, function() {});
+                });
+            });
+        } else {
+
+            // It is possible the app was quit completely (e.g. using command+q) which we cannot detect. So mark the non-default tasks as closed.
+            for (let taskid in tasks) {
+                if (taskid !== 'lastAssignedId') {
+                    tasks[taskid].isOpen = false;
+                }
+            }
+
+            let nWindows;
+            chrome.windows.getAll(function(windows) {
+                nWindows = windows.length;
+                for (let i = 0; i < windows.length; i++) {
+                    chrome.windows.remove(windows[i].id);
+                }
+
+                chrome.windows.create({url: urls}, function(window) {
+                    taskToWindow[taskId] = window.id;
+                    console.log('task to window: ' + taskToWindow);
+                    attachWindowListners();
+                    attachTabsListners();
+                    attachBookmarksListner();
+                });
+            });
+        }
+
+        updateStorage("CTASKID", taskId);
+        updateStorage("TASKS", tasks); //Update chrome storage.
+
+    });
+}
+
 function activateTaskInWindow(taskId) {
     //Activating a task involves the following:
     //1. Set the CTASKID to its id.
@@ -156,67 +230,52 @@ function activateTaskInWindow(taskId) {
     //5. Add the task's bookmarks to the current bookmarks.
     //6. Update storage for changes.
 
-    chrome.storage.local.get(['TASKS', 'CTASKID'], function (response) {
-        let tasks = response["TASKS"];
-        chrome.windows.getCurrent(function (window) {
-            if (taskId === response['CTASKID']) {
-                taskToWindow[taskId] = window.id;
-            }
-            try {
-                //Mark task as active.
-                let now = new Date().getTime();
-                tasks[taskId].activationTime.push(now);
-                tasks[taskId].isOpen = true;
+    chrome.windows.getCurrent(function (window) {
+        // if (taskId === response['CTASKID']) {
+        //     taskToWindow[taskId] = window.id;
+        // }
+        try {
+            //Mark task as active.
+            let now = new Date().getTime();
+            TASKS[taskId].activationTime.push(now);
+            TASKS[taskId].isOpen = true;
 
-                if (taskToWindow.hasOwnProperty(taskId)) {
-                    // task is already open in some window, so just switch to that window.
-                    chrome.windows.update(taskToWindow[taskId], {"focused": true});
+            CTASKID = taskId; //Set the CTASKID as the id of the task/x
 
-                } else {
-                    // task is not open, so we create a new window with its tabs.
-                    let urls = [];
-                    if (tasks[taskId].tabs.length > 0) { // task has more than 0 tabs.
-                        for (let i = 0; i < tasks[taskId].tabs.length; i++) {
-                            urls.push(tasks[taskId].tabs[i].url);
-                        }
-                    } else {
-                        // if no tabs in the task - open index page
-                        urls.push("html/index.html");
-                    }
-                    chrome.windows.create({"url": urls}, function (window) { //create a window with these tabs
-                        taskToWindow[taskId] = window.id; //assign the window id to the task
+            if (taskToWindow.hasOwnProperty(taskId)) {
+                // task is already open in some window, so just switch to that window.
+                chrome.windows.update(taskToWindow[taskId], {"focused": true}, function() {
+                    //Set the badge text as new task name.
+                    chrome.browserAction.setBadgeText({"text": TASKS[taskId].name.slice(0, 4)}, function() {
+                        changeBookmarks(taskId);
                     });
-                }
-
-                TASKS = tasks;
-
-                //Set the badge text as new task name.
-                chrome.browserAction.setBadgeText({"text": TASKS[taskId].name.slice(0, 4)});
-
-                updateStorage("TASKS", tasks); //Update chrome storage.
-
-                let lastTaskId;
-                if (response["CTASKID"]) {
-                    lastTaskId = response["CTASKID"];
+                });
+            } else {
+                // task is not open, so we create a new window with its tabs.
+                let urls = [];
+                if (TASKS[taskId].tabs.length > 0) { // task has more than 0 tabs.
+                    for (let i = 0; i < TASKS[taskId].tabs.length; i++) {
+                        urls.push(TASKS[taskId].tabs[i].url);
+                    }
                 } else {
-                    lastTaskId = 0;
+                    // if no tabs in the task - open index page
+                    urls.push("html/index.html");
                 }
-                // saveBookmarks = false;
-                changeBookmarks(lastTaskId, taskId);
-                updateStorage("CTASKID", taskId);
-                CTASKID = taskId; //Set the CTASKID as the id of the task/x
-                // switchingTask = false;
-            } catch (err) {
-                console.log(err.message);
+                chrome.windows.create({"url": urls}, function (window) { //create a window with these tabs
+                    taskToWindow[taskId] = window.id; //assign the window id to the task
+                    chrome.browserAction.setBadgeText({"text": TASKS[taskId].name.slice(0, 4)}, function() {
+                        changeBookmarks(taskId);
+                    });
+                });
             }
-        });
-    });
-}
 
-function saveBookmarksInStorage(taskId) {
-    chrome.bookmarks.getTree(function (bookmarks) {
-        TASKS[taskId].bookmarks = bookmarks;
-        updateStorage("TASKS", TASKS);
+            updateStorage("CTASKID", taskId);
+            updateStorage("TASKS", TASKS); //Update chrome storage.
+            // switchingTask = false;
+
+        } catch (err) {
+            console.log(err.message);
+        }
     });
 }
 
@@ -227,10 +286,14 @@ function saveTaskInWindow(taskId, f) {
         if (TASKS[taskId]) {
             chrome.windows.getCurrent({"populate": true}, function (window) {
                 TASKS[taskId].tabs = window.tabs;
-                updateStorage("TASKS", TASKS);
-                if (f != null) {
-                    f();
-                }
+                // Save the bookmarks
+                chrome.bookmarks.getTree(function(bookmarks) {
+                    TASKS[taskId].bookmarks = bookmarks;
+                    updateStorage("TASKS", TASKS);
+                    if (f != null) {
+                        f();
+                    }
+                });
             });
         }
     }
@@ -241,14 +304,10 @@ function deactivateTaskInWindow(taskId, f) {
     if (CTASKID === taskId) {
         //Mark task object as inactive and add the current time to its deactivation time.
         TASKS[taskId].deactivationTime.push(new Date().getTime());
-        // Save the bookmarks
-        chrome.bookmarks.getTree(function(bookmarks) {
-            TASKS[taskId].bookmarks = bookmarks;
-            updateStorage("TASKS", TASKS);
-            if (f != null) {
-                f();
-            }
-        });
+        updateStorage("TASKS", TASKS);
+        if (f != null) {
+            f();
+        }
     }
 }
 

@@ -29,6 +29,14 @@ $(document).ready(function () {
             // loadKeyPressHandler();
         }
     });
+
+    chrome.runtime.onMessage.addListener(function (request, sender) {
+        if (request.message === 'update-dock') {
+            console.log('Dock is getting updated');
+            loadTaskNames(CTASKID);
+            updateDock();
+        }
+    });
 });
 
 $(window).focus(function () {
@@ -37,6 +45,9 @@ $(window).focus(function () {
     loadTaskNames(CTASKID);
     updateDock();
 });
+
+
+
 //
 // $(window).blur(function () {
 //     //end time on page

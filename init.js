@@ -1,17 +1,16 @@
 // Getting current task id
 let TASKS = {lastAssignedId: 0};
-// var HISTORY = {};
-
-const taskToWindow = {};
-
+let taskToWindow = {};
 const tabIdToURL = {};
 const activeTabId = 0;
-
 const backgroundPageId = -1;
+let isStartingUp = true;
 
 // Initializing lunr index for archived pages.
 var lunrIndex;
 var archivedDocs = [];
+
+console.log('init script is running');
 
 function isEmpty(obj) {
     for (let prop in obj) {
@@ -21,44 +20,35 @@ function isEmpty(obj) {
     return JSON.stringify(obj) === JSON.stringify({});
 }
 
-// Set the variables in the local storage if sailboatInitialised is not true
-
-chrome.storage.local.get(["sailboatInitialised", 'CTASKID'], function (response) {
+chrome.storage.local.get(["sailboatInitialised", 'CTASKID', 'TASKS', 'taskToWindow'], function (response) {
     if (typeof response["sailboatInitialised"] !== 'undefined' && typeof response['CTASKID'] !== 'undefined' && response['CTASKID'] !== -1) {
-        activateTaskInWindow(response['CTASKID']);
+        // Close all windows the browser opens automatically.
+        // chrome.windows.getCurrent(function(window) {
+        //     // for (let i = 0; i < windows.length; i++) {
+        //     //     chrome.windows.remove(windows[i].id);
+        //     //     console.log('Closed window: ' + windows[i].id);
+        //     // }
+
+        //     console.log(TASKS);
+        //     console.log(taskToWindow);
+        //     taskToWindow = createWindowsAndActivateTasks(response['taskToWindow']);
+        //     console.log(taskToWindow);
+        // });
+        TASKS = response['TASKS'];
+        activateDefaultTaskOnStartup(false);
     } else {
 
+        console.log('Creating default task');
+
+        // Set the variables in the local storage if sailboatInitialised is not true
         createAndActivateDefaultTask();
 
-        chrome.storage.local.get('Page Content', function (pageContent) {
-            pageContent = pageContent['Page Content'];
-            for (var url in pageContent) {
-                var doc = {};
-                doc['url'] = url;
-                doc['content'] = pageContent[url];
-                archivedDocs.push(doc);
-            }
-
-            // lunrIndex = elasticlunr(function () {
-            //     this.setRef('url');
-            //     this.addField('content');
-            // });
-
-            // for (var i = 0; i < archivedDocs.length; i++) {
-            //     lunrIndex.addDoc(archivedDocs[i]);
-            // }
-        });
-
         chrome.storage.local.set({"Page Content": {}});
-
         chrome.storage.local.set({"Collections": {'Books': {}, 'Movies': {}, 'People': {}, 'Places': {}}});
-
         chrome.storage.local.set({"Text Log": {}});
-
         chrome.storage.local.set({"Tags": {}});
-
         chrome.storage.local.set({"Click Log": {}});
-
+        chrome.storage.local.set({ "Report Views": {} });
         chrome.storage.local.set({
             "Report Clicks": {
                 'SB results clicks': 0,
@@ -68,8 +58,6 @@ chrome.storage.local.get(["sailboatInitialised", 'CTASKID'], function (response)
             }
         });
 
-        chrome.storage.local.set({ "Report Views": {} });
-
         const DEFAULT_SETTINGS = {
             "notifications": "Enabled",
             "suggestions based on": "Open tabs",
@@ -77,29 +65,18 @@ chrome.storage.local.get(["sailboatInitialised", 'CTASKID'], function (response)
             "block notifications on": ["www.google.com", "www.google.co.in", "www.facebook.com"],
             "isDockCollapsed": "false"
         };
-
         // Setting default settings in local storage.
-        chrome.storage.local.set({"Settings": DEFAULT_SETTINGS}, function () {
-            // console.log("Settings object initialised in local storage.");
-        });
+        chrome.storage.local.set({"Settings": DEFAULT_SETTINGS});
 
-        const defaultAdvSearchSettings = {
-            "search in": "Open tabs"
-        };
-        chrome.storage.local.set({"Advanced Search Settings": defaultAdvSearchSettings}, function () {
-            // console.log("Advanced search settings initialised.");
-        });
+        const defaultAdvSearchSettings = {"search in": "Open tabs"};
+        chrome.storage.local.set({"Advanced Search Settings": defaultAdvSearchSettings});
 
-        chrome.storage.local.set({"Debug Stopwords": []}, function () {
-            // console.log("Debug stopwords initialised.");
-        });
-
-        chrome.storage.local.set({"sailboatInitialised": 'true'}, function () {
-            console.log("sailboatInitialised set to true in local storage.");
-        });
-
+        chrome.storage.local.set({"Debug Stopwords": []});
         chrome.bookmarks.getTree(function(bookmarks) {
             chrome.storage.local.set({'allBookmarks': bookmarks});
+        });
+        chrome.storage.local.set({"sailboatInitialised": 'true'}, function () {
+            console.log("sailboatInitialised set to true in local storage.");
         });
     }
 });

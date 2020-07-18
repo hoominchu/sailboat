@@ -1,14 +1,12 @@
 "use strict";
 let switchingTask = false;
 let CTASKID;
-chrome.storage.local.get("CTASKID", function(response) {
-    CTASKID = response['CTASKID'];
-    if (typeof response['CTASKID'] !== 'undefined') {
-        activateTaskInWindow(CTASKID)
-    } else {
-        createAndActivateDefaultTask();
-    }
-});
+
+var currentTabInfo = null;
+
+function updateGlobalVariables() {
+
+}
 
 //todo consolidate all the message listeners into one listner
 chrome.runtime.onMessage.addListener(function (request, sender) {
@@ -20,6 +18,11 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
             deactivateTaskInWindow(CTASKID);
             activateTaskInWindow(TASKS["lastAssignedId"]);
         }
+        chrome.tabs.query({active: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {message: 'update-dock'}, function(response) {
+
+            });
+        });
     } else if (request.type === "add-to-task") {
         const senderTab = sender.tab;
         const senderWindowId = senderTab.windowId;
@@ -131,31 +134,19 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "time-period-for-task-notification") {
         changeTaskNotificationPeriod();
     }
-    sendResponse(true);
+    // sendResponse(true);
+    return true;
 });
 
-function toggleTimeSpentNotification() {
-    chrome.storage.local.get("time-spent-notification", function (value) {
-        if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
-            chrome.storage.local.get("time-period-for-task-notification", function (result) {
-                if (!result["time-period-for-task-notification"]) {
-                    chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
-                } else {
-                    chrome.alarms.create("time-spent-notification", {
-                        "delayInMinutes": 5,
-                        "periodInMinutes": parseInt(result["time-period-for-task-notification"])
-                    });
-                }
-            });
-        } else {
-            chrome.alarms.clear("time-spent-notification")
-        }
-    });
-}
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    if (changes.hasOwnProperty('TASKS')) {
+        chrome.tabs.query({active: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {message: 'update-dock'}, function(response) {
 
-// chrome.commands.onCommand.addListener(function(command) {
-//     console.log('Command:', command);
-// });
+            });
+        });
+    }
+})
 
 function changeTaskNotificationPeriod() {
     chrome.storage.local.get("time-period-for-task-notification", function (value) {
@@ -185,12 +176,6 @@ function changeTaskNotificationPeriod() {
 // chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
 //     if (query != null) {
 //         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
-//     }
-// });
-
-// chrome.alarms.onAlarm.addListener(function (alarm) {
-//     if (alarm.name === "time-spent-notification") {
-//         fireTaskNameNotification(CTASKID, "timeSpentNotification");
 //     }
 // });
 
@@ -233,10 +218,9 @@ function addToHistory(url, title, taskId, startTime, endTime) {
 
 
         // add/update the entry in the history object
-        chrome.storage.local.get([historyToday, "TASKS"], function (results) {
+        chrome.storage.local.get([historyToday], function (results) {
 
             let history;
-            let tasks = results["TASKS"];
 
             //initialise the history object for today if not present
             if (!results[historyToday]) {
@@ -246,7 +230,7 @@ function addToHistory(url, title, taskId, startTime, endTime) {
             }
 
             // get the task name
-            let taskObject = tasks[taskId];
+            let taskObject = TASKS[taskId];
             let taskName = taskObject.name;
 
             if (!(taskId in history)) {
@@ -295,11 +279,7 @@ function addToHistory(url, title, taskId, startTime, endTime) {
             chrome.storage.local.set(o);
         });
     }
-
 }
-
-
-var currentTabInfo = null;
 
 function handleOnUpdated(tabId, changeInfo, tab) {
     if(currentTabInfo != null) {
@@ -314,7 +294,6 @@ function handleOnUpdated(tabId, changeInfo, tab) {
         title: tab.title,
         startTime: new Date()
     };
-
 }
 
 function handleOnActivated(activeInfo) {

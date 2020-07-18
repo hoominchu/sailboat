@@ -105,7 +105,7 @@ function showTasks(tasks, ctaskid) {
     });
     $('.deleteTask').click(function() {
         var delTaskId = $(this).closest(".task-card").attr("task-id");
-        if (tasks[delTaskId].isOpen) {
+        if (tasks[delTaskId].isOpen) { // typeof taskToWindow[delTaskId] == 'undefined'
             alert("This task is open. Please close it before deleting.");
         } else {
             const confirmation = confirm("Deleting a task will remove all the history and liked pages of the task. Are you sure you want to delete it?");
