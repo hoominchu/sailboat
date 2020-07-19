@@ -15,7 +15,7 @@ $(document).ready(function () {
             loadDock();
             loadNewTaskBtn();
             loadTaskNames(CTASKID);
-            loadClickLogger();
+            // loadClickLogger();
             loadArchiveButton();
             // sendDetectTaskMessage();
             // checkAndUpdateCollections();
@@ -243,10 +243,11 @@ function loadHoverBooster() {
 }
 
 window.onkeydown = function(event) {
-    if (event.code === 'ControlLeft') {
+    if (event.code === 'KeyA' && event.altKey) {
+        handleArchivePage();
+    } else if (event.code === 'ControlLeft') {
         $('.sailboat-parts').hide();
     }
-
     if (event.code === 'Escape') {
         hideNewTaskPopup();
     }
