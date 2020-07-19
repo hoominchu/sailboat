@@ -1,10 +1,6 @@
 "use strict";
 
-// let TASKS = {};
 let CTASKID = 0;
-let highlightIdx = 0;
-let ctrlPressed = false;
-let shiftPressed = false;
 let nTasks = 0;
 
 let isArchiveSearchOpen = false;
@@ -19,18 +15,16 @@ $(document).ready(function () {
             loadDock();
             loadNewTaskBtn();
             loadTaskNames(CTASKID);
-            // loadArchiveButton();
-            // markLikedStatus(window.location.href, CTASKID);
-            // setHighlightIdx();
-            // sendDetectTaskMessage();
-            checkAndUpdateCollections();
-            // loadHoverBooster();
             loadClickLogger();
+            loadArchiveButton();
+            // sendDetectTaskMessage();
+            // checkAndUpdateCollections();
+            // loadHoverBooster();
             // loadKeyPressHandler();
         }
     });
 
-    chrome.runtime.onMessage.addListener(function (request, sender) {
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.message === 'update-dock') {
             console.log('Dock is getting updated');
             loadTaskNames(CTASKID);
@@ -46,7 +40,23 @@ $(window).focus(function () {
     updateDock();
 });
 
+function sendSavePageContentMessage() {
+    const docClone = document.cloneNode(true);
+    const article = new Readability(docClone).parse();
+    article.textContent = article.textContent.trim();
+    chrome.runtime.sendMessage({
+        type: "save-page-content",
+        article: article,
+        url: window.location.href
+    });
+}
 
+function sendDeletePageContentMessage() {
+    chrome.runtime.sendMessage({
+        type: "delete-page-content",
+        url: window.location.href
+    });
+}
 
 //
 // $(window).blur(function () {
@@ -254,94 +264,38 @@ function loadDock() {
     const $dock = $('<div class="sailboat-float sailboat-dock" id="sailboat-dock"><div id="tasks-area" class="tasks-area"></div></div>');
 
     // Appending collapse button
-    const collapseArrowURL = chrome.runtime.getURL("images/left-arrow.svg");
-    let $collapseButton = $('<div id="collapse-dock-btn" class="sailboat-float round-corner collapse-btn"><img src ="' + collapseArrowURL + '" id="collapse-img"></div>');
-
-    $('#collapse-dock-btn').draggable();
-
-    $collapseButton.click(function () {
-        $("#sailboat-dock").animate({width: 'toggle', easing: 'slow', right: '+=0'});
-
-        $('#collapse-img').transition({rotate: '+=180'}, 'slow');
-        chrome.storage.local.get("Settings", function (settings) {
-            settings = settings["Settings"];
-            if (JSON.parse(settings["isDockCollapsed"])) {
-                settings["isDockCollapsed"] = "false";
-            } else {
-                settings["isDockCollapsed"] = "true";
-            }
-            chrome.storage.local.set({"Settings": settings});
-        });
-    });
-
+    // const collapseArrowURL = chrome.runtime.getURL("images/left-arrow.svg");
+    // let $collapseButton = $('<div id="collapse-dock-btn" class="sailboat-float round-corner collapse-btn"><img src ="' + collapseArrowURL + '" id="collapse-img"></div>');
     $dock.disableSelection();
 
-
-    $sailboatParts.append($collapseButton);
+    // $sailboatParts.append($collapseButton);
     $sailboatParts.append($dock);
     $(document.body).append($sailboatParts);
 
 }
 
-function archivePage() {
+function handleArchivePage() {
     $('#sailboat-like-btn').toggleClass("sailboat-like-btn-liked");
-    chrome.runtime.sendMessage({
-        "type": "like-page",
-        "url": window.location.href,
-        "content": document.documentElement.innerText
-    });
-
     if ($('#sailboat-like-btn').hasClass("sailboat-like-btn-liked")) {
         //Store page content only after a page is liked.
-        storePageContent(window.location.href, document.documentElement.innerText);
+        sendSavePageContentMessage();
     } else {
-        deletePageContent(window.location.href);
+        sendDeletePageContentMessage();
     }
 }
 
 function loadArchiveButton() {
-    const archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
-    const $likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
-    $likeButton.css('background-image', 'url(' + archiveIconPath + ')');
-    $(document).on('click', '#sailboat-like-btn', function () {
-        archivePage();
-    });
-    $("#sailboat-dock").append($likeButton);
-}
-
-function deletePageContent(url) {
-    chrome.storage.local.get("Page Content", function (pageContentObj) {
-        pageContentObj = pageContentObj["Page Content"];
-        delete pageContentObj[url];
-        chrome.storage.local.set({"Page Content": pageContentObj});
-        console.log("Content deleted");
-    });
-}
-
-function storePageContent(url, content) {
-    chrome.storage.local.get("Page Content", function (pageContentObj) {
-        pageContentObj = pageContentObj["Page Content"];
-        pageContentObj[url] = content;
-        chrome.storage.local.set({"Page Content": pageContentObj});
-        console.log("Content stored");
-    });
-}
-
-function markLikedStatus(url, ctaskid) {
-    chrome.storage.local.get('TASKS', function (tasks) {
-        tasks = tasks['TASKS'];
-        let likedPagesOfCurrentTask = tasks[ctaskid].likedPages;
-        const isPageLiked = (likedPagesOfCurrentTask.indexOf(url) > -1);
-        const archiveBtn = $("#sailboat-like-btn");
-        if (isPageLiked) {
-            archiveBtn.addClass("sailboat-like-btn-liked");
+    chrome.storage.local.get('page-content', function(response) {
+        const archiveIconPath = chrome.runtime.getURL("images/archive-search.svg");
+        const $likeButton = $('<div id="sailboat-like-btn" class="sailboat-like-btn non-sortable"></div>');
+        $likeButton.css('background-image', 'url(' + archiveIconPath + ')');
+        $likeButton.click(handleArchivePage);
+        if (response['page-content'].hasOwnProperty(window.location.href)) {
+            $likeButton.addClass('sailboat-like-btn-liked');
         }
-        else {
-            if (archiveBtn.hasClass("sailboat-like-btn-liked")) {
-                archiveBtn.removeClass("sailboat-like-btn-liked");
-            }
-        }
-    });
+        $("#sailboat-dock").append($likeButton);
+    })
+
 }
 
 function addTaskButtonToDock(task, ctaskid) {

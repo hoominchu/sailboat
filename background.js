@@ -4,10 +4,6 @@ let CTASKID;
 
 var currentTabInfo = null;
 
-function updateGlobalVariables() {
-
-}
-
 chrome.browserAction.onClicked.addListener(function() {
     chrome.tabs.create({'url':'html/about.html'});
 })
@@ -67,8 +63,6 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         downloadTasks();
     } else if (request.type === "download-collections") {
         downloadCollections();
-    } else if (request.type === "like-page") {
-        // likePage(request.url, request.content, CTASKID);
     } else if (request.type === "add-url-to-task") {
         addURLToTask(request.url, request.taskId);
     } else if (request.type === "archive-task") {
@@ -79,9 +73,10 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "open-liked-pages") {
         openLikedPages(request.taskId);
     } else if (request.type === "search-archive") {
-        if (request.query != null) {
-            // chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
-        }
+        // if (request.query != null) {
+        //     chrome.tabs.create({"url": "html/searchArchive.html?q=" + request.query});
+        // }
+        searchArchive(request.query, sender.tab.id);
     } else if (request.type === "onmouseover") {
         const fromWindowID = sender.tab.windowId;
         const targetURL = request["target-url"];
@@ -97,20 +92,15 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     } else if (request.type === "onmouseout") {
         chrome.tabs.highlight({"windowId": sender.tab.windowId, "tabs": sender.tab.index});
     } else if (request.type === "clicklog") {
-        chrome.storage.local.get("Click Log", function (clickLog) {
-            clickLog = clickLog["Click Log"];
-            if (clickLog.hasOwnProperty(request.text)) {
-                clickLog[request.text]++;
-            } else {
-                clickLog[request.text] = 1;
-            }
-            chrome.storage.local.set({"Click Log": clickLog});
-        });
-    } else if (request.type === "give me open tasks") {
-        chrome.runtime.sendMessage({
-            "type": "array of open tasks",
-            "openTasks": Object.keys(taskToWindow)
-        });
+        // chrome.storage.local.get("Click Log", function (clickLog) {
+        //     clickLog = clickLog["Click Log"];
+        //     if (clickLog.hasOwnProperty(request.text)) {
+        //         clickLog[request.text]++;
+        //     } else {
+        //         clickLog[request.text] = 1;
+        //     }
+        //     chrome.storage.local.set({"Click Log": clickLog});
+        // });
     } else if (request.type === "likePages") {
         likePages(request.urls, request.taskId);
     } else if (request.type === "deletePages") {
@@ -131,15 +121,11 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         detectTask(request.topics, request.url, request.title);
     } else if (request.type === "interests found") {
         fireInterestNotification(request.interests);
-    } else if (request.type === "get-search-results-from-history") {
-        // searchHistory({"text": request.query, 'startTime': 0}, sender.tab.id);
-    } else if (request.type === "toggle-time-spent-notification") {
-        // toggleTimeSpentNotification();
-    } else if (request.type === "time-period-for-task-notification") {
-        changeTaskNotificationPeriod();
+    } else if (request.type === 'save-page-content') {
+        parseDocumentAndSavePageContent(request.article, request.url);
+    } else if (request.type === 'delete-page-content') {
+        deletePageContent(request.url);
     }
-    // sendResponse(true);
-    return true;
 });
 
 // Whenever TASKS is updated in the storage, send a message to the currently active tab to update the dock so that the changes are reflected
@@ -151,17 +137,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
             });
         });
     }
-})
-
-function changeTaskNotificationPeriod() {
-    chrome.storage.local.get("time-period-for-task-notification", function (value) {
-        chrome.alarms.clear("time-spent-notification");
-        chrome.alarms.create("time-spent-notification", {
-            "delayInMinutes": 5,
-            "periodInMinutes": parseInt(value["time-period-for-task-notification"])
-        });
-    });
-}
+});
 
 function downloadCollections() {
     let dateObj = new Date();
@@ -173,7 +149,7 @@ function downloadCollections() {
 
 function searchArchive(query, tabId) {
     query = query.replace(/\+/g, ' ');
-    var results = lunrIndex.search(query);
+    var results = searchIndex.search(query);
     chrome.tabs.sendMessage(tabId, {"type": "show-archived-results-on-google-page", "results": results});
 }
 // add to history
@@ -310,31 +286,31 @@ chrome.tabs.onRemoved.addListener(handleOnRemoved);
 chrome.windows.onFocusChanged.addListener(handleWindowOnFocusChanged);
 
 
-// chrome.storage.local.get("time-spent-notification", function (value) {
-//     if (typeof value["time-spent-notification"] === "undefined" || value["time-spent-notification"]) {
-//         chrome.storage.local.get("time-period-for-task-notification", function (result) {
-//             if (!result["time-period-for-task-notification"]) {
-//                 chrome.alarms.create("taskName notification", {"delayInMinutes": 5, "periodInMinutes": 10})
-//             } else {
-//                 chrome.alarms.create("time-spent-notification", {
-//                     "delayInMinutes": 5,
-//                     "periodInMinutes": parseInt(result["time-period-for-task-notification"])
-//                 });
-//             }
-//         });
-//     }
-// });
+function parseDocumentAndSavePageContent(article, url) {
+    chrome.storage.local.get('page-content', function(response) {
+        let pageContent = response['page-content'];
+        delete article['content']; // delete the actual content as it increases the size unnecessarily
+        pageContent[url] = article;
+        searchIndex.addDoc({
+            'id': url,
+            'title': article.title,
+            'text': article.textContent
+        });
+        chrome.storage.local.set({'page-content': pageContent});
+    });
+}
 
-// chrome.omnibox.onInputEntered.addListener(function (query, disposition) {
-//     if (query != null) {
-//         chrome.tabs.create({"url": "html/searchArchive.html?q=" + query});
-//     }
-// });
-
-//Save downloads to appropriate task folder
-// chrome.downloads.onDeterminingFilename.addListener(function (item, suggest) {
-//     const currentTaskName = TASKS[CTASKID].name;
-//     suggest({filename: currentTaskName + "/" + item.filename});
-// });
-
+function deletePageContent(url) {
+    chrome.storage.local.get("page-content", function (pageContentObj) {
+        pageContentObj = pageContentObj["page-content"];
+        searchIndex.removeDoc({
+            'id': url,
+            'title': pageContentObj[url].title,
+            'text': pageContentObj[url].textContent
+        });
+        delete pageContentObj[url];
+        chrome.storage.local.set({"page-content": pageContentObj});
+        console.log("Content deleted");
+    });
+}
 

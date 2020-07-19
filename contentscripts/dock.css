@@ -82,9 +82,8 @@
     background-color: white;
 }
 
-.sailboat-like-btn:hover{
-    border: 1px solid rgba(18, 113, 236, 0.74);
-    background-color: white;
+.sailboat-like-btn:hover, .sailboat-like-btn-liked:hover{
+    background-color: #eee2a8;
 }
 
 .dock:hover .task-btn {
@@ -105,7 +104,7 @@
 }
 
 .sailboat-dock:active {
-    background: white;
+    /*background: white;*/
     box-shadow: 3px 3px 3px grey;
 }
 
@@ -130,17 +129,17 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    display: none;
+    pointer-events: auto;
 }
 
 .sailboat-like-btn-liked {
     color: white; !important;
-    background-color: #07b94f; !important;
+    background-color: lightblue; !important;
 }
 
 .sailboat-like-btn-liked:hover {
     color: white; !important;
-    background-color: #07b94f; !important;
+    background-color: lightblue; !important;
 }
 
 textarea:focus, input:focus{
@@ -343,6 +342,20 @@ textarea:focus, input:focus{
     -webkit-box-sizing: border-box;
 }
 
+.sailboat-results {
+    max-height: 330px;
+    overflow: scroll;
+    position: fixed;
+    right: 10px;
+    bottom: 40px;
+    width: 400px;
+    border: 1px solid #3a8ad7;
+    margin-right: 0;
+    border-radius: 10px;
+    background-color: aliceblue;
+    /*font-family: "Open Sans", sans-serif;*/
+}
+
 .sailboat-result-element {
     margin-bottom: 10px;
     border-bottom: 1px solid darkgrey;
@@ -355,7 +368,33 @@ textarea:focus, input:focus{
     overflow: hidden;
 }
 
-.sailboat-container {
-    height: calc(100vh - 40px);
-    overflow: scroll;
+.collapse-results-icon {
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 5px;
+}
+
+.collapse-results-icon:hover {
+    background: #6ac1db;
+}
+
+.from-your-archive-title {
+    color: grey;
+    font-weight: normal;
+}
+
+.num-archive-results {
+    color: #008cba;
+    font-weight: bold;
+}
+
+.sailboat-header {
+    height:40px; display:inline-block; width:100%
+}
+
+.sailboat-results-content {
+    padding: 0 10px 10px 10px;
 }
