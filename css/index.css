@@ -3,13 +3,15 @@ body {
   /*background-size: cover;*/
 }
 
+.task-section-title { padding: 10px; color: white; }
+
 .task-card.template {
   display: none;
 }
 
 .task-card { height: 180px; }
 
-.card { height: 100%; width: 100%; border-radius: 10px; }
+.card { height: 100%; width: 100%; border-radius: 10px; background: rgba(255, 255, 255, 0.7); }
 
 .time-spent-on-task { position: absolute; bottom: 5px; }
 
@@ -22,7 +24,7 @@ body {
 }
 
 .open-task .card {
-  border: 2px solid #008cba;
+  border: 2px solid rgba(7, 185, 79, 1) !important;
 }
 
 .active-task .card {

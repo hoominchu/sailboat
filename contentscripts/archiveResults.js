@@ -45,14 +45,16 @@ function sendSearchArchiveMessage(query) {
 }
 
 function showArchivedResults(results) {
-    const fromYourArchive = $('<div class="from-your-archive-title"><span class="num-archive-results">' + results.length + ' results</span> from your archive</div><hr></div>');
+    const fromYourArchive = $('<div class="from-your-archive-title"><span class="num-archive-results">#</span> results from your archive</div><hr></div>');
     $("#sailboat-results-content").append(fromYourArchive);
 
     const $resultsElement = $('#sailboat-results-content');
-    // resultsElement.innerText = "";
 
+    let nResults = 0
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
+            if (results[i].score < 0.5)
+                continue;
             let $resultElement = $('<div class="sailboat-result-element"></div>');
             let $title = $('<div class = "sailboat-result-url">' + results[i]['doc']['title'] + '</a></div>');
             let $url = $('<a href="' + results[i]["ref"] + '"><small>' + results[i]['ref'] + '</small></a>');
@@ -65,7 +67,9 @@ function showArchivedResults(results) {
                     chrome.storage.local.set({'Report Clicks': report});
                 })
             });
+            nResults++;
         }
+        $('.num-archive-results').text(nResults);
     } else {
         $("#sailboat-results-content").append($("<p style='line-height: 1.8em;'>No matches found. Archive more pages!</p>"));
     }
