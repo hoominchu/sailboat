@@ -97,6 +97,7 @@
     overflow-x: auto;
     white-space: nowrap;
     height: 100%;
+    display: block;
 }
 
 .sailboat-dock::-webkit-scrollbar {
