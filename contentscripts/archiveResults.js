@@ -2,7 +2,7 @@ const commonwords = ["the", "man", "good", "of", "and", "a", "to", "in", "is", "
 
 const domainsToExclude = ["www.google.co.in", "www.google.co.in"];
 const sailboatLogo = chrome.extension.getURL("images/logo_white_sails_no_text.png");
-const collapseResultsIcon = chrome.extension.getURL("images/collapse.svg");
+const collapseResultsIcon = chrome.extension.getURL("images/close.svg");
 
 $(document).ready(function () {
     if (getDomainFromURL(window.location.href).indexOf('.google.') > -1 && isGoogleResultsPage()) {
@@ -18,7 +18,7 @@ $(document).ready(function () {
                 const $resultsContentDiv = $('<div id="sailboat-results-content" class="sailboat-results-content">');
                 $resultsBox.append($resultsContentDiv);
                 $('.collapse-sailboat-results-btn').click(function () {
-                    $('.sailboat-results').animate({'height': '0', 'border-width': '0'}, 200);
+                    $('.sailboat-results').css({'display': 'none'});
                 })
                 sendSearchArchiveMessage(query);
             }
@@ -71,7 +71,7 @@ function showArchivedResults(results) {
         }
         $('.num-archive-results').text(nResults);
     } else {
-        $("#sailboat-results-content").append($("<p style='line-height: 1.8em;'>No matches found. Archive more pages!</p>"));
+        $("#sailboat-results-content").append($("<p style='line-height: 1.8em;'>No matches found. Archive more pages! You can use the keyboard shortcut 'Option/Alt + A' to archive a page.</p>"));
     }
 }
 

@@ -114,7 +114,7 @@ function getTaskHistory(taskId) {
     });
     chrome.storage.local.get("TASKS", function (tasks) {
         tasks = tasks["TASKS"];
-        $("#taskNameBanner").text("History for " + tasks[taskId].name + " Task");
+        $("#taskNameBanner").text("History for: " + tasks[taskId].name);
     });
 }
 
@@ -288,7 +288,7 @@ function loadTimelineChart() {
 }
 
 $(document).ready(function () {
-    logView(window.location.pathname);
+    // logView(window.location.pathname);
     chrome.storage.local.get("TASKS", function (taskObject) {
         if (taskObject["TASKS"]) {
             const Tasks = taskObject["TASKS"];
@@ -319,5 +319,5 @@ $(document).ready(function () {
             getTaskHistory(0);
         }
     });
-    loadTimelineChart();
+    // loadTimelineChart();
 });

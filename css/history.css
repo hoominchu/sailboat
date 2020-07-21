@@ -28,3 +28,7 @@ th{
 .custom-menu li:hover {
     background-color: #DEF;
 }
+
+.hide {
+    display: none;
+}

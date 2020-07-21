@@ -13,176 +13,193 @@
 <body>
 <script src="template.js"></script>
 <div class="container">
-  <div class="row" style="margin-top:20px">
-    <div class="col-md-12">
-      <h1 class="text-center">Settings</h1>
-      <div class="row setting-section">
+    <div class="row" style="margin-top:20px">
         <div class="col-md-12">
-          <h5 class="text-left font-weight-bold section-title">BackUp and Restore</h5>
-          <div class="row setting">
-            <div class="col-md-3">
-              Backup Tasks into a JSON:
-            </div>
-            <div class="col-md-9">
-              <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Back Up Tasks</button>
-            </div>
-          </div>
-          <div class="row setting">
-            <div class="col-md-3">
-              Backup Collections into a JSON:
-            </div>
-            <div class="col-md-9">
-              <button type="button" class="btn btn-primary round-corner" id="downloadCollections">Back Up Collections</button>
-            </div>
-          </div>
-          <div class="row setting">
-            <div class="col-md-3">
-              Restore Tasks from a JSON:
-            </div>
-            <div class="col-md-9">
-              <label for="tasks-file-input" id="restoreTasks" class="btn btn-primary round-corner">Restore Tasks</label>
-              <input type="file" id="tasks-file-input"/><span id="tasksUploadMessage"></span>
-            </div>
-          </div>
-          <div class="row setting">
-            <div class="col-md-3">
-              Restore Collections from a JSON:
-            </div>
-            <div class="col-md-9">
-              <label for="collections-file-input" id="restoreCollections" class="btn btn-primary round-corner">Restore Collections</label>
-              <input type="file" id="collections-file-input"/><span id="collectionsUploadMessage"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-<!--      <div class="row setting-section">-->
-<!--        <div class="col-md-12">-->
-<!--          <h5 class="text-left font-weight-bold section-title">Notifications</h5>-->
-<!--          <div class="row setting">-->
-<!--            <div class="col-md-3">-->
-<!--              Time Spent Notification-->
-<!--            </div>-->
-<!--            <div class="col-md-9">-->
-<!--              <label class="switch">-->
-<!--              <input type="checkbox" id="time-spent-notification">-->
-<!--              <span class="slider round"></span>-->
-<!--            </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row setting">-->
-<!--            <div class="col-md-3">-->
-<!--              Show me time spent on a task in:-->
-<!--            </div>-->
-<!--            <div class="col-md-9">-->
-<!--              Every &nbsp <input type="number" style="width:50px" id="time-period-for-task-notification"/> &nbsp minutes.-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-      <div class="row setting-section">
-        <div class="col-md-12">
-          <h5 class="text-left font-weight-bold section-title">Tracking Data</h5>
-          <div class="row setting">
-            <div class="col-md-3">
-              Download Tracking Data
-            </div>
-            <div class="col-md-9">
-              <button type="button" class="btn btn-primary round-corner" id="downloadTrackingData">Download Data</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    <!-- <div class="row" style="height: 1em;"></div>
-
-    <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-10">
-            <div class="row">
-                <h1>Settings</h1>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-lg-6">
-                    <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Export Tasks
-                    </button>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-lg-6">
-                <label for="file-input" class="btn btn-primary round-corner">
-                    Import Tasks
-                </label>
-                  <input type="file" id="file-input"/>
-                  <span id="fileUploadMessage"></span>
-              </div>
-            </div>
-            <hr>
-            <div class="row" style="height: 1em;">
-                <div class="col-lg-6">
-                    <button type="button" class="btn btn-primary round-corner" id="downloadReport">Download Report
-                    </button>
-                </div>
-            </div>
-            <!-- <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-3" id="notification_settings">
-                    <h4>Notifications</h4>
-                    <p><small>These are task suggestion notifications.</small></p>
-                    <div id="notification_options" class="btn-group" role="group"></div>
-                </div>
-                <div class="col-lg-4" id="suggestion_settings">
-                    <h4>Suggestions based on</h4>
-                    <p>
-                        <small>You should have at least 3-4 open tabs/liked pages in every task for the suggestions to work
-                            well.
-                        </small>
-                    </p>
-                    <div id="suggestion_options" class="btn-group" role="group"></div>
-                </div>
-                <div class="col-lg-3">
-                    <h4>Suggestions threshold</h4>
-                    <p>
-                        <small>You can experiment with threshold.</small>
-                    </p>
-                    <div id="suggestion_threshold" class="btn-group" role="group"></div>
-                </div>
-                <div class="col-lg-1"></div>
-            </div>
-            <div class="row" style="height: 3em;"></div>
-            <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-7">
-                    <h4>Block notifications on</h4>
-                    <p>
-                        <small>Add or remove domains where you would like to disable notifications.</small>
-                    </p>
-                    <div id="block_notifications_domains"></div>
-                    <div class="row" style="height: 1em;"></div>
-                    <div class="form-group input-group">
-                        <input type="text" autofocus="autofocus" autocomplete="on" class="form-control round-corner-left"
-                               style="" id="block_notifications_on_domains_input"
-                               placeholder="Enter domain name or URL">
-                        <div class="input-group-append">
-                            <button id="submit_block_notifications_on" type="submit" class="btn btn-primary round-corner-right">
-                                Add
-                            </button>
+            <h1 class="text-center">Settings</h1>
+            <div class="row setting-section">
+                <div class="col-md-12">
+                <div class="row setting">
+                        <div class="col-md-3">
+                            Override new tab
+                        </div>
+                        <div class="col-md-9">
+                            <label class="switch">
+                                <input type="checkbox" id="override-newtab-input">
+                                <span class="slider round"></span>
+                            </label>
                         </div>
                     </div>
-                </div> -->
-                <!--<div class="col-lg-3">-->
-                    <!--<button type="button" id="reset_index" style="margin-left: 3.5em" class="btn btn-secondary round-corner">Reset index</button>-->
-                <!--</div>-->
-              <!--  <div class="row">
-                  <p>Show me task notification after &nbsp </p><input type="number" id="time-period-for-task-notif" value="10"/><p>&nbsp minutes.</p>
-                  <p><i>&nbsp (This will take effect after restarting the browser.)</i></p>
                 </div>
             </div>
+<!--            <div class="row setting-section">-->
+<!--                <div class="col-md-12">-->
+<!--                    <h5 class="text-left font-weight-bold section-title">Backup and Restore</h5>-->
+<!--                    <div class="row setting">-->
+<!--                        <div class="col-md-3">-->
+<!--                            Backup Tasks into a JSON:-->
+<!--                        </div>-->
+<!--                        <div class="col-md-9">-->
+<!--                            <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Backup Tasks-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash;          <div class="row setting">&ndash;&gt;-->
+<!--                    &lt;!&ndash;            <div class="col-md-3">&ndash;&gt;-->
+<!--                    &lt;!&ndash;              Backup Collections into a JSON:&ndash;&gt;-->
+<!--                    &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                    &lt;!&ndash;            <div class="col-md-9">&ndash;&gt;-->
+<!--                    &lt;!&ndash;              <button type="button" class="btn btn-primary round-corner" id="downloadCollections">Back Up Collections</button>&ndash;&gt;-->
+<!--                    &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                    &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                    <div class="row setting">-->
+<!--                        <div class="col-md-3">-->
+<!--                            Restore Tasks from a JSON:-->
+<!--                        </div>-->
+<!--                        <div class="col-md-9">-->
+<!--                            <label for="tasks-file-input" id="restoreTasks" class="btn btn-primary round-corner">Restore-->
+<!--                                Tasks</label>-->
+<!--                            <input type="file" id="tasks-file-input"/><span id="tasksUploadMessage"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash;          <div class="row setting">&ndash;&gt;-->
+<!--                    &lt;!&ndash;            <div class="col-md-3">&ndash;&gt;-->
+<!--                    &lt;!&ndash;              Restore Collections from a JSON:&ndash;&gt;-->
+<!--                    &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                    &lt;!&ndash;            <div class="col-md-9">&ndash;&gt;-->
+<!--                    &lt;!&ndash;              <label for="collections-file-input" id="restoreCollections" class="btn btn-primary round-corner">Restore Collections</label>&ndash;&gt;-->
+<!--                    &lt;!&ndash;              <input type="file" id="collections-file-input"/><span id="collectionsUploadMessage"></span>&ndash;&gt;-->
+<!--                    &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                    &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                </div>-->
+<!--            </div>-->
+            <!--      <div class="row setting-section">-->
+            <!--        <div class="col-md-12">-->
+            <!--          <h5 class="text-left font-weight-bold section-title">Notifications</h5>-->
+            <!--          <div class="row setting">-->
+            <!--            <div class="col-md-3">-->
+            <!--              Time Spent Notification-->
+            <!--            </div>-->
+            <!--            <div class="col-md-9">-->
+            <!--              <label class="switch">-->
+            <!--              <input type="checkbox" id="time-spent-notification">-->
+            <!--              <span class="slider round"></span>-->
+            <!--            </label>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--          <div class="row setting">-->
+            <!--            <div class="col-md-3">-->
+            <!--              Show me time spent on a task in:-->
+            <!--            </div>-->
+            <!--            <div class="col-md-9">-->
+            <!--              Every &nbsp <input type="number" style="width:50px" id="time-period-for-task-notification"/> &nbsp minutes.-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--        </div>-->
+            <!--      </div>-->
+            <!--      <div class="row setting-section">-->
+            <!--        <div class="col-md-12">-->
+            <!--          <h5 class="text-left font-weight-bold section-title">Tracking Data</h5>-->
+            <!--          <div class="row setting">-->
+            <!--            <div class="col-md-3">-->
+            <!--              Download Tracking Data-->
+            <!--            </div>-->
+            <!--            <div class="col-md-9">-->
+            <!--              <button type="button" class="btn btn-primary round-corner" id="downloadTrackingData">Download Data</button>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            <!--        </div>-->
+            <!--      </div>-->
         </div>
-    </div> -->
+    </div>
+</div>
+<!-- <div class="row" style="height: 1em;"></div>
+
+<div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-10">
+        <div class="row">
+            <h1>Settings</h1>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-6">
+                <button type="button" class="btn btn-primary round-corner" id="downloadTasks">Export Tasks
+                </button>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-6">
+            <label for="file-input" class="btn btn-primary round-corner">
+                Import Tasks
+            </label>
+              <input type="file" id="file-input"/>
+              <span id="fileUploadMessage"></span>
+          </div>
+        </div>
+        <hr>
+        <div class="row" style="height: 1em;">
+            <div class="col-lg-6">
+                <button type="button" class="btn btn-primary round-corner" id="downloadReport">Download Report
+                </button>
+            </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-3" id="notification_settings">
+                <h4>Notifications</h4>
+                <p><small>These are task suggestion notifications.</small></p>
+                <div id="notification_options" class="btn-group" role="group"></div>
+            </div>
+            <div class="col-lg-4" id="suggestion_settings">
+                <h4>Suggestions based on</h4>
+                <p>
+                    <small>You should have at least 3-4 open tabs/liked pages in every task for the suggestions to work
+                        well.
+                    </small>
+                </p>
+                <div id="suggestion_options" class="btn-group" role="group"></div>
+            </div>
+            <div class="col-lg-3">
+                <h4>Suggestions threshold</h4>
+                <p>
+                    <small>You can experiment with threshold.</small>
+                </p>
+                <div id="suggestion_threshold" class="btn-group" role="group"></div>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
+        <div class="row" style="height: 3em;"></div>
+        <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-7">
+                <h4>Block notifications on</h4>
+                <p>
+                    <small>Add or remove domains where you would like to disable notifications.</small>
+                </p>
+                <div id="block_notifications_domains"></div>
+                <div class="row" style="height: 1em;"></div>
+                <div class="form-group input-group">
+                    <input type="text" autofocus="autofocus" autocomplete="on" class="form-control round-corner-left"
+                           style="" id="block_notifications_on_domains_input"
+                           placeholder="Enter domain name or URL">
+                    <div class="input-group-append">
+                        <button id="submit_block_notifications_on" type="submit" class="btn btn-primary round-corner-right">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+<!--<div class="col-lg-3">-->
+<!--<button type="button" id="reset_index" style="margin-left: 3.5em" class="btn btn-secondary round-corner">Reset index</button>-->
+<!--</div>-->
+<!--  <div class="row">
+    <p>Show me task notification after &nbsp </p><input type="number" id="time-period-for-task-notif" value="10"/><p>&nbsp minutes.</p>
+    <p><i>&nbsp (This will take effect after restarting the browser.)</i></p>
+  </div>
+</div>
+</div>
+</div> -->
 <script src="../utils/web-util.js"></script>
 <script src="settings.js"></script>
 <script src="../utils/util.js"></script>

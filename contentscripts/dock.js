@@ -247,10 +247,11 @@ window.onkeydown = function(event) {
         handleArchivePage();
     } else if (event.code === 'ControlLeft') {
         $('.sailboat-parts').hide();
-    }
-    if (event.code === 'Escape') {
+    } else if (event.code === 'Escape') {
         hideNewTaskPopup();
     }
+
+
 };
 
 window.onkeyup = function (event) {

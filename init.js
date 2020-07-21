@@ -48,11 +48,12 @@ chrome.storage.local.get(["sailboatInitialised", 'CTASKID', 'TASKS', 'taskToWind
         });
 
         const DEFAULT_SETTINGS = {
-            "notifications": "Enabled",
-            "suggestions-based-on": "Open tabs",
-            "suggestions-threshold": "Medium",
-            "block-notifications-on": ["www.google.com", "www.google.co.in", "www.facebook.com"],
-            "isDockCollapsed": "false"
+            // "notifications": "Enabled",
+            // "suggestions-based-on": "Open tabs",
+            // "suggestions-threshold": "Medium",
+            // "block-notifications-on": ["www.google.com", "www.google.co.in", "www.facebook.com"],
+            // "isDockCollapsed": "false"
+            'override-newtab': true
         };
         // Setting default settings in local storage.
         chrome.storage.local.set({"sailboat-settings": DEFAULT_SETTINGS});

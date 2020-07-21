@@ -10,7 +10,6 @@ $("#downloadTrackingData").click(function () {
     updateClickReport('Download Tracking Data');
     chrome.storage.local.get(null, function(allObjects){
         let trackerObj = {};
-
         for (let key in allObjects) {
             if (key.startsWith('tracker-')) {
                 trackerObj[key] = allObjects[key];
@@ -32,6 +31,13 @@ $("#restoreTasks").click(function () {
 $("#restoreCollections").click(function () {
     updateClickReport('Restore Collections');
 });
+
+// Read the settings from the local storage and initialise
+chrome.storage.local.get('sailboat-settings', function(response) {
+    let settings = response['sailboat-settings'];
+    const overrideNewtab = settings['override-newtab'] ? settings['override-newtab'] : false;
+    $('#override-newtab-input').attr('checked', overrideNewtab);
+})
 
 // function restoreTaskObjectFromFile()
 function readSingleFile(fileInput) {
@@ -71,7 +77,7 @@ function restoreTasksFromString(string) {
     $("#tasksUploadMessage").append(successIcon);
 }
 
-document.getElementById('tasks-file-input').addEventListener('change', readSingleFile, false);
+// document.getElementById('tasks-file-input').addEventListener('change', readSingleFile, false);
 
 ///////////////////////////
 
@@ -83,52 +89,9 @@ function restoreCollectionsFromString(string) {
     $("#collectionsUploadMessage").append(successIcon);
 }
 
-document.getElementById('collections-file-input').addEventListener('change', readSingleFile, false);
+// document.getElementById('collections-file-input').addEventListener('change', readSingleFile, false);
 
-//////////////////////////
-
-
-//TASK NOTIFICATIONS
-
-//TIME SPENT NOTIFICATION
-
-chrome.storage.local.get("time-spent-notification", function (value) {
-    if (typeof value["time-spent-notification"] != "undefined") {
-        if (value["time-spent-notification"]) {
-            document.getElementById('time-spent-notification').checked = value["time-spent-notification"]
-        }
-        else {
-            document.getElementById('time-spent-notification').checked = false
-        }
-    }
-    else {
-        document.getElementById('time-spent-notification').checked = true
-    }
-
-});
-
-function toggleTimeSpentNotification() {
-    if(document.getElementById('time-spent-notification').checked){
-        chrome.storage.local.set({"time-spent-notification": true},  function(){chrome.runtime.sendMessage({"type":"toggle-time-spent-notification"})});
-    }
-    else{
-        chrome.storage.local.set({"time-spent-notification": false},  function(){chrome.runtime.sendMessage({"type":"toggle-time-spent-notification"})});
-    }
-}
-
-document.getElementById('time-spent-notification').addEventListener('change', toggleTimeSpentNotification, false);
-
-//TIME SPENT PERIOD
-
-chrome.storage.local.get("time-period-for-task-notification", function (value) {
-    if (value["time-period-for-task-notification"]) {
-        document.getElementById('time-period-for-task-notification').value = value["time-period-for-task-notification"]
-    }
-    else {
-        document.getElementById('time-period-for-task-notification').value = 10
-    }
-});
-
+// document.getElementById('time-spent-notification').addEventListener('change', toggleTimeSpentNotification, false);
 
 function changeTaskNotificationPeriod(periodInMins) {
     chrome.storage.local.set({"time-period-for-task-notification": periodInMins.srcElement.value}, function(){
@@ -136,11 +99,11 @@ function changeTaskNotificationPeriod(periodInMins) {
     });
 }
 
-document.getElementById('time-period-for-task-notification').addEventListener('change', changeTaskNotificationPeriod, false);
+// document.getElementById('time-period-for-task-notification').addEventListener('change', changeTaskNotificationPeriod, false);
 
-$(document).ready(function () {
-    logView(window.location.pathname);
-});
+// $(document).ready(function () {
+//     logView(window.location.pathname);
+// });
 
 
 //STUFF RELATED TO TASK SUGGESTIONS
